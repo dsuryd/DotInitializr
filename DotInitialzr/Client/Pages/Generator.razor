@@ -1,0 +1,43 @@
+﻿@page "/"
+@inject HttpClient Http
+@inject IJSRuntime JSRuntime;
+
+<VMContext VM="Generator" TState="IGeneratorState" OnStateChange="UpdateState">
+@if (state != null)
+{
+    <d-form>
+        <d-frame>
+            <d-dropdown-list id="Template" />
+            <d-text-field id="ProjectName" />
+            <d-button id="Generate" submit="true" enable="true" />
+        </d-frame>
+    </d-form>
+}
+</VMContext>
+
+@code {
+   private IGeneratorState state;
+
+   private void UpdateState(IGeneratorState state)
+   {
+       this.state = state;
+       if (state.TemplateMetadata != null)
+       {
+           _ = GenerateAsync(state.TemplateMetadata);
+           this.state.TemplateMetadata = null;
+       }
+
+       StateHasChanged();
+   }
+
+   private async Task GenerateAsync(TemplateMetadata metadata)
+   {
+       var response = await Http.PostAsJsonAsync("api/generator", state.TemplateMetadata);
+       await JSRuntime.InvokeAsync<string>("saveFile", new object[] 
+       { 
+           Convert.ToBase64String(await response.Content.ReadAsByteArrayAsync()), 
+           response.Content.Headers.ContentDisposition.FileName,
+           response.Content.Headers.ContentType.ToString()
+       });
+   }
+}

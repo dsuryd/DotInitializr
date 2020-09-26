@@ -1,0 +1,20 @@
+﻿<Project Sdk="Microsoft.NET.Sdk.Web">
+
+  <PropertyGroup>
+    <TargetFramework>netcoreapp3.1</TargetFramework>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="DotNetify.Elements" Version="1.5.0" />
+    <PackageReference Include="DotNetify.SignalR" Version="4.1.0" />
+    <PackageReference Include="LibGit2Sharp" Version="0.26.2" />
+    <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly.Server" Version="3.2.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Client\DotInitialzr.Client.csproj" />
+    <ProjectReference Include="..\Shared\DotInitialzr.Shared.csproj" />
+  </ItemGroup>
+
+
+</Project>
