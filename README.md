@@ -1,3 +1,3 @@
 # DotInitialzr
 
-Quickstart generator for .NET projects. Inspired by Spring Initialzr.
+Quickstart project generator from git templates. Inspired by Spring Initialzr.
