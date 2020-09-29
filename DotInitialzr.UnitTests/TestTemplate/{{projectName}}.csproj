@@ -7,7 +7,7 @@
     <IsPackable>false</IsPackable>
     <SpaRoot>ClientApp\</SpaRoot>
     <DefaultItemExcludes>$(DefaultItemExcludes);$(SpaRoot)node_modules\**</DefaultItemExcludes>
-{{#ng}
+{{#ng}}
     <!-- Set this to true if you enable server-side prerendering -->
     <BuildServerSideRenderer>false</BuildServerSideRenderer>
 {{/ng}}
@@ -40,7 +40,7 @@
 {{#react}}    
     <Exec WorkingDirectory="$(SpaRoot)" Command="npm run build" />
 {{/react}}
-{{#ng}    
+{{#ng}}    
     <Exec WorkingDirectory="$(SpaRoot)" Command="npm run build -- --prod" />
     <Exec WorkingDirectory="$(SpaRoot)" Command="npm run build:ssr -- --prod" Condition=" '$(BuildServerSideRenderer)' == 'true' " />
 {{/ng}}    
@@ -50,7 +50,7 @@
 {{#react}}        
       <DistFiles Include="$(SpaRoot)build\**" />    
 {{/react}}      
-{{#ng}       
+{{#ng}}       
       <DistFiles Include="$(SpaRoot)dist\**; $(SpaRoot)dist-server\**" />
       <DistFiles Include="$(SpaRoot)node_modules\**" Condition="'$(BuildServerSideRenderer)' == 'true'" />
 {{/ng}}        
