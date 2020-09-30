@@ -7,7 +7,7 @@ namespace DotInitialzr.UnitTests
    public class GitTemplateSourceTest
    {
       [Test]
-      [TestCase("https://github.com/dsuryd/dotNetify-react-template", "ReactTemplate\\content")]
+      [TestCase("https://github.com/dsuryd/DotInitialzr", "DotInitialzr.UnitTests\\TestTemplate")]
       public void GitTemplateSource_GetFiles_ReturnsFiles(string sourceUrl, string directory)
       {
          var source = new GitTemplateSource();

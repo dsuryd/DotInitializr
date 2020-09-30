@@ -1,8 +1,9 @@
 ﻿using System;
 using System.Net;
-using System.Net.Http.Headers;
+using System.Linq;
 using DotInitialzr.Shared;
 using Microsoft.AspNetCore.Mvc;
+using System.Text.Json;
 
 namespace DotInitialzr.Server
 {
@@ -11,12 +12,31 @@ namespace DotInitialzr.Server
    public class GeneratorController : ControllerBase
    {
       [HttpPost]
-      public ActionResult Get([FromServices] IProjectGenerator generator, [FromBody] TemplateMetadata metadata)
+      public ActionResult Get([FromServices] IProjectGenerator generator, [FromBody] ProjectMetadata metadata)
       {
+         if (metadata.Tags != null)
+         {
+            foreach (var kvp in metadata.Tags.Where(x => x.Value is JsonElement).ToList())
+            {
+               var jsonElem = (JsonElement) kvp.Value;
+               if (jsonElem.ValueKind == JsonValueKind.True)
+                  metadata.Tags[kvp.Key] = true;
+               else if (jsonElem.ValueKind == JsonValueKind.False)
+                  metadata.Tags[kvp.Key] = false;
+               else
+                  metadata.Tags[kvp.Key] = jsonElem.GetString();
+            }
+         }
+
          try
          {
             byte[] templateBytes = generator.Generate(metadata);
             return new FileContentResult(templateBytes, "application/zip") { FileDownloadName = $"{metadata.ProjectName}.zip" };
+         }
+         catch (TemplateRenderException ex)
+         {
+            Response.StatusCode = (int) HttpStatusCode.InternalServerError;
+            return Content(ex.Message);
          }
          catch (Exception ex)
          {

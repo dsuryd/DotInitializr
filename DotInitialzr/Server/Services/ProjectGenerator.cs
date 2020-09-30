@@ -10,27 +10,48 @@ namespace DotInitialzr.Server
 {
    public interface IProjectGenerator
    {
-      byte[] Generate(TemplateMetadata metadata);
+      byte[] Generate(ProjectMetadata metadata);
    }
 
    public class ProjectGenerator : IProjectGenerator
    {
       private readonly IEnumerable<ITemplateSource> _templateSources;
+      private readonly ITemplateRenderer _mustacheRenderer;
 
-      public ProjectGenerator(IEnumerable<ITemplateSource> templateSources)
+      public ProjectGenerator(IEnumerable<ITemplateSource> templateSources, ITemplateRenderer mustacheRenderer)
       {
          _templateSources = templateSources;
+         _mustacheRenderer = mustacheRenderer;
       }
 
-      public byte[] Generate(TemplateMetadata metadata)
+      public byte[] Generate(ProjectMetadata metadata)
       {
          var templateSource = _templateSources.FirstOrDefault(x => x.SourceType == metadata.TemplateSourceType);
          if (templateSource == null)
             throw new Exception($"Template source '{metadata.TemplateSourceType}' is not found");
 
-         var files = templateSource.GetFiles(metadata.TemplateSourceUrl, metadata.TemplateSourceDirectory);
+         var filesToExclude = metadata.FilesToExclude?
+            .Replace(Path.AltDirectorySeparatorChar, Path.DirectorySeparatorChar)
+            .Split(",");
 
-         return Zip(files);
+         var files = templateSource
+            .GetFiles(metadata.TemplateSourceUrl, metadata.TemplateSourceDirectory)
+            .Where(x => filesToExclude == null || !MatchFileName(x.Name, filesToExclude))
+            .ToList();
+
+         return Zip(_mustacheRenderer.Render(files, metadata.Tags));
+      }
+
+      private bool MatchFileName(string name, string[] files)
+      {
+         name = name.Replace(Path.AltDirectorySeparatorChar, Path.DirectorySeparatorChar);
+
+         if (files.Contains(name))
+            return true;
+
+         var wildcard = $"{Path.DirectorySeparatorChar}**";
+         var directories = files.Where(x => x.EndsWith(wildcard))?.Select(x => x.Replace(wildcard, string.Empty));
+         return directories?.Any(x => name.StartsWith(x)) == true;
       }
 
       private byte[] Zip(IEnumerable<TemplateFile> files)

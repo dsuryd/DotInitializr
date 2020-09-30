@@ -9,6 +9,7 @@
     <PackageReference Include="DotNetify.SignalR" Version="4.1.0" />
     <PackageReference Include="LibGit2Sharp" Version="0.26.2" />
     <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly.Server" Version="3.2.0" />
+    <PackageReference Include="Stubble.Core" Version="1.9.3" />
   </ItemGroup>
 
   <ItemGroup>

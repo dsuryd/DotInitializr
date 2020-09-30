@@ -6,6 +6,6 @@ namespace DotInitialzr.Shared
 {
    public interface IGeneratorState
    {
-      TemplateMetadata TemplateMetadata { get; set; }
+      ProjectMetadata ProjectMetadata { get; set; }
    }
 }

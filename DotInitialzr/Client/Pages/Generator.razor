@@ -9,7 +9,7 @@
         <d-frame>
             <d-dropdown-list id="Template" />
             <d-text-field id="ProjectName" />
-            <d-button id="Generate" submit="true" enable="true" />
+            <d-button id="Generate" submit="true" />
         </d-frame>
     </d-form>
 }
@@ -21,18 +21,18 @@
    private void UpdateState(IGeneratorState state)
    {
        this.state = state;
-       if (state.TemplateMetadata != null)
+       if (state.ProjectMetadata != null)
        {
-           _ = GenerateAsync(state.TemplateMetadata);
-           this.state.TemplateMetadata = null;
+           _ = GenerateAsync(state.ProjectMetadata);
+           this.state.ProjectMetadata = null;
        }
 
        StateHasChanged();
    }
 
-   private async Task GenerateAsync(TemplateMetadata metadata)
+   private async Task GenerateAsync(ProjectMetadata metadata)
    {
-       var response = await Http.PostAsJsonAsync("api/generator", state.TemplateMetadata);
+       var response = await Http.PostAsJsonAsync("api/generator", state.ProjectMetadata);
        await JSRuntime.InvokeAsync<string>("saveFile", new object[] 
        { 
            Convert.ToBase64String(await response.Content.ReadAsByteArrayAsync()), 

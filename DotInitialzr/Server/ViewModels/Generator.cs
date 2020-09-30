@@ -37,24 +37,31 @@ namespace DotInitialzr.Server
                Placeholder = "Enter your project name",
                MaxLength = 30
             })
+            .WithPatternValidation(@"^[\w\-. ]+$", "Must be a valid filename")
             .WithRequiredValidation();
 
          AddProperty<FormData>("Generate")
          .WithAttribute(new { Label = "Generate" })
          .SubscribedBy(
-            AddProperty<TemplateMetadata>(nameof(IGeneratorState.TemplateMetadata)), formData => BuildTemplateMetadata(formData));
+            AddProperty<ProjectMetadata>(nameof(IGeneratorState.ProjectMetadata)), formData => BuildProjectMetadata(formData));
       }
 
-      private TemplateMetadata BuildTemplateMetadata(FormData formData)
+      private ProjectMetadata BuildProjectMetadata(FormData formData)
       {
          var template = _config.Templates.FirstOrDefault(x => x.Key == formData.Template);
 
-         return new TemplateMetadata
+         var tags = new Dictionary<string, object>
+         {
+            { "projectName", formData.ProjectName }
+         };
+
+         return new ProjectMetadata
          {
             ProjectName = formData.ProjectName,
             TemplateSourceType = template.SourceType,
             TemplateSourceUrl = template.SourceUrl,
-            TemplateSourceDirectory = template.SourceDirectory
+            TemplateSourceDirectory = template.SourceDirectory,
+            Tags = tags
          };
       }
    }

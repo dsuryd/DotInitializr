@@ -23,6 +23,7 @@ namespace DotInitialzr.Server
          services.AddMvc();
 
          services.AddSingleton<ITemplateSource, GitTemplateSource>();
+         services.AddSingleton<ITemplateRenderer, MustacheRenderer>();
          services.AddSingleton<IProjectGenerator, ProjectGenerator>();
 
          services.AddSingleton(Configuration.GetSection(InitialzrConfiguration.SECTION).Get<InitialzrConfiguration>() ?? new InitialzrConfiguration());

@@ -24,6 +24,7 @@ namespace DotInitialzr.Server
          try
          {
             string tempPath = Path.Combine(Path.GetTempPath(), nameof(DotInitialzr), Guid.NewGuid().ToString());
+            string fullTempPath = Path.Combine(Path.GetFullPath(tempPath), sourceDirectory);
 
             if (!string.IsNullOrEmpty(Repository.Clone(sourceUrl, tempPath)))
             {
@@ -36,7 +37,7 @@ namespace DotInitialzr.Server
                   result.Add(new TemplateFile
                   {
                      Name = fileName
-                        .Replace(Path.GetFullPath(tempPath), string.Empty)
+                        .Replace(fullTempPath, string.Empty)
                         .TrimStart(Path.DirectorySeparatorChar, Path.AltDirectorySeparatorChar),
                      Content = File.ReadAllText(fileName)
                   });

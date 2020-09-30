@@ -3,7 +3,7 @@
     { "Key": "namespace", "DefaultValue": "Starter", "ValidationRegex": "^[\\w\\-. ]+$", "ValidationError": "Must be valid namespace" }
   ],
   "ConditionalTags": [
-    { "Key": "ng", "DefaultValue": false },
-    { "Key": "react", "DefaultValue": true }
+    { "Key": "ng", "DefaultValue": false, "FilesToInclude": "ClientApp{{ng}}/**" },
+    { "Key": "react", "DefaultValue": true, "FilesToInclude": "ClientApp{{react}}/**" }
   ]
 }
