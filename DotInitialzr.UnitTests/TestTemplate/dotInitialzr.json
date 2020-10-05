@@ -1,9 +1,9 @@
 {
   "TextTags": [
-    { "Key": "namespace", "DefaultValue": "Starter", "ValidationRegex": "^[\\w\\-. ]+$", "ValidationError": "Must be valid namespace" }
+    { "Key": "namespace", Name: "Namespace", "DefaultValue": "Starter", "ValidationRegex": "^[\\w\\-. ]+$", "ValidationError": "Must be valid namespace" }
   ],
   "ConditionalTags": [
-    { "Key": "ng", "DefaultValue": false, "FilesToInclude": "ClientApp{{ng}}/**" },
-    { "Key": "react", "DefaultValue": true, "FilesToInclude": "ClientApp{{react}}/**" }
+    { "Key": "ng", Name: "Angular", "DefaultValue": false, "FilesToInclude": "ClientApp{{ng}}/**" },
+    { "Key": "react", Name: "React", "DefaultValue": true, "FilesToInclude": "ClientApp{{react}}/**" }
   ]
 }
