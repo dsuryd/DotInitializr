@@ -26,13 +26,13 @@ namespace {{namespace}}
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddControllersWithViews();
-            // In production, the Angular files will be served from this directory
             services.AddSpaStaticFiles(configuration =>
             {
 {{#react}}	
                 configuration.RootPath = "ClientApp/build";	
 {{/react}}	
 {{#ng}}			
+                // In production, the Angular files will be served from this directory
                 configuration.RootPath = "ClientApp/dist";
 {{/ng}}				
             });

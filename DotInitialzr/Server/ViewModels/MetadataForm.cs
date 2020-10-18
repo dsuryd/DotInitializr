@@ -105,6 +105,17 @@ namespace DotInitialzr.Server
          return result;
       }
 
+      public string GetFilesToExclude(Dictionary<string, bool> tags)
+      {
+         string result = "";
+         var metadata = MetadataLoadedEvent.Value as TemplateMetadata;
+
+         foreach (var tag in metadata.ConditionalTags.Where(x => !tags.ContainsKey(x.Key) || !tags[x.Key]))
+            result = string.Join(",", result, tag.FilesToInclude);
+
+         return result;
+      }
+
       private TemplateMetadata GetMetadata(AppConfiguration.Template template)
       {
          TemplateMetadata metadata = new TemplateMetadata();

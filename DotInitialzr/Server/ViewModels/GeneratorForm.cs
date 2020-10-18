@@ -13,6 +13,7 @@ namespace DotInitialzr.Server
       private readonly MetadataForm _metadataForm;
       private readonly AppConfiguration _config;
       private Dictionary<string, object> _metadata;
+      private ReactiveProperty<string> _templateProp;
 
       public bool Loading { get => Get<bool>(); set => Set(value); }
 
@@ -22,7 +23,7 @@ namespace DotInitialzr.Server
          _metadataForm = metadataForm;
          _metadataForm.MetadataLoadedEvent.Subscribe(_ => Loading = false);
 
-         AddProperty("Template", "none")
+         _templateProp = AddProperty("Template", "none")
             .WithAttribute(new DropdownListAttribute
             {
                Label = "Template",
@@ -57,13 +58,25 @@ namespace DotInitialzr.Server
 
       private ProjectMetadata BuildProjectMetadata(Dictionary<string, string> formData)
       {
-         var template = _config.Templates.FirstOrDefault(x => x.Key == formData["Template"]);
+         var template = _config.Templates.FirstOrDefault(x => x.Key == _templateProp.Value.ToString());
          if (template == null)
             return null;
 
          _metadata ??= _metadataForm.GetDefaultMetadataValues();
-         foreach (var key in formData.Keys)
-            _metadata[key] = formData[key];
+         foreach (var key in formData.Keys.Where(x => _metadata.ContainsKey(x)))
+         {
+            if (_metadata[key].GetType() == typeof(bool))
+            {
+               bool.TryParse(formData[key]?.ToString(), out bool value);
+               _metadata[key] = value;
+            }
+            else
+               _metadata[key] = formData[key]?.ToString();
+         }
+
+         var conditionalMetadata = _metadata
+            .Where(x => x.Value != null && bool.TryParse(x.Value.ToString(), out bool value))
+            .ToDictionary(x => x.Key, x => bool.Parse(x.Value.ToString()));
 
          return new ProjectMetadata
          {
@@ -71,7 +84,8 @@ namespace DotInitialzr.Server
             TemplateSourceType = template.SourceType,
             TemplateSourceUrl = template.SourceUrl,
             TemplateSourceDirectory = template.SourceDirectory,
-            Tags = _metadata
+            Tags = _metadata,
+            FilesToExclude = _metadataForm.GetFilesToExclude(conditionalMetadata)
          };
       }
    }

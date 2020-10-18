@@ -31,7 +31,7 @@ namespace DotInitialzr.UnitTests
                { "ng", false },
                { "react", true }
             },
-            FilesToExclude = "ClientApp{{ng}}"
+            FilesToExclude = "ClientApp{{ng}}/**"
          };
          var response = await client.PostAsJsonAsync("/api/generator", metadata);
 
