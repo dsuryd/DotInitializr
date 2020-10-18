@@ -1,30 +1,48 @@
 ﻿<VMContext VM="MetadataForm" TState="IMetadataFormState" OnStateChange="UpdateState">
     <d-form>
-        <d-panel>
-            @if (state?.TextFields != null)
-            {
-                @foreach (var id in state.TextFields)
-                {
-                    <d-text-field id="@id" />
-                }
-            }
-            @if (state?.Checkboxes != null)
-            {
-                @foreach (var id in state.Checkboxes)
-                {
-                    <d-checkbox id="@id" />
-                }
-            }
-        </d-panel>
+        @if (hasTextFields || hasCheckboxes)
+        {
+            <d-panel horizontal="true" css="padding:1.5rem 0">
+                 <d-panel css="border-right:1px solid #aaa;padding-right:1.5rem">
+                    @if (hasTextFields)
+                    {
+                        <h4>Project Metadata</h4>
+                        @foreach (var id in state.TextFields)
+                        {
+                            <d-text-field id="@id" />
+                        }
+                    }
+                </d-panel>
+                <d-panel css="margin-left:1.5rem">
+                    @if (hasCheckboxes)
+                    {
+                        <h4>Dependencies</h4>
+                        @foreach (var id in state.Checkboxes)
+                        {
+                            <div>
+                                <d-checkbox id="@id" css="font-weight:500" />
+                                <d-element id="@id" css="padding-left:1.5rem;color:#666">
+                                    <label slot="description"></label>
+                                </d-element>
+                            </div>
+                        }
+                    }
+                </d-panel>
+             </d-panel>
+        }
     </d-form>
 </VMContext>
 
 @code {
    private IMetadataFormState state;
+   private bool hasTextFields;
+   private bool hasCheckboxes;
 
    private void UpdateState(IMetadataFormState state)
    {
        this.state = state;
+       this.hasTextFields = state.TextFields.Count() > 0;
+       this.hasCheckboxes = state.Checkboxes.Count() > 0;
        StateHasChanged();
    }
 }

@@ -12,7 +12,9 @@ namespace DotInitialzr.Server
 {
    public class MetadataForm : BaseVM
    {
-      private static readonly string DefaultProjectName = "Starter";
+      public const string ProjectNameKey = "projectName";
+      public const string DefaultProjectName = "Starter";
+
       private readonly IEnumerable<ITemplateSource> _templateSources;
 
       [Ignore]
@@ -46,7 +48,8 @@ namespace DotInitialzr.Server
                var prop = AddProperty(name, tag.DefaultValue)
                   .WithAttribute(new TextFieldAttribute
                   {
-                     Label = tag.Name + ":"
+                     Label = tag.Name,
+                     Placeholder = tag.Description
                   })
                   .WithRequiredValidation();
 
@@ -73,9 +76,10 @@ namespace DotInitialzr.Server
                checkboxIds.Add(name);
 
                AddProperty(name, tag.DefaultValue)
-                  .WithAttribute(new CheckboxAttribute
+                  .WithAttribute(new
                   {
-                     Label = tag.Name
+                     Label = tag.Name,
+                     tag.Description
                   });
 
                RegisterPropertyAttributes(name);
@@ -124,7 +128,7 @@ namespace DotInitialzr.Server
             var textTags = metadata.TextTags?.ToList() ?? new List<TextTemplateTag>();
             textTags.Insert(0, new TextTemplateTag
             {
-               Key = "projectName",
+               Key = ProjectNameKey,
                Name = "Project Name",
                DefaultValue = DefaultProjectName,
                ValidationRegex = @"^[\w\-. ]+$",

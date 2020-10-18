@@ -25,20 +25,20 @@ namespace DotInitialzr.Server
          AddProperty("Template", "none")
             .WithAttribute(new DropdownListAttribute
             {
-               Label = "Template:",
+               Label = "Template",
                Placeholder = "Select one...",
                Options = config.Templates.Select(x => KeyValuePair.Create(x.Key, x.Name)).Prepend(KeyValuePair.Create("none", "")).ToArray()
             })
-            .WithRequiredValidation()
             .WithServerValidation(x => true, string.Empty)  // Add this so that input field change is dispatched to the server VM.
-            .SubscribedBy(_metadataForm.TemplateChangedEvent, templateKey =>
+            .SubscribedBy(_metadataForm.TemplateChangedEvent, key =>
             {
                Loading = true;
                PushUpdates();
 
                _metadata = null;
-               return _config.Templates.FirstOrDefault(x => x.Key == templateKey);
-            });
+               return _config.Templates.FirstOrDefault(x => x.Key == key);
+            })
+            .SubscribedBy(AddProperty<string>("Description"), key => _config.Templates.FirstOrDefault(x => x.Key == key)?.Description);
 
          AddInternalProperty<Dictionary<string, string>>("Generate")
             .WithAttribute(new { Label = "Generate" })
@@ -58,6 +58,8 @@ namespace DotInitialzr.Server
       private ProjectMetadata BuildProjectMetadata(Dictionary<string, string> formData)
       {
          var template = _config.Templates.FirstOrDefault(x => x.Key == formData["Template"]);
+         if (template == null)
+            return null;
 
          _metadata ??= _metadataForm.GetDefaultMetadataValues();
          foreach (var key in formData.Keys)
@@ -65,7 +67,7 @@ namespace DotInitialzr.Server
 
          return new ProjectMetadata
          {
-            ProjectName = _metadata["projectName"].ToString(),
+            ProjectName = _metadata[MetadataForm.ProjectNameKey].ToString(),
             TemplateSourceType = template.SourceType,
             TemplateSourceUrl = template.SourceUrl,
             TemplateSourceDirectory = template.SourceDirectory,
