@@ -16,7 +16,7 @@ namespace DotInitialzr.Server
          _config = config;
          _metadataForm = metadataForm;
 
-         AddProperty<string>(nameof(IGeneratorFormState.Template), "none")
+         AddProperty("Template", "none")
             .WithAttribute(new DropdownListAttribute
             {
                Label = "Template:",
@@ -25,11 +25,9 @@ namespace DotInitialzr.Server
             })
             .WithRequiredValidation()
             .WithServerValidation(x => true, string.Empty)  // Add this so that input field change is dispatched to the server VM.
-            .SubscribedBy(
-               AddProperty<bool>(nameof(IGeneratorFormState.ShowMetadataForm)), templateKey => !string.IsNullOrEmpty(templateKey))
             .SubscribedBy(_metadataForm.TemplateChangedEvent, templateKey => _config.Templates.FirstOrDefault(x => x.Key == templateKey));
 
-         AddProperty<Dictionary<string, string>>(nameof(IGeneratorFormState.Generate))
+         AddInternalProperty<Dictionary<string, string>>("Generate")
             .WithAttribute(new { Label = "Generate" })
             .SubscribedBy(
                AddProperty<ProjectMetadata>(nameof(IGeneratorFormState.ProjectMetadata)), formData => BuildProjectMetadata(formData));
@@ -45,7 +43,7 @@ namespace DotInitialzr.Server
 
       private ProjectMetadata BuildProjectMetadata(Dictionary<string, string> formData)
       {
-         var template = _config.Templates.FirstOrDefault(x => x.Key == formData[nameof(IGeneratorFormState.Template)]);
+         var template = _config.Templates.FirstOrDefault(x => x.Key == formData["Template"]);
 
          var tags = new Dictionary<string, object>();
 
@@ -54,7 +52,7 @@ namespace DotInitialzr.Server
 
          return new ProjectMetadata
          {
-            ProjectName = tags[nameof(IMetadataFormState.ProjectName)].ToString(),
+            ProjectName = tags["ProjectName"].ToString(),
             TemplateSourceType = template.SourceType,
             TemplateSourceUrl = template.SourceUrl,
             TemplateSourceDirectory = template.SourceDirectory,

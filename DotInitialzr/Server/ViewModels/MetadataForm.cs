@@ -23,7 +23,7 @@ namespace DotInitialzr.Server
       {
          _templateSources = templateSources;
 
-         AddProperty(nameof(IMetadataFormState.ProjectName), DefaultProjectName)
+         AddProperty("ProjectName", DefaultProjectName)
             .WithAttribute(new TextFieldAttribute
             {
                Label = "Project Name:",
@@ -33,7 +33,7 @@ namespace DotInitialzr.Server
             .WithPatternValidation(@"^[\w\-. ]+$", "Must be a valid filename")
             .WithRequiredValidation();
 
-         Metadata = AddInternalProperty<TemplateMetadata>(nameof(Metadata))
+         Metadata = AddInternalProperty<TemplateMetadata>("Metadata")
             .SubscribeTo(TemplateChangedEvent.Select(x => GetMetadata(x)))
             .SubscribedBy(AddProperty<IEnumerable<string>>(nameof(IMetadataFormState.TextFields)), metadata => BuildTextFieldProperties(metadata))
             .SubscribedBy(AddProperty<IEnumerable<string>>(nameof(IMetadataFormState.Checkboxes)), metadata => BuildCheckboxProperties(metadata));
@@ -43,7 +43,7 @@ namespace DotInitialzr.Server
       {
          var result = new Dictionary<string, object>()
          {
-            { nameof(IMetadataFormState.ProjectName), DefaultProjectName }
+            { "ProjectName", DefaultProjectName }
          };
          var metadata = Metadata.Value as TemplateMetadata;
 
