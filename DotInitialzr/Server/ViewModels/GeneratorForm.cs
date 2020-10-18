@@ -1,5 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using System.Reactive;
+using System.Reactive.Linq;
 using DotInitialzr.Shared;
 using DotNetify;
 using DotNetify.Elements;
@@ -10,6 +12,8 @@ namespace DotInitialzr.Server
    {
       private readonly MetadataForm _metadataForm;
       private readonly AppConfiguration _config;
+      private Dictionary<string, object> _metadata;
+      private ReactiveProperty<Dictionary<string, string>> _projectMetadataEvent = new ReactiveProperty<Dictionary<string, string>>();
 
       public GeneratorForm(AppConfiguration config, MetadataForm metadataForm)
       {
@@ -25,12 +29,17 @@ namespace DotInitialzr.Server
             })
             .WithRequiredValidation()
             .WithServerValidation(x => true, string.Empty)  // Add this so that input field change is dispatched to the server VM.
-            .SubscribedBy(_metadataForm.TemplateChangedEvent, templateKey => _config.Templates.FirstOrDefault(x => x.Key == templateKey));
+            .SubscribedBy(_metadataForm.TemplateChangedEvent, templateKey =>
+            {
+               _metadata = null;
+               return _config.Templates.FirstOrDefault(x => x.Key == templateKey);
+            });
 
          AddInternalProperty<Dictionary<string, string>>("Generate")
             .WithAttribute(new { Label = "Generate" })
-            .SubscribedBy(
-               AddProperty<ProjectMetadata>(nameof(IGeneratorFormState.ProjectMetadata)), formData => BuildProjectMetadata(formData));
+            .Merge(AddInternalProperty<Dictionary<string, string>>(nameof(IGeneratorFormState.ClearProjectMetadata)))
+            .Select(formData => formData != null ? BuildProjectMetadata(formData) : null)
+            .Subscribe(AddProperty<ProjectMetadata>(nameof(IGeneratorFormState.ProjectMetadata)));
       }
 
       public override BaseVM GetSubVM(string vmTypeName)
@@ -45,18 +54,17 @@ namespace DotInitialzr.Server
       {
          var template = _config.Templates.FirstOrDefault(x => x.Key == formData["Template"]);
 
-         var tags = new Dictionary<string, object>();
-
-         foreach (var metadata in _metadataForm.GetDefaultMetadata())
-            tags.Add(metadata.Key, formData.ContainsKey(metadata.Key) ? formData[metadata.Key] : metadata.Value);
+         _metadata = _metadata ?? _metadataForm.GetDefaultMetadata();
+         foreach (var key in formData.Keys)
+            _metadata[key] = formData[key];
 
          return new ProjectMetadata
          {
-            ProjectName = tags["ProjectName"].ToString(),
+            ProjectName = _metadata["projectName"].ToString(),
             TemplateSourceType = template.SourceType,
             TemplateSourceUrl = template.SourceUrl,
             TemplateSourceDirectory = template.SourceDirectory,
-            Tags = tags
+            Tags = _metadata
          };
       }
    }

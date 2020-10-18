@@ -1,7 +1,6 @@
 ﻿<VMContext VM="MetadataForm" TState="IMetadataFormState" OnStateChange="UpdateState">
     <d-form>
         <d-panel>
-            <d-text-field id="ProjectName" />
             @if (state?.TextFields != null)
             {
                 @foreach (var id in state.TextFields)

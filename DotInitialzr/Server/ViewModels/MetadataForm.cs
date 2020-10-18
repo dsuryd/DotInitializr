@@ -23,16 +23,6 @@ namespace DotInitialzr.Server
       {
          _templateSources = templateSources;
 
-         AddProperty("ProjectName", DefaultProjectName)
-            .WithAttribute(new TextFieldAttribute
-            {
-               Label = "Project Name:",
-               Placeholder = "Enter your project name",
-               MaxLength = 30
-            })
-            .WithPatternValidation(@"^[\w\-. ]+$", "Must be a valid filename")
-            .WithRequiredValidation();
-
          Metadata = AddInternalProperty<TemplateMetadata>("Metadata")
             .SubscribeTo(TemplateChangedEvent.Select(x => GetMetadata(x)))
             .SubscribedBy(AddProperty<IEnumerable<string>>(nameof(IMetadataFormState.TextFields)), metadata => BuildTextFieldProperties(metadata))
@@ -41,10 +31,7 @@ namespace DotInitialzr.Server
 
       public Dictionary<string, object> GetDefaultMetadata()
       {
-         var result = new Dictionary<string, object>()
-         {
-            { "ProjectName", DefaultProjectName }
-         };
+         var result = new Dictionary<string, object>();
          var metadata = Metadata.Value as TemplateMetadata;
 
          if (metadata?.TextTags != null)
@@ -74,7 +61,8 @@ namespace DotInitialzr.Server
                   .WithAttribute(new TextFieldAttribute
                   {
                      Label = tag.Name + ":"
-                  });
+                  })
+                  .WithRequiredValidation();
 
                if (!string.IsNullOrEmpty(tag.ValidationRegex))
                   prop.WithPatternValidation(tag.ValidationRegex, tag.ValidationError);
@@ -130,6 +118,18 @@ namespace DotInitialzr.Server
                   Trace.TraceError($"`{TemplateMetadata.FILE_NAME}` in `{template.SourceUrl}` must be in JSON: {ex.Message}{Environment.NewLine}{ex.StackTrace}");
                }
             }
+
+            var textTags = metadata.TextTags?.ToList() ?? new List<TextTemplateTag>();
+            textTags.Insert(0, new TextTemplateTag
+            {
+               Key = "projectName",
+               Name = "Project Name",
+               DefaultValue = DefaultProjectName,
+               ValidationRegex = @"^[\w\-. ]+$",
+               ValidationError = "Must be a valid filename",
+            });
+
+            metadata.TextTags = textTags;
          }
 
          return metadata;

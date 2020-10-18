@@ -24,7 +24,7 @@
        if (state.ProjectMetadata != null)
        {
            _ = GenerateAsync(state.ProjectMetadata);
-           this.state.ProjectMetadata = null;
+           this.state.ClearProjectMetadata();
        }
 
        StateHasChanged();
@@ -33,9 +33,9 @@
    private async Task GenerateAsync(ProjectMetadata metadata)
    {
        var response = await Http.PostAsJsonAsync("api/generator", state.ProjectMetadata);
-       await JSRuntime.InvokeAsync<string>("saveFile", new object[] 
-       { 
-           Convert.ToBase64String(await response.Content.ReadAsByteArrayAsync()), 
+       await JSRuntime.InvokeAsync<string>("saveFile", new object[]
+       {
+           Convert.ToBase64String(await response.Content.ReadAsByteArrayAsync()),
            response.Content.Headers.ContentDisposition.FileName,
            response.Content.Headers.ContentType.ToString()
        });
