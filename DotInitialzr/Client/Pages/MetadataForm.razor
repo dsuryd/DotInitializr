@@ -1,0 +1,28 @@
+﻿<VMContext VM="MetadataForm" TState="IMetadataFormState" OnStateChange="UpdateState">
+    <d-form id="Metadata">
+        @if (state?.TextFields != null)
+        {
+            <d-panel>
+                <d-text-field id="@nameof(IMetadataFormState.ProjectName)" />
+                @foreach (var id in state.TextFields)
+                {
+                    <d-text-field id="@id" />
+                }
+                @foreach (var id in state.Checkboxes)
+                {
+                    <d-checkbox id="@id" />
+                }
+            </d-panel>
+        }
+    </d-form>
+</VMContext>
+
+@code {
+   private IMetadataFormState state;
+
+   private void UpdateState(IMetadataFormState state)
+   {
+       this.state = state;
+       StateHasChanged();
+   }
+}

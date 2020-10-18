@@ -18,11 +18,13 @@ namespace DotInitialzr.Server
       public string Name { get; set; }
       public string Description { get; set; }
       public bool? DefaultValue { get; set; }
-      public IEnumerable<string> FilesToInclude { get; set; }
+      public string FilesToInclude { get; set; }
    }
 
    public class TemplateMetadata
    {
+      public static readonly string FILE_NAME = "dotInitialzr.json";
+
       public IEnumerable<TextTemplateTag> TextTags { get; set; }
       public IEnumerable<ConditionalTemplateTag> ConditionalTags { get; set; }
    }

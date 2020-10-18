@@ -17,13 +17,43 @@ namespace DotInitialzr.Server
 
       public string SourceType => "git";
 
-      public IEnumerable<TemplateFile> GetFiles(string sourceUrl, string sourceDirectory = null)
+      public TemplateFile GetFile(string fileName, string sourceUrl, string sourceDirectory = null)
       {
-         List<TemplateFile> result = new List<TemplateFile>();
+         TemplateFile result = null;
+         string tempPath = Path.Combine(Path.GetTempPath(), nameof(DotInitialzr), Guid.NewGuid().ToString());
 
          try
          {
-            string tempPath = Path.Combine(Path.GetTempPath(), nameof(DotInitialzr), Guid.NewGuid().ToString());
+            if (!string.IsNullOrEmpty(Repository.Clone(sourceUrl, tempPath, new CloneOptions { Checkout = false })))
+            {
+               var filePath = string.IsNullOrEmpty(sourceDirectory) ? fileName : Path.Combine(sourceDirectory, fileName);
+
+               using var repo = new Repository(tempPath);
+               repo.CheckoutPaths(repo.Head.FriendlyName, new string[] { filePath }, new CheckoutOptions());
+
+               result = new TemplateFile
+               {
+                  Name = filePath,
+                  Content = File.ReadAllText(Path.Combine(tempPath, filePath))
+               };
+            }
+         }
+         catch (Exception ex)
+         {
+            Trace.TraceError($"Failed to get file `{fileName}` from `{sourceUrl}`: {ex.Message}{Environment.NewLine}{ex.StackTrace}");
+         }
+
+         Utils.DeleteDirectory(tempPath);
+         return result;
+      }
+
+      public IEnumerable<TemplateFile> GetFiles(string sourceUrl, string sourceDirectory = null)
+      {
+         List<TemplateFile> result = new List<TemplateFile>();
+         string tempPath = Path.Combine(Path.GetTempPath(), nameof(DotInitialzr), Guid.NewGuid().ToString());
+
+         try
+         {
             string fullTempPath = Path.Combine(Path.GetFullPath(tempPath), sourceDirectory);
 
             if (!string.IsNullOrEmpty(Repository.Clone(sourceUrl, tempPath)))
@@ -43,14 +73,13 @@ namespace DotInitialzr.Server
                   });
                }
             }
-
-            Utils.DeleteDirectory(tempPath);
          }
          catch (Exception ex)
          {
             Trace.TraceError($"Failed to get files from `{sourceUrl}`: {ex.Message}{Environment.NewLine}{ex.StackTrace}");
          }
 
+         Utils.DeleteDirectory(tempPath);
          return result;
       }
    }

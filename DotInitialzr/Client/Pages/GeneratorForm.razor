@@ -2,23 +2,23 @@
 @inject HttpClient Http
 @inject IJSRuntime JSRuntime;
 
-<VMContext VM="Generator" TState="IGeneratorState" OnStateChange="UpdateState">
+<VMContext VM="GeneratorForm" TState="IGeneratorFormState" OnStateChange="UpdateState">
 @if (state != null)
 {
     <d-form>
         <d-frame>
             <d-dropdown-list id="Template" />
-            <d-text-field id="ProjectName" />
-            <d-button id="Generate" submit="true" />
+            <MetadataForm />
+            <d-button id="@nameof(IGeneratorFormState.Generate)" submit="true" />
         </d-frame>
     </d-form>
 }
 </VMContext>
 
 @code {
-   private IGeneratorState state;
+   private IGeneratorFormState state;
 
-   private void UpdateState(IGeneratorState state)
+   private void UpdateState(IGeneratorFormState state)
    {
        this.state = state;
        if (state.ProjectMetadata != null)

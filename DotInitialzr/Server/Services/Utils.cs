@@ -8,6 +8,9 @@ namespace DotInitialzr.Server
    {
       public static void DeleteDirectory(string path)
       {
+         if (!Directory.Exists(path))
+            return;
+
          try
          {
             foreach (var fileName in Directory.EnumerateFiles(path, "*", SearchOption.AllDirectories))

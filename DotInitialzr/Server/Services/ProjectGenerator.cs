@@ -26,7 +26,7 @@ namespace DotInitialzr.Server
 
       public byte[] Generate(ProjectMetadata metadata)
       {
-         var templateSource = _templateSources.FirstOrDefault(x => x.SourceType == metadata.TemplateSourceType);
+         var templateSource = _templateSources.FirstOrDefault(x => string.Equals(x.SourceType, metadata.TemplateSourceType, StringComparison.InvariantCultureIgnoreCase));
          if (templateSource == null)
             throw new Exception($"Template source '{metadata.TemplateSourceType}' is not found");
 

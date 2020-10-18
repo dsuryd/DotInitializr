@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace DotInitialzr.Server
 {
-   public class InitialzrConfiguration
+   public class AppConfiguration
    {
       internal static readonly string SECTION = "DotInitialzr";
 

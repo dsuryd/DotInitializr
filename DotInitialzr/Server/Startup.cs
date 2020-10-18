@@ -25,8 +25,9 @@ namespace DotInitialzr.Server
          services.AddSingleton<ITemplateSource, GitTemplateSource>();
          services.AddSingleton<ITemplateRenderer, MustacheRenderer>();
          services.AddSingleton<IProjectGenerator, ProjectGenerator>();
+         services.AddTransient<MetadataForm>();
 
-         services.AddSingleton(Configuration.GetSection(InitialzrConfiguration.SECTION).Get<InitialzrConfiguration>() ?? new InitialzrConfiguration());
+         services.AddSingleton(Configuration.GetSection(AppConfiguration.SECTION).Get<AppConfiguration>() ?? new AppConfiguration());
       }
 
       public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
@@ -42,7 +43,7 @@ namespace DotInitialzr.Server
          }
 
          app.UseWebSockets();
-         app.UseDotNetify();
+         app.UseDotNetify(config => config.UseDeveloperLogging());
 
          app.UseBlazorFrameworkFiles();
          app.UseStaticFiles();
