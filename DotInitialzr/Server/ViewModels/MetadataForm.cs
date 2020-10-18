@@ -14,7 +14,9 @@ namespace DotInitialzr.Server
    {
       private static readonly string DefaultProjectName = "Starter";
       private readonly IEnumerable<ITemplateSource> _templateSources;
-      private readonly ReactiveProperty<TemplateMetadata> Metadata;
+
+      [Ignore]
+      public ReactiveProperty<TemplateMetadata> MetadataLoadedEvent { get; } = new ReactiveProperty<TemplateMetadata>();
 
       [Ignore]
       public ReactiveProperty<AppConfiguration.Template> TemplateChangedEvent { get; } = new ReactiveProperty<AppConfiguration.Template>();
@@ -23,26 +25,10 @@ namespace DotInitialzr.Server
       {
          _templateSources = templateSources;
 
-         Metadata = AddInternalProperty<TemplateMetadata>("Metadata")
+         MetadataLoadedEvent
             .SubscribeTo(TemplateChangedEvent.Select(x => GetMetadata(x)))
             .SubscribedBy(AddProperty<IEnumerable<string>>(nameof(IMetadataFormState.TextFields)), metadata => BuildTextFieldProperties(metadata))
             .SubscribedBy(AddProperty<IEnumerable<string>>(nameof(IMetadataFormState.Checkboxes)), metadata => BuildCheckboxProperties(metadata));
-      }
-
-      public Dictionary<string, object> GetDefaultMetadata()
-      {
-         var result = new Dictionary<string, object>();
-         var metadata = Metadata.Value as TemplateMetadata;
-
-         if (metadata?.TextTags != null)
-            foreach (var tag in metadata.TextTags)
-               result.Add(tag.Key, tag.DefaultValue);
-
-         if (metadata?.ConditionalTags != null)
-            foreach (var tag in metadata.ConditionalTags)
-               result.Add(tag.Key, tag.DefaultValue);
-
-         return result;
       }
 
       private IEnumerable<string> BuildTextFieldProperties(TemplateMetadata metadata)
@@ -97,6 +83,22 @@ namespace DotInitialzr.Server
          }
 
          return checkboxIds;
+      }
+
+      public Dictionary<string, object> GetDefaultMetadataValues()
+      {
+         var result = new Dictionary<string, object>();
+         var metadata = MetadataLoadedEvent.Value as TemplateMetadata;
+
+         if (metadata?.TextTags != null)
+            foreach (var tag in metadata.TextTags)
+               result.Add(tag.Key, tag.DefaultValue);
+
+         if (metadata?.ConditionalTags != null)
+            foreach (var tag in metadata.ConditionalTags)
+               result.Add(tag.Key, tag.DefaultValue);
+
+         return result;
       }
 
       private TemplateMetadata GetMetadata(AppConfiguration.Template template)

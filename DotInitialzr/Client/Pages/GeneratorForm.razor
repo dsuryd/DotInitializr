@@ -14,15 +14,21 @@
     </d-form>
 }
 </VMContext>
+@if(state?.Loading == true || loading)
+{
+    <div class="spinner" />
+}
 
 @code {
    private IGeneratorFormState state;
+   private bool loading;
 
    private void UpdateState(IGeneratorFormState state)
    {
        this.state = state;
        if (state.ProjectMetadata != null)
        {
+           this.loading = true;
            _ = GenerateAsync(state.ProjectMetadata);
            this.state.ClearProjectMetadata();
        }
@@ -39,5 +45,8 @@
            response.Content.Headers.ContentDisposition.FileName,
            response.Content.Headers.ContentType.ToString()
        });
+
+       this.loading = false;
+       StateHasChanged();
    }
 }

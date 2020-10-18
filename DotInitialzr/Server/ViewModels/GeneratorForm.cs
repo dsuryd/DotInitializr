@@ -1,6 +1,6 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
-using System.Reactive;
 using System.Reactive.Linq;
 using DotInitialzr.Shared;
 using DotNetify;
@@ -13,12 +13,14 @@ namespace DotInitialzr.Server
       private readonly MetadataForm _metadataForm;
       private readonly AppConfiguration _config;
       private Dictionary<string, object> _metadata;
-      private ReactiveProperty<Dictionary<string, string>> _projectMetadataEvent = new ReactiveProperty<Dictionary<string, string>>();
+
+      public bool Loading { get => Get<bool>(); set => Set(value); }
 
       public GeneratorForm(AppConfiguration config, MetadataForm metadataForm)
       {
          _config = config;
          _metadataForm = metadataForm;
+         _metadataForm.MetadataLoadedEvent.Subscribe(_ => Loading = false);
 
          AddProperty("Template", "none")
             .WithAttribute(new DropdownListAttribute
@@ -31,6 +33,9 @@ namespace DotInitialzr.Server
             .WithServerValidation(x => true, string.Empty)  // Add this so that input field change is dispatched to the server VM.
             .SubscribedBy(_metadataForm.TemplateChangedEvent, templateKey =>
             {
+               Loading = true;
+               PushUpdates();
+
                _metadata = null;
                return _config.Templates.FirstOrDefault(x => x.Key == templateKey);
             });
@@ -54,7 +59,7 @@ namespace DotInitialzr.Server
       {
          var template = _config.Templates.FirstOrDefault(x => x.Key == formData["Template"]);
 
-         _metadata = _metadata ?? _metadataForm.GetDefaultMetadata();
+         _metadata ??= _metadataForm.GetDefaultMetadataValues();
          foreach (var key in formData.Keys)
             _metadata[key] = formData[key];
 
