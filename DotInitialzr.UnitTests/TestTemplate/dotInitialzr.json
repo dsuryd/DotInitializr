@@ -1,9 +1,27 @@
 {
   "TextTags": [
-    { "Key": "namespace", "Name": "Namespace", "DefaultValue": "Starter", "ValidationRegex": "^[\\w\\-. ]+$", "ValidationError": "Must be valid namespace" }
+    {
+      "Key": "namespace",
+      "Name": "Namespace",
+      "DefaultValue": "Starter",
+      "ValidationRegex": "^[\\w\\-. ]+$",
+      "ValidationError": "Must be valid namespace"
+    }
   ],
   "ConditionalTags": [
-    { "Key": "ng", "Name": "Angular", "DefaultValue": false, "FilesToInclude": "ClientApp{{ng}}/**" },
-    { "Key": "react", "Name": "React", "DefaultValue": true, "FilesToInclude": "ClientApp{{react}}/**" }
+    {
+      "Key": "ng",
+      "Name": "Angular",
+      "Description": "ASP.NET Core with Angular",
+      "DefaultValue": false,
+      "FilesToInclude": "ClientApp{{ng}}/**"
+    },
+    {
+      "Key": "react",
+      "Name": "React",
+      "Description": "ASP.NET Core with React",
+      "DefaultValue": true,
+      "FilesToInclude": "ClientApp{{react}}/**"
+    }
   ]
 }
