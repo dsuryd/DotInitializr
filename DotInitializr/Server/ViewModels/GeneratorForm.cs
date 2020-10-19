@@ -77,8 +77,10 @@ namespace DotInitializr.Server
          }
 
          var conditionalTags = _metadataTags.Where(x => x.Value is bool).ToDictionary(x => x.Key, x => (bool) x.Value);
-         var tags = _metadataTags
-            .Union(_templateReader.GetComputedTags(metadata, conditionalTags).ToDictionary(x => x.Key, x => (object) x.Value))
+         var computedTags = _templateReader.GetComputedTags(metadata, conditionalTags);
+         var conditionalAndComputedTags = conditionalTags.Union(computedTags).ToDictionary(x => x.Key, x => x.Value);
+         var allTags = _metadataTags
+            .Union(computedTags.ToDictionary(x => x.Key, x => (object) x.Value))
             .ToDictionary(x => x.Key, x => x.Value);
 
          return new ProjectMetadata
@@ -87,8 +89,8 @@ namespace DotInitializr.Server
             TemplateSourceType = template.SourceType,
             TemplateSourceUrl = template.SourceUrl,
             TemplateSourceDirectory = template.SourceDirectory,
-            FilesToExclude = _templateReader.GetFilesToExclude(metadata, conditionalTags),
-            Tags = tags,
+            FilesToExclude = _templateReader.GetFilesToExclude(metadata, conditionalAndComputedTags),
+            Tags = allTags,
          };
       }
    }

@@ -25,6 +25,7 @@ namespace DotInitializr.Server
    {
       public string Key { get; set; }
       public string Expression { get; set; }
+      public string FilesToInclude { get; set; }
    }
 
    public class TemplateMetadata

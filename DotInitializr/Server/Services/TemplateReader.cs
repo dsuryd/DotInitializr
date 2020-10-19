@@ -22,6 +22,8 @@ namespace DotInitializr.Server
    {
       private readonly IEnumerable<ITemplateSource> _templateSources;
 
+      private delegate int CountDelegate(params bool[] tags);
+
       public TemplateReader(IEnumerable<ITemplateSource> templateSources)
       {
          _templateSources = templateSources;
@@ -46,6 +48,24 @@ namespace DotInitializr.Server
                   Trace.TraceError($"`{TemplateMetadata.FILE_NAME}` in `{template.SourceUrl}` must be in JSON: {ex.Message}{Environment.NewLine}{ex.StackTrace}");
                }
             }
+
+            // Make sure the tags have keys. Names can be used to substitute keys.
+            if (metadata.TextTags != null)
+            {
+               foreach (var tag in metadata.TextTags.Where(x => string.IsNullOrEmpty(x.Key)))
+                  tag.Key = tag.Name;
+               metadata.TextTags = metadata.TextTags.Where(x => !string.IsNullOrEmpty(x.Key));
+            }
+
+            if (metadata.ConditionalTags != null)
+            {
+               foreach (var tag in metadata.ConditionalTags.Where(x => string.IsNullOrEmpty(x.Key)))
+                  tag.Key = tag.Name;
+               metadata.ConditionalTags = metadata.ConditionalTags.Where(x => !string.IsNullOrEmpty(x.Key));
+            }
+
+            if (metadata.ComputedTags != null)
+               metadata.ComputedTags = metadata.ComputedTags.Where(x => !string.IsNullOrEmpty(x.Key));
          }
 
          return metadata;
@@ -61,6 +81,9 @@ namespace DotInitializr.Server
             foreach (var tag in conditionalTags)
                interpreter.SetVariable(tag.Key, tag.Value);
 
+            CountDelegate countFunc = Count;
+            interpreter.SetFunction("Count", countFunc);
+
             foreach (var computedTag in metadata.ComputedTags)
             {
                try
@@ -71,7 +94,7 @@ namespace DotInitializr.Server
                }
                catch (Exception ex)
                {
-                  Trace.TraceError($"Cannot compute expression `{computedTag.Expression}` for `{computedTag.Key}`: {ex.Message}{Environment.NewLine}{ex.StackTrace}");
+                  Trace.TraceError($"Cannot compute `{computedTag.Key}` expression `{computedTag.Expression}`: {ex.Message}{Environment.NewLine}{ex.StackTrace}");
                }
             }
          }
@@ -94,14 +117,21 @@ namespace DotInitializr.Server
          return result;
       }
 
-      public string GetFilesToExclude(TemplateMetadata metadata, Dictionary<string, bool> conditionalTags)
+      public string GetFilesToExclude(TemplateMetadata metadata, Dictionary<string, bool> tags)
       {
          string result = "";
 
-         foreach (var tag in metadata.ConditionalTags.Where(x => !conditionalTags.ContainsKey(x.Key) || !conditionalTags[x.Key]))
-            result = string.Join(',', result, tag.FilesToInclude);
+         if (metadata.ConditionalTags != null)
+            foreach (var tag in metadata.ConditionalTags.Where(x => !tags.ContainsKey(x.Key) || !tags[x.Key]))
+               result = string.Join(',', result, tag.FilesToInclude);
+
+         if (metadata.ComputedTags != null)
+            foreach (var tag in metadata.ComputedTags.Where(x => !tags.ContainsKey(x.Key) || !tags[x.Key]))
+               result = string.Join(',', result, tag.FilesToInclude);
 
          return result.Trim(',');
       }
+
+      private int Count(params bool[] tags) => tags.Where(x => x).Count();
    }
 }

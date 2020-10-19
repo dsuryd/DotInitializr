@@ -62,16 +62,20 @@ namespace DotInitializr.UnitTests
             {
                new ConditionalTemplateTag { Key = "cond1", DefaultValue = true, FilesToInclude ="cond1_file" },
                new ConditionalTemplateTag { Key = "cond2", DefaultValue = false, FilesToInclude = "cond2_file1,cond2_file2" }
+            },
+            ComputedTags = new List<ComputedTemplateTag>
+            {
+               new ComputedTemplateTag { Key = "computed1", Expression = "!cond1 && !cond2", FilesToInclude = "computed1_file" }
             }
          };
 
          var result = sut.GetFilesToExclude(metadata, new Dictionary<string, bool> { { "cond1", true } });
-         Assert.AreEqual("cond2_file1,cond2_file2", result);
+         Assert.AreEqual("cond2_file1,cond2_file2,computed1_file", result);
 
          result = sut.GetFilesToExclude(metadata, new Dictionary<string, bool> { { "cond1", false }, { "cond2", true } });
-         Assert.AreEqual("cond1_file", result);
+         Assert.AreEqual("cond1_file,computed1_file", result);
 
-         result = sut.GetFilesToExclude(metadata, new Dictionary<string, bool> { { "cond1", false }, { "cond2", false } });
+         result = sut.GetFilesToExclude(metadata, new Dictionary<string, bool> { { "cond1", false }, { "cond2", false }, { "computed1", true } });
          Assert.AreEqual("cond1_file,cond2_file1,cond2_file2", result);
       }
 
@@ -99,6 +103,31 @@ namespace DotInitializr.UnitTests
 
          Assert.AreEqual(1, result1.Count);
          Assert.AreEqual(2, result2.Count);
+      }
+
+      [Test]
+      public void TemplateReader_GetComputedTagsCount_ReturnsCount()
+      {
+         var sut = new TemplateReader(new List<ITemplateSource> { new GitTemplateSource() });
+
+         var metadata = new TemplateMetadata
+         {
+            ConditionalTags = new List<ConditionalTemplateTag>
+            {
+               new ConditionalTemplateTag { Key = "cond1", DefaultValue = true  },
+               new ConditionalTemplateTag { Key = "cond2", DefaultValue = false  }
+            },
+            ComputedTags = new List<ComputedTemplateTag>
+            {
+               new ComputedTemplateTag { Key = "computed1", Expression = "Count(cond1,cond2) > 1" }
+            }
+         };
+
+         var result1 = sut.GetComputedTags(metadata, new Dictionary<string, bool> { { "cond1", false }, { "cond2", true } });
+         var result2 = sut.GetComputedTags(metadata, new Dictionary<string, bool> { { "cond1", true }, { "cond2", true } });
+
+         Assert.IsFalse(result1.ContainsKey("computed1"));
+         Assert.IsTrue(result2.ContainsKey("computed1"));
       }
    }
 }
