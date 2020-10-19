@@ -3,6 +3,7 @@
     {
       "Key": "ProjectNamespace",
       "Name": "Namespace",
+      "Description": "Change the namespace",
       "DefaultValue": "MyCompany.SteeltoeExample",
       "ValidationRegex": "^[\\w\\-. ]+$",
       "ValidationError": "Must be valid namespace"
@@ -87,11 +88,6 @@
       "Name": "Redis",
       "DefaultValue": false,
       "Description": "Steeltoe: Add Redis connectors"
-    },
-    {
-      "Name": "ProjectNameSpace",
-      "DefaultValue": "SteeltoeExample",
-      "Description": "Change the namespace "
     },
     {
       "Key": "ConfigServer",
