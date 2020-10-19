@@ -55,7 +55,7 @@
     },
     {
       "Name": "MySql",
-      "DefaultValue": "false",
+      "DefaultValue": false,
       "Description": "Steeltoe: Add MySql connectors"
     },
     {
