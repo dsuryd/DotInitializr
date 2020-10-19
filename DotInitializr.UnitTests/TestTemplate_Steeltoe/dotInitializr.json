@@ -117,36 +117,36 @@
   ],
   "ComputedTags": [
     {
-      "Name": "ActuatorsOrCloudFoundry",
+      "Key": "ActuatorsOrCloudFoundry",
       "Expression": "Actuators || CloudFoundry"
     },
     {
-      "Name": "AnyEFCore",
+      "Key": "AnyEFCore",
       "Expression": "PostgresEFCore || MySqlEFCore",
       "FilesToInclude": "Models/**"
     },
     {
-      "Name": "MySqlOrMySqlEFCore",
+      "Key": "MySqlOrMySqlEFCore",
       "Expression": "MySql || MySqlEFCore"
     },
     {
-      "Name": "ActuatorsOrDynamicLogger",
+      "Key": "ActuatorsOrDynamicLogger",
       "Expression": "Actuators || DynamicLogger"
     },
     {
-      "Name": "ValuesControllerWithArgs",
+      "Key": "ValuesControllerWithArgs",
       "Expression": "MySql || Postgres || MongoDB || RabbitMQ ||Redis || ConfigServer || PlaceholderConfig || RandomValueConfig ||CircuitBreaker || CloudFoundry"
     },
     {
-      "Name": "MoreThanOneValuesControllerWithArgs",
+      "Key": "MoreThanOneValuesControllerWithArgs",
       "Expression": "Count(MySql,Postgres,MongoDB,RabbitMQ,Redis,ConfigServer,PlaceholderConfig,RandomValueConfig,CircuitBreaker,CloudFoundry) > 1"
     },
     {
-      "Name": "AnyConfigSource",
+      "Key": "AnyConfigSource",
       "Expression": "ConfigServer || PlaceholderConfig || RandomValueConfig"
     },
     {
-      "Name": "AnyConnector",
+      "Key": "AnyConnector",
       "Expression": "MySql || Postgres || Redis || MongoDB || RabbitMQ || OAuthConnector"
     }
   ]
