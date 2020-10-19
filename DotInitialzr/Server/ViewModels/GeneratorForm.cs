@@ -10,15 +10,17 @@ namespace DotInitialzr.Server
 {
    public class GeneratorForm : BaseVM
    {
+      private readonly ITemplateReader _templateReader;
       private readonly MetadataForm _metadataForm;
       private readonly AppConfiguration _config;
-      private Dictionary<string, object> _metadata;
-      private ReactiveProperty<string> _templateProp;
+      private readonly ReactiveProperty<string> _templateProp;
+      private Dictionary<string, object> _metadataTags;
 
       public bool Loading { get => Get<bool>(); set => Set(value); }
 
-      public GeneratorForm(AppConfiguration config, MetadataForm metadataForm)
+      public GeneratorForm(ITemplateReader templateReader, AppConfiguration config, MetadataForm metadataForm)
       {
+         _templateReader = templateReader;
          _config = config;
          _metadataForm = metadataForm;
          _metadataForm.MetadataLoadedEvent.Subscribe(_ => Loading = false);
@@ -36,7 +38,7 @@ namespace DotInitialzr.Server
                Loading = true;
                PushUpdates();
 
-               _metadata = null;
+               _metadataTags = null;
                return _config.Templates.FirstOrDefault(x => x.Key == key);
             })
             .SubscribedBy(AddProperty<string>("Description"), key => _config.Templates.FirstOrDefault(x => x.Key == key)?.Description);
@@ -44,7 +46,7 @@ namespace DotInitialzr.Server
          AddInternalProperty<Dictionary<string, string>>("Generate")
             .WithAttribute(new { Label = "Generate" })
             .Merge(AddInternalProperty<Dictionary<string, string>>(nameof(IGeneratorFormState.ClearProjectMetadata)))
-            .Select(formData => formData != null ? BuildProjectMetadata(formData) : null)
+            .Select(formData => formData != null ? BuildProjectMetadata(formData, _metadataForm.ActiveMetadata) : null)
             .Subscribe(AddProperty<ProjectMetadata>(nameof(IGeneratorFormState.ProjectMetadata)));
       }
 
@@ -56,36 +58,37 @@ namespace DotInitialzr.Server
          return base.GetSubVM(vmTypeName);
       }
 
-      private ProjectMetadata BuildProjectMetadata(Dictionary<string, string> formData)
+      private ProjectMetadata BuildProjectMetadata(Dictionary<string, string> formData, TemplateMetadata metadata)
       {
          var template = _config.Templates.FirstOrDefault(x => x.Key == _templateProp.Value.ToString());
          if (template == null)
             return null;
 
-         _metadata ??= _metadataForm.GetDefaultMetadataValues();
-         foreach (var key in formData.Keys.Where(x => _metadata.ContainsKey(x)))
+         _metadataTags ??= _templateReader.GetMetadataTags(metadata);
+         foreach (var key in formData.Keys.Where(x => _metadataTags.ContainsKey(x)))
          {
-            if (_metadata[key].GetType() == typeof(bool))
+            if (_metadataTags[key] is bool)
             {
                bool.TryParse(formData[key]?.ToString(), out bool value);
-               _metadata[key] = value;
+               _metadataTags[key] = value;
             }
             else
-               _metadata[key] = formData[key]?.ToString();
+               _metadataTags[key] = formData[key]?.ToString();
          }
 
-         var conditionalMetadata = _metadata
-            .Where(x => x.Value != null && bool.TryParse(x.Value.ToString(), out bool value))
-            .ToDictionary(x => x.Key, x => bool.Parse(x.Value.ToString()));
+         var conditionalTags = _metadataTags.Where(x => x.Value is bool).ToDictionary(x => x.Key, x => (bool) x.Value);
+         var tags = _metadataTags
+            .Union(_templateReader.GetComputedTags(metadata, conditionalTags).ToDictionary(x => x.Key, x => (object) x.Value))
+            .ToDictionary(x => x.Key, x => x.Value);
 
          return new ProjectMetadata
          {
-            ProjectName = _metadata[MetadataForm.ProjectNameKey].ToString(),
+            ProjectName = _metadataTags[MetadataForm.ProjectNameKey].ToString(),
             TemplateSourceType = template.SourceType,
             TemplateSourceUrl = template.SourceUrl,
             TemplateSourceDirectory = template.SourceDirectory,
-            Tags = _metadata,
-            FilesToExclude = _metadataForm.GetFilesToExclude(conditionalMetadata)
+            FilesToExclude = _templateReader.GetFilesToExclude(metadata, conditionalTags),
+            Tags = tags,
          };
       }
    }

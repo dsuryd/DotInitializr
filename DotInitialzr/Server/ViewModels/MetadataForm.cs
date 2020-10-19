@@ -1,9 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Diagnostics;
+﻿using System.Collections.Generic;
 using System.Linq;
 using System.Reactive.Linq;
-using System.Text.Json;
 using DotInitialzr.Shared;
 using DotNetify;
 using DotNetify.Elements;
@@ -15,7 +12,7 @@ namespace DotInitialzr.Server
       public const string ProjectNameKey = "projectName";
       public const string DefaultProjectName = "Starter";
 
-      private readonly IEnumerable<ITemplateSource> _templateSources;
+      private readonly ITemplateReader _templateReader;
 
       [Ignore]
       public ReactiveProperty<TemplateMetadata> MetadataLoadedEvent { get; } = new ReactiveProperty<TemplateMetadata>();
@@ -23,9 +20,12 @@ namespace DotInitialzr.Server
       [Ignore]
       public ReactiveProperty<AppConfiguration.Template> TemplateChangedEvent { get; } = new ReactiveProperty<AppConfiguration.Template>();
 
-      public MetadataForm(IEnumerable<ITemplateSource> templateSources)
+      [Ignore]
+      public TemplateMetadata ActiveMetadata => MetadataLoadedEvent.Value as TemplateMetadata;
+
+      public MetadataForm(ITemplateReader templateReader)
       {
-         _templateSources = templateSources;
+         _templateReader = templateReader;
 
          MetadataLoadedEvent
             .SubscribeTo(TemplateChangedEvent.Select(x => GetMetadata(x)))
@@ -89,53 +89,11 @@ namespace DotInitialzr.Server
          return checkboxIds;
       }
 
-      public Dictionary<string, object> GetDefaultMetadataValues()
-      {
-         var result = new Dictionary<string, object>();
-         var metadata = MetadataLoadedEvent.Value as TemplateMetadata;
-
-         if (metadata?.TextTags != null)
-            foreach (var tag in metadata.TextTags)
-               result.Add(tag.Key, tag.DefaultValue);
-
-         if (metadata?.ConditionalTags != null)
-            foreach (var tag in metadata.ConditionalTags)
-               result.Add(tag.Key, tag.DefaultValue);
-
-         return result;
-      }
-
-      public string GetFilesToExclude(Dictionary<string, bool> tags)
-      {
-         string result = "";
-         var metadata = MetadataLoadedEvent.Value as TemplateMetadata;
-
-         foreach (var tag in metadata.ConditionalTags.Where(x => !tags.ContainsKey(x.Key) || !tags[x.Key]))
-            result = string.Join(",", result, tag.FilesToInclude);
-
-         return result;
-      }
-
       private TemplateMetadata GetMetadata(AppConfiguration.Template template)
       {
-         TemplateMetadata metadata = new TemplateMetadata();
-
-         var templateSource = _templateSources.FirstOrDefault(x => string.Equals(x.SourceType, template?.SourceType, StringComparison.InvariantCultureIgnoreCase));
-         if (templateSource != null)
+         var metadata = _templateReader.GetMetadata(template);
+         if (metadata != null)
          {
-            var metadataFile = templateSource.GetFile(TemplateMetadata.FILE_NAME, template.SourceUrl, template.SourceDirectory);
-            if (metadataFile != null && !string.IsNullOrEmpty(metadataFile.Content))
-            {
-               try
-               {
-                  metadata = JsonSerializer.Deserialize<TemplateMetadata>(metadataFile.Content);
-               }
-               catch (Exception ex)
-               {
-                  Trace.TraceError($"`{TemplateMetadata.FILE_NAME}` in `{template.SourceUrl}` must be in JSON: {ex.Message}{Environment.NewLine}{ex.StackTrace}");
-               }
-            }
-
             var textTags = metadata.TextTags?.ToList() ?? new List<TextTemplateTag>();
             textTags.Insert(0, new TextTemplateTag
             {
@@ -149,7 +107,7 @@ namespace DotInitialzr.Server
             metadata.TextTags = textTags;
          }
 
-         return metadata;
+         return metadata ?? new TemplateMetadata();
       }
 
       private void RegisterPropertyAttributes(string propName)

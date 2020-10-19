@@ -21,11 +21,18 @@ namespace DotInitialzr.Server
       public string FilesToInclude { get; set; }
    }
 
+   public class ComputedTemplateTag
+   {
+      public string Key { get; set; }
+      public string Expression { get; set; }
+   }
+
    public class TemplateMetadata
    {
-      public static readonly string FILE_NAME = "dotInitialzr.json";
+      public const string FILE_NAME = "dotInitialzr.json";
 
       public IEnumerable<TextTemplateTag> TextTags { get; set; }
       public IEnumerable<ConditionalTemplateTag> ConditionalTags { get; set; }
+      public IEnumerable<ComputedTemplateTag> ComputedTags { get; set; }
    }
 }
