@@ -99,9 +99,9 @@ namespace DotInitialzr.Server
          string result = "";
 
          foreach (var tag in metadata.ConditionalTags.Where(x => !conditionalTags.ContainsKey(x.Key) || !conditionalTags[x.Key]))
-            result = string.Join(",", result, tag.FilesToInclude);
+            result = string.Join(',', result, tag.FilesToInclude);
 
-         return result;
+         return result.Trim(',');
       }
    }
 }
