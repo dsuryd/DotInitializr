@@ -91,10 +91,12 @@ namespace DotInitializr.Server
 
       private TemplateMetadata GetMetadata(AppConfiguration.Template template)
       {
-         var metadata = _templateReader.GetMetadata(template);
-         if (metadata != null)
+         var metadata = _templateReader.GetMetadata(template) ?? new TemplateMetadata();
+
+         if (template != null)
          {
             var textTags = metadata.TextTags?.ToList() ?? new List<TextTemplateTag>();
+
             textTags.Insert(0, new TextTemplateTag
             {
                Key = ProjectNameKey,
@@ -107,7 +109,7 @@ namespace DotInitializr.Server
             metadata.TextTags = textTags;
          }
 
-         return metadata ?? new TemplateMetadata();
+         return metadata;
       }
 
       private void RegisterPropertyAttributes(string propName)

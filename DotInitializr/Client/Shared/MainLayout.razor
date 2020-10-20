@@ -1,10 +1,20 @@
 ﻿@inherits LayoutComponentBase
 
-<div class="main">
-  <div class="top-row px-4">
-    <h1><span class="dot">dot</span>Initializr</h1>
-  </div>
-  <div class="content">
-    @Body
-  </div>
-</div>
+<d-main>
+  <d-header>
+      <d-panel margin="1.5rem">
+          <h1><span class="dot">dot</span>Initializr</h1>
+      </d-panel>
+  </d-header>
+  <d-section>
+      <d-frame css=">*{height:100%}">
+          @Body
+      </d-frame>
+  </d-section>
+    <d-footer>
+        <div class="license-notice">
+            © 2020 Dicky Suryadi. Licensed under the&nbsp;
+            <a href="http://www.apache.org/licenses/LICENSE-2.0">Apache license version 2.0</a>
+        </div>
+    </d-footer>
+</d-main>

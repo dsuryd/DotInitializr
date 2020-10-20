@@ -1,35 +1,23 @@
 ﻿@import url('open-iconic/font/css/open-iconic-bootstrap.min.css');
 
+body {
+    background-color: #f4f4f4;
+    height: 100vh;
+}
+
 .dot {
     font-weight: 500;
     color: #92d050;
     font-style: italic;
 }
 
-.top-row {
-    height: 3.5rem;
-    display: flex;
-    align-items: center;
+.license-notice {
+    margin-top: auto;
+    margin-left: auto;
+    padding: 5px 8px;
+    font-size: 0.8rem;
+    color: #999;
 }
-
-.main {
-    flex: 1;
-}
-
-    .main .top-row {
-        background-color: #f7f7f7;
-        border-bottom: 1px solid #d6d5d5;
-    }
-
-        .main .top-row > a, .main .top-row .btn-link {
-            white-space: nowrap;
-            margin-left: 1.5rem;
-        }
-
-        .main .top-row a:first-child {
-            overflow: hidden;
-            text-overflow: ellipsis;
-        }
 
 #blazor-error-ui {
     background: lightyellow;
@@ -75,7 +63,6 @@
     width: 100%;
     left: 0;
     right: 0;
-    top: 0;
     bottom: 0;
     background-color: rgba(255,255,255,.4);
     z-index: 9999;

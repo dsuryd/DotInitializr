@@ -47,25 +47,25 @@ namespace DotInitializr.Server
                {
                   Trace.TraceError($"`{TemplateMetadata.FILE_NAME}` in `{template.SourceUrl}` must be in JSON: {ex.Message}{Environment.NewLine}{ex.StackTrace}");
                }
-            }
 
-            // Make sure the tags have keys. Names can be used to substitute keys.
-            if (metadata.TextTags != null)
-            {
-               foreach (var tag in metadata.TextTags.Where(x => string.IsNullOrEmpty(x.Key)))
-                  tag.Key = tag.Name;
-               metadata.TextTags = metadata.TextTags.Where(x => !string.IsNullOrEmpty(x.Key));
-            }
+               // Make sure the tags have keys. Names can be used to substitute keys.
+               if (metadata.TextTags != null)
+               {
+                  foreach (var tag in metadata.TextTags.Where(x => string.IsNullOrEmpty(x.Key)))
+                     tag.Key = tag.Name;
+                  metadata.TextTags = metadata.TextTags.Where(x => !string.IsNullOrEmpty(x.Key));
+               }
 
-            if (metadata.ConditionalTags != null)
-            {
-               foreach (var tag in metadata.ConditionalTags.Where(x => string.IsNullOrEmpty(x.Key)))
-                  tag.Key = tag.Name;
-               metadata.ConditionalTags = metadata.ConditionalTags.Where(x => !string.IsNullOrEmpty(x.Key));
-            }
+               if (metadata.ConditionalTags != null)
+               {
+                  foreach (var tag in metadata.ConditionalTags.Where(x => string.IsNullOrEmpty(x.Key)))
+                     tag.Key = tag.Name;
+                  metadata.ConditionalTags = metadata.ConditionalTags.Where(x => !string.IsNullOrEmpty(x.Key));
+               }
 
-            if (metadata.ComputedTags != null)
-               metadata.ComputedTags = metadata.ComputedTags.Where(x => !string.IsNullOrEmpty(x.Key));
+               if (metadata.ComputedTags != null)
+                  metadata.ComputedTags = metadata.ComputedTags.Where(x => !string.IsNullOrEmpty(x.Key));
+            }
          }
 
          return metadata;

@@ -2,30 +2,34 @@
     <d-form>
         @if (hasTextFields || hasCheckboxes)
         {
-            <d-panel horizontal="true" css="padding:1.5rem 0">
-                 <d-panel css="border-right:1px solid #aaa;padding-right:1.5rem">
+            <d-panel horizontal="true" css="margin-top:1.5rem">
+                 <d-panel css="border-right:1px solid #aaa">
                     @if (hasTextFields)
                     {
                         <h4>Project Metadata</h4>
-                        @foreach (var id in state.TextFields)
-                        {
-                            <d-text-field id="@id" />
-                        }
+                        <d-panel css="padding-right:1.5rem;max-height:calc(100vh - 360px);overflow:auto">
+                            @foreach (var id in state.TextFields)
+                            {
+                                <d-text-field id="@id" />
+                            }
+                        </d-panel>
                     }
                 </d-panel>
                 <d-panel css="margin-left:1.5rem">
                     @if (hasCheckboxes)
                     {
                         <h4>Dependencies</h4>
-                        @foreach (var id in state.Checkboxes)
-                        {
-                            <div>
-                                <d-checkbox id="@id" css="font-weight:500" />
-                                <d-element id="@id" css="padding-left:1.5rem;color:#666">
-                                    <label slot="description"></label>
-                                </d-element>
-                            </div>
-                        }
+                        <d-panel css="max-height:calc(100vh - 360px);overflow:auto">
+                            @foreach (var id in state.Checkboxes)
+                            {
+                                <div>
+                                    <d-checkbox id="@id" css="font-weight:500" />
+                                    <d-element id="@id" css="padding-left:1.5rem;color:#666">
+                                        <label slot="description"></label>
+                                    </d-element>
+                                </div>
+                            }
+                        </d-panel>
                     }
                 </d-panel>
              </d-panel>
