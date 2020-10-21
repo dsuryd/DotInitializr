@@ -1,5 +1,5 @@
 {
-  "TextTags": [
+  "Tags": [
     {
       "Key": "ProjectNamespace",
       "Name": "Namespace",
@@ -12,27 +12,13 @@
       "Name": "SteeltoeVersion",
       "DefaultValue": "3.0.0",
       "Description": "Target the appropriate Steeltoe version",
-      "Options": [
-        {
-          "Value": "2.4.4",
-          "Description": "Target Steeltoe version 2.4.4"
-        },
-        {
-          "Value": "3.0.0",
-          "Description": "Target Steeltoe version 3.0.0"
-        }
-      ]
+      "Options": ["2.4.4", "3.0.0"]
     },
     {
       "Name": "TargetFrameworkVersion",
       "DefaultValue": "netcoreapp3.1",
       "Description": "Target the appropriate Dotnet framework version",
-      "Options": [
-        {
-          "Value": "netcoreapp3.1",
-          "Description": "Target Dotnet framework version 3.1"
-        }
-      ]
+      "Options": ["netcoreapp3.1"]
     },
     {
       "Name": "MySqlVersion",
