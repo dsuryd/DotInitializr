@@ -2,9 +2,16 @@
 
 namespace DotInitializr.Shared
 {
+   public enum InputType
+   {
+      Text,
+      Dropdown,
+      Radio
+   }
+
    public interface IMetadataFormState
    {
-      IEnumerable<string> TextFields { get; set; }
-      IEnumerable<string> Checkboxes { get; set; }
+      IEnumerable<KeyValuePair<InputType, string>> ProjectMetadata { get; set; }
+      IEnumerable<string> Dependencies { get; set; }
    }
 }

@@ -1,26 +1,37 @@
 ﻿<VMContext VM="MetadataForm" TState="IMetadataFormState" OnStateChange="UpdateState">
     <d-form>
-        @if (hasTextFields || hasCheckboxes)
+        @if (hasProjectMetadata || hasDependencies)
         {
             <d-panel horizontal="true" css="margin-top:1.5rem">
                  <d-panel css="border-right:1px solid #aaa">
-                    @if (hasTextFields)
+                    @if (hasProjectMetadata)
                     {
                         <h4>Project Metadata</h4>
                         <d-panel css="padding-right:1.5rem;max-height:calc(100vh - 360px);overflow:auto">
-                            @foreach (var id in state.TextFields)
+                            @foreach (var kvp in state.ProjectMetadata)
                             {
-                                <d-text-field id="@id" />
+                                if (kvp.Key == InputType.Dropdown)
+                                {
+                                    <d-dropdown-list id="@kvp.Value" />
+                                }
+                                else if (kvp.Key == InputType.Radio)
+                                {
+                                    <d-radio-group id="@kvp.Value" />
+                                }
+                                else
+                                {
+                                    <d-text-field id="@kvp.Value" />
+                                }
                             }
                         </d-panel>
                     }
                 </d-panel>
                 <d-panel css="margin-left:1.5rem">
-                    @if (hasCheckboxes)
+                    @if (hasDependencies)
                     {
                         <h4>Dependencies</h4>
                         <d-panel css="max-height:calc(100vh - 360px);overflow:auto">
-                            @foreach (var id in state.Checkboxes)
+                            @foreach (var id in state.Dependencies)
                             {
                                 <div>
                                     <d-checkbox id="@id" css="font-weight:500" />
@@ -39,14 +50,14 @@
 
 @code {
    private IMetadataFormState state;
-   private bool hasTextFields;
-   private bool hasCheckboxes;
+   private bool hasProjectMetadata;
+   private bool hasDependencies;
 
    private void UpdateState(IMetadataFormState state)
    {
        this.state = state;
-       this.hasTextFields = state.TextFields.Count() > 0;
-       this.hasCheckboxes = state.Checkboxes.Count() > 0;
+       this.hasProjectMetadata = state.ProjectMetadata.Count() > 0;
+       this.hasDependencies = state.Dependencies.Count() > 0;
        StateHasChanged();
    }
 }

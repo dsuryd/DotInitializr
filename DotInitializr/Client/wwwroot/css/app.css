@@ -84,3 +84,10 @@ body {
         -webkit-animation: spin .8s linear infinite;
         animation: spin .8s linear infinite;
     }
+
+d-radio-group section {
+    display: flex;
+}
+d-radio-group section > * {
+    margin-right: 1.5rem;
+}

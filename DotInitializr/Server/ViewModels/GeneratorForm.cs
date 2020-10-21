@@ -77,7 +77,7 @@ namespace DotInitializr.Server
          }
 
          var conditionalTags = _metadataTags.Where(x => x.Value is bool).ToDictionary(x => x.Key, x => (bool) x.Value);
-         var computedTags = _templateReader.GetComputedTags(metadata, conditionalTags);
+         var computedTags = _templateReader.GetComputedTags(metadata, _metadataTags);
          var conditionalAndComputedTags = conditionalTags.Union(computedTags).ToDictionary(x => x.Key, x => x.Value);
          var allTags = _metadataTags
             .Union(computedTags.ToDictionary(x => x.Key, x => (object) x.Value))

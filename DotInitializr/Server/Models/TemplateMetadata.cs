@@ -2,7 +2,7 @@
 
 namespace DotInitializr.Server
 {
-   public class TextTemplateTag
+   public class Tag
    {
       public string Key { get; set; }
       public string Name { get; set; }
@@ -10,9 +10,11 @@ namespace DotInitializr.Server
       public string DefaultValue { get; set; }
       public string ValidationRegex { get; set; }
       public string ValidationError { get; set; }
+      public string[] Options { get; set; }
+      public string[] RadioOptions { get; set; }
    }
 
-   public class ConditionalTemplateTag
+   public class ConditionalTag
    {
       public string Key { get; set; }
       public string Name { get; set; }
@@ -21,7 +23,7 @@ namespace DotInitializr.Server
       public string FilesToInclude { get; set; }
    }
 
-   public class ComputedTemplateTag
+   public class ComputedTag
    {
       public string Key { get; set; }
       public string Expression { get; set; }
@@ -32,8 +34,8 @@ namespace DotInitializr.Server
    {
       public const string FILE_NAME = "dotInitializr.json";
 
-      public IEnumerable<TextTemplateTag> TextTags { get; set; }
-      public IEnumerable<ConditionalTemplateTag> ConditionalTags { get; set; }
-      public IEnumerable<ComputedTemplateTag> ComputedTags { get; set; }
+      public IEnumerable<Tag> Tags { get; set; }
+      public IEnumerable<ConditionalTag> ConditionalTags { get; set; }
+      public IEnumerable<ComputedTag> ComputedTags { get; set; }
    }
 }

@@ -8,7 +8,7 @@ namespace DotInitializr.UnitTests
    public class MustacheRendererTest
    {
       [Test]
-      public void MustacheRenderer_RenderTextTag()
+      public void MustacheRenderer_RenderTag()
       {
          var files = new List<TemplateFile> {
             new TemplateFile
@@ -37,7 +37,7 @@ namespace DotInitializr.UnitTests
       }
 
       [Test]
-      public void MustacheRenderer_RenderTextTagOnFileName()
+      public void MustacheRenderer_RenderTagOnFileName()
       {
          var files = new List<TemplateFile> {
             new TemplateFile

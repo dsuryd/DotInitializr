@@ -11,7 +11,7 @@ namespace DotInitializr.Server
    {
       TemplateMetadata GetMetadata(AppConfiguration.Template template);
 
-      Dictionary<string, bool> GetComputedTags(TemplateMetadata metadata, Dictionary<string, bool> conditionalTags);
+      Dictionary<string, bool> GetComputedTags(TemplateMetadata metadata, Dictionary<string, object> tagValues);
 
       Dictionary<string, object> GetMetadataTags(TemplateMetadata metadata);
 
@@ -49,11 +49,11 @@ namespace DotInitializr.Server
                }
 
                // Make sure the tags have keys. Names can be used to substitute keys.
-               if (metadata.TextTags != null)
+               if (metadata.Tags != null)
                {
-                  foreach (var tag in metadata.TextTags.Where(x => string.IsNullOrEmpty(x.Key)))
+                  foreach (var tag in metadata.Tags.Where(x => string.IsNullOrEmpty(x.Key)))
                      tag.Key = tag.Name;
-                  metadata.TextTags = metadata.TextTags.Where(x => !string.IsNullOrEmpty(x.Key));
+                  metadata.Tags = metadata.Tags.Where(x => !string.IsNullOrEmpty(x.Key));
                }
 
                if (metadata.ConditionalTags != null)
@@ -71,14 +71,14 @@ namespace DotInitializr.Server
          return metadata;
       }
 
-      public Dictionary<string, bool> GetComputedTags(TemplateMetadata metadata, Dictionary<string, bool> conditionalTags)
+      public Dictionary<string, bool> GetComputedTags(TemplateMetadata metadata, Dictionary<string, object> tagValues)
       {
          var result = new Dictionary<string, bool>();
 
          if (metadata.ComputedTags != null)
          {
             var interpreter = new Interpreter();
-            foreach (var tag in conditionalTags)
+            foreach (var tag in tagValues)
                interpreter.SetVariable(tag.Key, tag.Value);
 
             CountDelegate countFunc = Count;
@@ -106,8 +106,8 @@ namespace DotInitializr.Server
       {
          var result = new Dictionary<string, object>();
 
-         if (metadata?.TextTags != null)
-            foreach (var tag in metadata.TextTags)
+         if (metadata?.Tags != null)
+            foreach (var tag in metadata.Tags)
                result.Add(tag.Key, tag.DefaultValue);
 
          if (metadata?.ConditionalTags != null)

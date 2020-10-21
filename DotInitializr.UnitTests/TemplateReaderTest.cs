@@ -15,38 +15,40 @@ namespace DotInitializr.UnitTests
 
          var result = sut.GetMetadata(new AppConfiguration.Template { Name = "TestTemplate", SourceType = "git", SourceUrl = sourceUrl, SourceDirectory = directory });
 
-         Assert.Greater(result.TextTags?.Count(), 0);
-         Assert.Greater(result.ConditionalTags?.Count(), 0);
+         Assert.Greater(result.Tags?.Count(), 0);
+         Assert.Greater(result.ComputedTags?.Count(), 0);
       }
 
       [Test]
-      public void TemplateReader_GetMetadataTags_ReturnsTextAndConditionalTagsWithDefaultValues()
+      public void TemplateReader_GetMetadataTags_ReturnsTagsWithDefaultValues()
       {
          var sut = new TemplateReader(new List<ITemplateSource> { new GitTemplateSource() });
 
          var metadata = new TemplateMetadata
          {
-            TextTags = new List<TextTemplateTag>
+            Tags = new List<Tag>
             {
-               new TextTemplateTag { Key = "text1", DefaultValue = "abc"},
-               new TextTemplateTag { Key = "text2", DefaultValue = "xyz"}
+               new Tag { Key = "text1", DefaultValue = "abc" },
+               new Tag { Key = "text2", DefaultValue = "xyz" },
+               new Tag { Key = "dropdown", DefaultValue = "option1", Options = new string[] { "option1", "option2" } }
             },
-            ConditionalTags = new List<ConditionalTemplateTag>
+            ConditionalTags = new List<ConditionalTag>
             {
-               new ConditionalTemplateTag { Key = "cond1", DefaultValue = true },
-               new ConditionalTemplateTag { Key = "cond2", DefaultValue = false }
+               new ConditionalTag { Key = "cond1", DefaultValue = true },
+               new ConditionalTag { Key = "cond2", DefaultValue = false }
             },
-            ComputedTags = new List<ComputedTemplateTag>
+            ComputedTags = new List<ComputedTag>
             {
-               new ComputedTemplateTag { Key = "computed1", Expression = "cond1 || cond2"}
+               new ComputedTag { Key = "computed1", Expression = "cond1 || cond2"}
             }
          };
 
          var result = sut.GetMetadataTags(metadata);
 
-         Assert.AreEqual(4, result.Count);
+         Assert.AreEqual(5, result.Count);
          Assert.AreEqual("abc", result["text1"]);
          Assert.AreEqual("xyz", result["text2"]);
+         Assert.AreEqual("option1", result["dropdown"]);
          Assert.AreEqual(true, result["cond1"]);
          Assert.AreEqual(false, result["cond2"]);
       }
@@ -58,14 +60,14 @@ namespace DotInitializr.UnitTests
 
          var metadata = new TemplateMetadata
          {
-            ConditionalTags = new List<ConditionalTemplateTag>
+            ConditionalTags = new List<ConditionalTag>
             {
-               new ConditionalTemplateTag { Key = "cond1", DefaultValue = true, FilesToInclude ="cond1_file" },
-               new ConditionalTemplateTag { Key = "cond2", DefaultValue = false, FilesToInclude = "cond2_file1,cond2_file2" }
+               new ConditionalTag { Key = "cond1", DefaultValue = true, FilesToInclude ="cond1_file" },
+               new ConditionalTag { Key = "cond2", DefaultValue = false, FilesToInclude = "cond2_file1,cond2_file2" }
             },
-            ComputedTags = new List<ComputedTemplateTag>
+            ComputedTags = new List<ComputedTag>
             {
-               new ComputedTemplateTag { Key = "computed1", Expression = "!cond1 && !cond2", FilesToInclude = "computed1_file" }
+               new ComputedTag { Key = "computed1", Expression = "!cond1 && !cond2", FilesToInclude = "computed1_file" }
             }
          };
 
@@ -80,51 +82,75 @@ namespace DotInitializr.UnitTests
       }
 
       [Test]
-      public void TemplateReader_GetComputedTags_ReturnsComputedTags()
+      public void TemplateReader_GetComputedTags_ReturnsValidTags()
       {
          var sut = new TemplateReader(new List<ITemplateSource> { new GitTemplateSource() });
 
          var metadata = new TemplateMetadata
          {
-            ConditionalTags = new List<ConditionalTemplateTag>
+            ConditionalTags = new List<ConditionalTag>
             {
-               new ConditionalTemplateTag { Key = "cond1", DefaultValue = true  },
-               new ConditionalTemplateTag { Key = "cond2", DefaultValue = false  }
+               new ConditionalTag { Key = "cond1", DefaultValue = true  },
+               new ConditionalTag { Key = "cond2", DefaultValue = false  }
             },
-            ComputedTags = new List<ComputedTemplateTag>
+            ComputedTags = new List<ComputedTag>
             {
-               new ComputedTemplateTag { Key = "computed1", Expression = "cond1 || cond2" },
-               new ComputedTemplateTag { Key = "computed2", Expression = "cond1 && cond2" }
+               new ComputedTag { Key = "computed1", Expression = "cond1 || cond2" },
+               new ComputedTag { Key = "computed2", Expression = "cond1 && cond2" }
             }
          };
 
-         var result1 = sut.GetComputedTags(metadata, new Dictionary<string, bool> { { "cond1", false }, { "cond2", true } });
-         var result2 = sut.GetComputedTags(metadata, new Dictionary<string, bool> { { "cond1", true }, { "cond2", true } });
+         var result1 = sut.GetComputedTags(metadata, new Dictionary<string, object> { { "cond1", false }, { "cond2", true } });
+         var result2 = sut.GetComputedTags(metadata, new Dictionary<string, object> { { "cond1", true }, { "cond2", true } });
 
          Assert.AreEqual(1, result1.Count);
          Assert.AreEqual(2, result2.Count);
       }
 
       [Test]
-      public void TemplateReader_GetComputedTagsCount_ReturnsCount()
+      public void TemplateReader_GetComputedTags_CountExpression_ReturnsValidTags()
       {
          var sut = new TemplateReader(new List<ITemplateSource> { new GitTemplateSource() });
 
          var metadata = new TemplateMetadata
          {
-            ConditionalTags = new List<ConditionalTemplateTag>
+            ConditionalTags = new List<ConditionalTag>
             {
-               new ConditionalTemplateTag { Key = "cond1", DefaultValue = true  },
-               new ConditionalTemplateTag { Key = "cond2", DefaultValue = false  }
+               new ConditionalTag { Key = "cond1", DefaultValue = true  },
+               new ConditionalTag { Key = "cond2", DefaultValue = false  }
             },
-            ComputedTags = new List<ComputedTemplateTag>
+            ComputedTags = new List<ComputedTag>
             {
-               new ComputedTemplateTag { Key = "computed1", Expression = "Count(cond1,cond2) > 1" }
+               new ComputedTag { Key = "computed1", Expression = "Count(cond1,cond2) > 1" }
             }
          };
 
-         var result1 = sut.GetComputedTags(metadata, new Dictionary<string, bool> { { "cond1", false }, { "cond2", true } });
-         var result2 = sut.GetComputedTags(metadata, new Dictionary<string, bool> { { "cond1", true }, { "cond2", true } });
+         var result1 = sut.GetComputedTags(metadata, new Dictionary<string, object> { { "cond1", false }, { "cond2", true } });
+         var result2 = sut.GetComputedTags(metadata, new Dictionary<string, object> { { "cond1", true }, { "cond2", true } });
+
+         Assert.IsFalse(result1.ContainsKey("computed1"));
+         Assert.IsTrue(result2.ContainsKey("computed1"));
+      }
+
+      [Test]
+      public void TemplateReader_GetComputedTagsEqual_EqualExpression_ReturnsValidTag()
+      {
+         var sut = new TemplateReader(new List<ITemplateSource> { new GitTemplateSource() });
+
+         var metadata = new TemplateMetadata
+         {
+            Tags = new List<Tag>
+            {
+               new Tag { Key = "tag1", Options = new string[] { "A", "B" } }
+            },
+            ComputedTags = new List<ComputedTag>
+            {
+               new ComputedTag { Key = "computed1", Expression = "tag1 == \"B\"" }
+            }
+         };
+
+         var result1 = sut.GetComputedTags(metadata, new Dictionary<string, object> { { "tag1", "A" } });
+         var result2 = sut.GetComputedTags(metadata, new Dictionary<string, object> { { "tag1", "B" } });
 
          Assert.IsFalse(result1.ContainsKey("computed1"));
          Assert.IsTrue(result2.ContainsKey("computed1"));

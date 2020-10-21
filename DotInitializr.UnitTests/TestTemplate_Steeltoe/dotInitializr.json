@@ -1,7 +1,7 @@
 {
   "Tags": [
     {
-      "Key": "ProjectNamespace",
+      "Key": "ProjectNameSpace",
       "Name": "Namespace",
       "Description": "Change the namespace",
       "DefaultValue": "MyCompany.SteeltoeExample",

@@ -29,43 +29,76 @@ namespace DotInitializr.Server
 
          MetadataLoadedEvent
             .SubscribeTo(TemplateChangedEvent.Select(x => GetMetadata(x)))
-            .SubscribedBy(AddProperty<IEnumerable<string>>(nameof(IMetadataFormState.TextFields)), metadata => BuildTextFieldProperties(metadata))
-            .SubscribedBy(AddProperty<IEnumerable<string>>(nameof(IMetadataFormState.Checkboxes)), metadata => BuildCheckboxProperties(metadata));
+            .SubscribedBy(AddProperty<IEnumerable<KeyValuePair<InputType, string>>>(nameof(IMetadataFormState.ProjectMetadata)), metadata => BuildProjectMetadataProperties(metadata))
+            .SubscribedBy(AddProperty<IEnumerable<string>>(nameof(IMetadataFormState.Dependencies)), metadata => BuildDependencyProperties(metadata));
       }
 
-      private IEnumerable<string> BuildTextFieldProperties(TemplateMetadata metadata)
+      private IEnumerable<KeyValuePair<InputType, string>> BuildProjectMetadataProperties(TemplateMetadata metadata)
       {
-         var textFieldIds = new List<string>();
+         var fieldIds = new List<KeyValuePair<InputType, string>>();
 
-         if (metadata.TextTags != null)
+         if (metadata.Tags != null)
          {
-            foreach (var tag in metadata.TextTags)
+            foreach (var tag in metadata.Tags)
             {
                string name = tag.Key;
                RemoveExistingProperty(name);
-               textFieldIds.Add(name);
 
-               var prop = AddProperty(name, tag.DefaultValue)
-                  .WithAttribute(new TextFieldAttribute
-                  {
-                     Label = tag.Name,
-                     Placeholder = tag.Description
-                  })
-                  .WithRequiredValidation();
+               if (tag.Options?.Length > 0)
+               {
+                  fieldIds.Add(KeyValuePair.Create(InputType.Dropdown, name));
 
-               if (!string.IsNullOrEmpty(tag.ValidationRegex))
-                  prop.WithPatternValidation(tag.ValidationRegex, tag.ValidationError);
+                  if (!string.IsNullOrEmpty(tag.DefaultValue) && !tag.Options.Any(x => x == tag.DefaultValue))
+                     tag.Options = tag.Options.Append(tag.DefaultValue).ToArray();
+
+                  var prop = AddProperty(name, tag.DefaultValue ?? tag.Options.First())
+                    .WithAttribute(new DropdownListAttribute
+                    {
+                       Label = tag.Name,
+                       Placeholder = tag.Description,
+                       Options = tag.Options.Select(x => KeyValuePair.Create(x, x)).ToArray()
+                    });
+               }
+               else if (tag.RadioOptions?.Length > 0)
+               {
+                  fieldIds.Add(KeyValuePair.Create(InputType.Radio, name));
+
+                  if (!string.IsNullOrEmpty(tag.DefaultValue) && !tag.RadioOptions.Any(x => x == tag.DefaultValue))
+                     tag.RadioOptions = tag.RadioOptions.Append(tag.DefaultValue).ToArray();
+
+                  var prop = AddProperty(name, tag.DefaultValue ?? tag.RadioOptions.First())
+                    .WithAttribute(new RadioGroupAttribute
+                    {
+                       Label = tag.Name,
+                       Options = tag.RadioOptions.Select(x => KeyValuePair.Create(x, x)).ToArray()
+                    });
+               }
+               else
+               {
+                  fieldIds.Add(KeyValuePair.Create(InputType.Text, name));
+
+                  var prop = AddProperty(name, tag.DefaultValue)
+                     .WithAttribute(new TextFieldAttribute
+                     {
+                        Label = tag.Name,
+                        Placeholder = tag.Description
+                     })
+                     .WithRequiredValidation();
+
+                  if (!string.IsNullOrEmpty(tag.ValidationRegex))
+                     prop.WithPatternValidation(tag.ValidationRegex, tag.ValidationError);
+               }
 
                RegisterPropertyAttributes(name);
             }
          }
 
-         return textFieldIds;
+         return fieldIds;
       }
 
-      private IEnumerable<string> BuildCheckboxProperties(TemplateMetadata metadata)
+      private IEnumerable<string> BuildDependencyProperties(TemplateMetadata metadata)
       {
-         var checkboxIds = new List<string>();
+         var dependencyIds = new List<string>();
 
          if (metadata.ConditionalTags != null)
          {
@@ -73,7 +106,7 @@ namespace DotInitializr.Server
             {
                string name = tag.Key;
                RemoveExistingProperty(name);
-               checkboxIds.Add(name);
+               dependencyIds.Add(name);
 
                AddProperty(name, tag.DefaultValue)
                   .WithAttribute(new
@@ -86,7 +119,7 @@ namespace DotInitializr.Server
             }
          }
 
-         return checkboxIds;
+         return dependencyIds;
       }
 
       private TemplateMetadata GetMetadata(AppConfiguration.Template template)
@@ -95,9 +128,9 @@ namespace DotInitializr.Server
 
          if (template != null)
          {
-            var textTags = metadata.TextTags?.ToList() ?? new List<TextTemplateTag>();
+            var tags = metadata.Tags?.ToList() ?? new List<Tag>();
 
-            textTags.Insert(0, new TextTemplateTag
+            tags.Insert(0, new Tag
             {
                Key = ProjectNameKey,
                Name = "Project Name",
@@ -106,7 +139,7 @@ namespace DotInitializr.Server
                ValidationError = "Must be a valid filename",
             });
 
-            metadata.TextTags = textTags;
+            metadata.Tags = tags;
          }
 
          return metadata;
