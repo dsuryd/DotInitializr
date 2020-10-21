@@ -12,7 +12,7 @@
       "Name": "SteeltoeVersion",
       "DefaultValue": "3.0.0",
       "Description": "Target the appropriate Steeltoe version",
-      "Options": ["2.4.4", "3.0.0"]
+      "RadioOptions": ["2.4.4", "3.0.0"]
     },
     {
       "Name": "TargetFrameworkVersion",

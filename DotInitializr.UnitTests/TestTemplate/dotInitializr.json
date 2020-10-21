@@ -11,7 +11,7 @@
       "Key": "ui",
       "Name": "UI",
       "DefaultValue": "React",
-      "Options": ["Angular", "React"]
+      "RadioOptions": ["Angular", "React"]
     }
   ],
   "ComputedTags": [
