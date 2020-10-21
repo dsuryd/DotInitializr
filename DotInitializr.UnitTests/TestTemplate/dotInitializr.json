@@ -6,21 +6,23 @@
       "DefaultValue": "Starter",
       "ValidationRegex": "^[\\w\\-. ]+$",
       "ValidationError": "Must be valid namespace"
+    },
+    {
+      "Key": "ui",
+      "Name": "UI",
+      "DefaultValue": "React",
+      "Options": ["Angular", "React"]
     }
   ],
-  "ConditionalTags": [
+  "ComputedTags": [
     {
       "Key": "ng",
-      "Name": "Angular",
-      "Description": "ASP.NET Core with Angular",
-      "DefaultValue": false,
+      "Expression": "ui == \"Angular\"",
       "FilesToInclude": "ClientApp{{ng}}/**"
     },
     {
       "Key": "react",
-      "Name": "React",
-      "Description": "ASP.NET Core with React",
-      "DefaultValue": true,
+      "Expression": "ui == \"React\"",
       "FilesToInclude": "ClientApp{{react}}/**"
     }
   ]
