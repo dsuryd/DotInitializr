@@ -12,7 +12,7 @@ namespace DotInitializr.Server
          public string Key { get; } = Guid.NewGuid().ToString();
          public string Name { get; set; }
          public string Description { get; set; }
-         public string SourceType { get; set; }
+         public string SourceType { get; set; } = "git";
          public string SourceUrl { get; set; }
          public string SourceDirectory { get; set; }
       }
