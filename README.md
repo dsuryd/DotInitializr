@@ -4,6 +4,8 @@ DotInitializr is a simple web UI to generate an initial project structure from a
 
 It allows you to add input fields (textbox, dropdowns, radios, checkboxes) to customize your project metadata, such as the project namespace, package versions, inclusion of code snippets or files, by using [Mustache](https://mustache.github.io/mustache.5.html) notation paired with a JSON configuration file in the project template.
 
+<img src="https://github.com/dsuryd/DotInitializr/blob/master/Screenshot.png"/>
+
 ## How to Register a Template
 
 Add the template info to `appsettings.json`:
