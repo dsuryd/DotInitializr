@@ -81,6 +81,9 @@ namespace {{namespace}}
 
                 if (env.IsDevelopment())
                 {
+{{#grpc}}                  
+                endpoints.MapGrpcService<GreeterService>();
+{{/grpc}}
 {{#react}}
                     spa.UseReactDevelopmentServer(npmScript: "start");
 {{/react}}				
