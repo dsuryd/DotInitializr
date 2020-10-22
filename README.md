@@ -122,7 +122,7 @@ Use a computed tag to derive a boolean value from the other tags with a logical 
       "Key": "react",
       "Expression": "ui == \"React\"",
       "FilesToInclude": "ClientApp{{react}}/**"
-    ,
+    },
     {
       "Key": "AnyDB",
       "Expression": "MongoDB || MySql",
