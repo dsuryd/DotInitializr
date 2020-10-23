@@ -20,7 +20,7 @@ namespace DotInitializr.UnitTests
       }
 
       [Test]
-      public void TemplateReader_GetMetadataTags_ReturnsTagsWithDefaultValues()
+      public void TemplateReader_GeTags_ReturnsTagsWithDefaultValues()
       {
          var sut = new TemplateReader(new List<ITemplateSource> { new GitTemplateSource() });
 
@@ -43,12 +43,41 @@ namespace DotInitializr.UnitTests
             }
          };
 
-         var result = sut.GetMetadataTags(metadata);
+         var result = sut.GetTags(metadata);
 
-         Assert.AreEqual(5, result.Count);
+         Assert.AreEqual(3, result.Count);
          Assert.AreEqual("abc", result["text1"]);
          Assert.AreEqual("xyz", result["text2"]);
          Assert.AreEqual("option1", result["dropdown"]);
+      }
+
+      [Test]
+      public void TemplateReader_GeConditionalTags_ReturnsConditionalTagsWithDefaultValues()
+      {
+         var sut = new TemplateReader(new List<ITemplateSource> { new GitTemplateSource() });
+
+         var metadata = new TemplateMetadata
+         {
+            Tags = new List<Tag>
+            {
+               new Tag { Key = "text1", DefaultValue = "abc" },
+               new Tag { Key = "text2", DefaultValue = "xyz" },
+               new Tag { Key = "dropdown", DefaultValue = "option1", Options = new string[] { "option1", "option2" } }
+            },
+            ConditionalTags = new List<ConditionalTag>
+            {
+               new ConditionalTag { Key = "cond1", DefaultValue = true },
+               new ConditionalTag { Key = "cond2", DefaultValue = false }
+            },
+            ComputedTags = new List<ComputedTag>
+            {
+               new ComputedTag { Key = "computed1", Expression = "cond1 || cond2"}
+            }
+         };
+
+         var result = sut.GetConditionalTags(metadata);
+
+         Assert.AreEqual(2, result.Count);
          Assert.AreEqual(true, result["cond1"]);
          Assert.AreEqual(false, result["cond2"]);
       }

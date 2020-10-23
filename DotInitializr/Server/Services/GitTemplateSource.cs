@@ -22,6 +22,9 @@ namespace DotInitializr.Server
          TemplateFile result = null;
          string tempPath = Path.Combine(Path.GetTempPath(), nameof(DotInitializr), Guid.NewGuid().ToString());
 
+         if (sourceDirectory != null)
+            sourceDirectory = sourceDirectory.Replace('\\', Path.DirectorySeparatorChar);
+
          try
          {
             if (!string.IsNullOrEmpty(Repository.Clone(sourceUrl, tempPath, new CloneOptions { Checkout = false })))
@@ -40,7 +43,9 @@ namespace DotInitializr.Server
          }
          catch (Exception ex)
          {
-            Trace.TraceError($"Failed to get file `{fileName}` from `{sourceUrl}`: {ex.Message}{Environment.NewLine}{ex.StackTrace}");
+            var error = $"Failed to get file `{fileName}` from `{sourceUrl}`";
+            Console.WriteLine(error + Environment.NewLine + ex.ToString());
+            throw new TemplateException(error);
          }
 
          Utils.DeleteDirectory(tempPath);
@@ -51,6 +56,9 @@ namespace DotInitializr.Server
       {
          List<TemplateFile> result = new List<TemplateFile>();
          string tempPath = Path.Combine(Path.GetTempPath(), nameof(DotInitializr), Guid.NewGuid().ToString());
+
+         if (sourceDirectory != null)
+            sourceDirectory = sourceDirectory.Replace('\\', Path.DirectorySeparatorChar);
 
          try
          {
@@ -76,7 +84,9 @@ namespace DotInitializr.Server
          }
          catch (Exception ex)
          {
-            Trace.TraceError($"Failed to get files from `{sourceUrl}`: {ex.Message}{Environment.NewLine}{ex.StackTrace}");
+            var error = $"Failed to get files from `{sourceUrl}`";
+            Console.WriteLine(error + Environment.NewLine + ex.ToString());
+            throw new TemplateException(error);
          }
 
          Utils.DeleteDirectory(tempPath);

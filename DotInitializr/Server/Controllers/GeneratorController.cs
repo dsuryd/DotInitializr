@@ -33,7 +33,7 @@ namespace DotInitializr.Server
             byte[] templateBytes = generator.Generate(metadata);
             return new FileContentResult(templateBytes, "application/zip") { FileDownloadName = $"{metadata.ProjectName}.zip" };
          }
-         catch (TemplateRenderException ex)
+         catch (TemplateException ex)
          {
             Response.StatusCode = (int) HttpStatusCode.InternalServerError;
             return Content(ex.Message);

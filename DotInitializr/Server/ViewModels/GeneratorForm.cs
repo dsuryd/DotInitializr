@@ -14,7 +14,8 @@ namespace DotInitializr.Server
       private readonly MetadataForm _metadataForm;
       private readonly AppConfiguration _config;
       private readonly ReactiveProperty<string> _templateProp;
-      private Dictionary<string, object> _metadataTags;
+      private Dictionary<string, string> _tags;
+      private Dictionary<string, bool> _conditionalTags;
 
       public bool Loading { get => Get<bool>(); set => Set(value); }
 
@@ -38,7 +39,8 @@ namespace DotInitializr.Server
                Loading = true;
                PushUpdates();
 
-               _metadataTags = null;
+               _tags = null;
+               _conditionalTags = null;
                return _config.Templates.FirstOrDefault(x => x.Key == key);
             })
             .SubscribedBy(AddProperty<string>("Description"), key => _config.Templates.FirstOrDefault(x => x.Key == key)?.Description);
@@ -64,32 +66,36 @@ namespace DotInitializr.Server
          if (template == null)
             return null;
 
-         _metadataTags ??= _templateReader.GetMetadataTags(metadata);
-         foreach (var key in formData.Keys.Where(x => _metadataTags.ContainsKey(x)))
+         _tags ??= _templateReader.GetTags(metadata);
+         _conditionalTags ??= _templateReader.GetConditionalTags(metadata);
+
+         foreach (var key in formData.Keys.Where(x => _tags.ContainsKey(x)))
+            _tags[key] = formData[key]?.ToString();
+
+         foreach (var key in formData.Keys.Where(x => _conditionalTags.ContainsKey(x)))
          {
-            if (_metadataTags[key] is bool)
-            {
-               bool.TryParse(formData[key]?.ToString(), out bool value);
-               _metadataTags[key] = value;
-            }
-            else
-               _metadataTags[key] = formData[key]?.ToString();
+            if (bool.TryParse(formData[key]?.ToString(), out bool value))
+               _conditionalTags[key] = value;
          }
 
-         var conditionalTags = _metadataTags.Where(x => x.Value is bool).ToDictionary(x => x.Key, x => (bool) x.Value);
-         var computedTags = _templateReader.GetComputedTags(metadata, _metadataTags);
-         var conditionalAndComputedTags = conditionalTags.Union(computedTags).ToDictionary(x => x.Key, x => x.Value);
-         var allTags = _metadataTags
+         var nonComputedTags = _tags.ToDictionary(x => x.Key, x => (object) x.Value)
+            .Union(_conditionalTags.ToDictionary(x => x.Key, x => (object) x.Value))
+            .ToDictionary(x => x.Key, x => x.Value);
+
+         var computedTags = _templateReader.GetComputedTags(metadata, nonComputedTags);
+         var booleanTags = _conditionalTags.Union(computedTags).ToDictionary(x => x.Key, x => x.Value);
+
+         var allTags = nonComputedTags
             .Union(computedTags.ToDictionary(x => x.Key, x => (object) x.Value))
             .ToDictionary(x => x.Key, x => x.Value);
 
          return new ProjectMetadata
          {
-            ProjectName = _metadataTags[MetadataForm.ProjectNameKey].ToString(),
+            ProjectName = nonComputedTags[MetadataForm.ProjectNameKey].ToString(),
             TemplateSourceType = template.SourceType,
             TemplateSourceUrl = template.SourceUrl,
             TemplateSourceDirectory = template.SourceDirectory,
-            FilesToExclude = _templateReader.GetFilesToExclude(metadata, conditionalAndComputedTags),
+            FilesToExclude = _templateReader.GetFilesToExclude(metadata, booleanTags),
             Tags = allTags,
          };
       }

@@ -5,13 +5,6 @@ using Stubble.Core.Builders;
 
 namespace DotInitializr.Server
 {
-   public class TemplateRenderException : Exception
-   {
-      public TemplateRenderException(string message) : base(message)
-      {
-      }
-   }
-
    public class MustacheRenderer : ITemplateRenderer
    {
       public IEnumerable<TemplateFile> Render(IEnumerable<TemplateFile> files, Dictionary<string, object> tags)
@@ -38,7 +31,7 @@ namespace DotInitializr.Server
          }
          catch (Exception ex)
          {
-            throw new TemplateRenderException(ex.Message);
+            throw new TemplateException(ex.Message);
          }
       }
    }

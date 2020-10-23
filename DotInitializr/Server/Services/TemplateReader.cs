@@ -13,7 +13,9 @@ namespace DotInitializr.Server
 
       Dictionary<string, bool> GetComputedTags(TemplateMetadata metadata, Dictionary<string, object> tagValues);
 
-      Dictionary<string, object> GetMetadataTags(TemplateMetadata metadata);
+      Dictionary<string, bool> GetConditionalTags(TemplateMetadata metadata);
+
+      Dictionary<string, string> GetTags(TemplateMetadata metadata);
 
       string GetFilesToExclude(TemplateMetadata metadata, Dictionary<string, bool> conditionalTags);
    }
@@ -45,7 +47,9 @@ namespace DotInitializr.Server
                }
                catch (Exception ex)
                {
-                  Trace.TraceError($"`{TemplateMetadata.FILE_NAME}` in `{template.SourceUrl}` must be in JSON: {ex.Message}{Environment.NewLine}{ex.StackTrace}");
+                  var error = $"`{TemplateMetadata.FILE_NAME}` in `{template.SourceUrl}` must be in JSON";
+                  Console.WriteLine(error + Environment.NewLine + ex.ToString());
+                  throw new TemplateException(error);
                }
 
                // Make sure the tags have keys. Names can be used to substitute keys.
@@ -94,7 +98,9 @@ namespace DotInitializr.Server
                }
                catch (Exception ex)
                {
-                  Trace.TraceError($"Cannot compute `{computedTag.Key}` expression `{computedTag.Expression}`: {ex.Message}{Environment.NewLine}{ex.StackTrace}");
+                  var error = $"Cannot compute `{computedTag.Key}` expression `{computedTag.Expression}`";
+                  Console.WriteLine(error + Environment.NewLine + ex.ToString());
+                  throw new TemplateException(error);
                }
             }
          }
@@ -102,17 +108,24 @@ namespace DotInitializr.Server
          return result;
       }
 
-      public Dictionary<string, object> GetMetadataTags(TemplateMetadata metadata)
+      public Dictionary<string, string> GetTags(TemplateMetadata metadata)
       {
-         var result = new Dictionary<string, object>();
+         var result = new Dictionary<string, string>();
 
          if (metadata?.Tags != null)
             foreach (var tag in metadata.Tags)
                result.Add(tag.Key, tag.DefaultValue);
 
+         return result;
+      }
+
+      public Dictionary<string, bool> GetConditionalTags(TemplateMetadata metadata)
+      {
+         var result = new Dictionary<string, bool>();
+
          if (metadata?.ConditionalTags != null)
             foreach (var tag in metadata.ConditionalTags)
-               result.Add(tag.Key, tag.DefaultValue);
+               result.Add(tag.Key, tag.DefaultValue ?? false);
 
          return result;
       }

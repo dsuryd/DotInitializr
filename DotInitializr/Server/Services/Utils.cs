@@ -24,7 +24,7 @@ namespace DotInitializr.Server
          }
          catch (Exception ex)
          {
-            Trace.TraceError($"Failed to delete `{path}`: {ex.Message}{Environment.NewLine}{ex.StackTrace}");
+            Console.WriteLine($"Failed to delete `{path}`: {ex.Message}{Environment.NewLine}{ex.StackTrace}");
          }
       }
    }

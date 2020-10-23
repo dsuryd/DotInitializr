@@ -1,3 +1,4 @@
+using System.Diagnostics;
 using DotNetify;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -43,8 +44,16 @@ namespace DotInitializr.Server
             app.UseExceptionHandler("/Error");
          }
 
+         // Don;t use DefaultTraceListener to prevent "fail fast".
+         Trace.Listeners.Clear();
+         Trace.Listeners.Add(new ConsoleTraceListener());
+
          app.UseWebSockets();
-         app.UseDotNetify(config => config.UseDeveloperLogging());
+         app.UseDotNetify(config =>
+         {
+            if (env.IsDevelopment())
+               config.UseDeveloperLogging();
+         });
 
          app.UseBlazorFrameworkFiles();
          app.UseStaticFiles();
