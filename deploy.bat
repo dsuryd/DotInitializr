@@ -21,7 +21,7 @@ goto :end
 :heroku
 rem heroku login
 call heroku container:login
-call heroku container:push web -a dotInitializr
-call heroku container:release web -a dotInitializr
+call heroku container:push web -a dotinitializr
+call heroku container:release web -a dotinitializr
 
 :end
