@@ -1,6 +1,6 @@
 {
-  "short_name": "TestTemplate",
-  "name": "TestTemplate",
+  "short_name": "{{projectName}}",
+  "name": "{{projectName}}",
   "icons": [
     {
       "src": "favicon.ico",

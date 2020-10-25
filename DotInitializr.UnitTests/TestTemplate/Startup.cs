@@ -1,6 +1,5 @@
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.HttpsPolicy;
 {{#react}}
 using Microsoft.AspNetCore.SpaServices.ReactDevelopmentServer;
 {{/react}}
@@ -25,6 +24,9 @@ namespace {{namespace}}
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+{{#grpc}}          
+            services.AddGrpc();
+{{/grpc}}
             services.AddControllersWithViews();
             services.AddSpaStaticFiles(configuration =>
             {
@@ -67,6 +69,9 @@ namespace {{namespace}}
 
             app.UseEndpoints(endpoints =>
             {
+{{#grpc}}                  
+                endpoints.MapGrpcService<GreeterService>();
+{{/grpc}}              
                 endpoints.MapControllerRoute(
                     name: "default",
                     pattern: "{controller}/{action=Index}/{id?}");
@@ -81,9 +86,6 @@ namespace {{namespace}}
 
                 if (env.IsDevelopment())
                 {
-{{#grpc}}                  
-                endpoints.MapGrpcService<GreeterService>();
-{{/grpc}}
 {{#react}}
                     spa.UseReactDevelopmentServer(npmScript: "start");
 {{/react}}				

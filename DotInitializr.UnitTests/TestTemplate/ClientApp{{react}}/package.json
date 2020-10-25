@@ -1,5 +1,5 @@
 {
-  "name": "testtemplate",
+  "name": "{{projectName:lower}}",
   "version": "0.1.0",
   "private": true,
   "dependencies": {
