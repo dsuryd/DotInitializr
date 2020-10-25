@@ -22,7 +22,10 @@ using DynamicExpresso;
 
 namespace DotInitializr.Server
 {
-   public interface ITemplateReader
+   /// <summary>
+   /// Reads metadata from a project template.
+   /// </summary>
+   public interface ITemplateMetadataReader
    {
       TemplateMetadata GetMetadata(AppConfiguration.Template template);
 
@@ -35,13 +38,13 @@ namespace DotInitializr.Server
       string GetFilesToExclude(TemplateMetadata metadata, Dictionary<string, bool> conditionalTags);
    }
 
-   public class TemplateReader : ITemplateReader
+   public class TemplateMetadataReader : ITemplateMetadataReader
    {
       private readonly IEnumerable<ITemplateSource> _templateSources;
 
       private delegate int CountDelegate(params bool[] tags);
 
-      public TemplateReader(IEnumerable<ITemplateSource> templateSources)
+      public TemplateMetadataReader(IEnumerable<ITemplateSource> templateSources)
       {
          _templateSources = templateSources;
       }

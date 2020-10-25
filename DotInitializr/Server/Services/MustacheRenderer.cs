@@ -21,11 +21,20 @@ using Stubble.Core.Builders;
 
 namespace DotInitializr.Server
 {
+   /// <summary>
+   /// Renders a set of project files from a project template and metadata that uses Mustache notations (http://mustache.github.io/mustache.5.html).
+   /// </summary>
    public class MustacheRenderer : ITemplateRenderer
    {
+      private const string LOWER_CASE = ":lower";
+
       public IEnumerable<TemplateFile> Render(IEnumerable<TemplateFile> files, Dictionary<string, object> tags)
       {
          var conditionalTags = tags.Where(x => x.Value is bool)?.Select(x => x.Key);
+
+         var filesWithLowerCaseFormat = files.Where(x => x.Content.Contains(LOWER_CASE + "}}"));
+         foreach (var tag in tags.Where(x => x.Value is string && filesWithLowerCaseFormat.Any(y => y.Content.Contains($"{x.Key}{LOWER_CASE}"))).ToArray())
+            tags.Add($"{tag.Key}{LOWER_CASE}", tag.Value.ToString().ToLowerInvariant());
 
          try
          {

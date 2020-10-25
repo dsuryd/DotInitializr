@@ -26,7 +26,7 @@ namespace DotInitializr.Server
 {
    public class GeneratorForm : BaseVM
    {
-      private readonly ITemplateReader _templateReader;
+      private readonly ITemplateMetadataReader _templateReader;
       private readonly MetadataForm _metadataForm;
       private readonly AppConfiguration _config;
       private readonly ReactiveProperty<string> _templateProp;
@@ -35,7 +35,7 @@ namespace DotInitializr.Server
 
       public bool Loading { get => Get<bool>(); set => Set(value); }
 
-      public GeneratorForm(ITemplateReader templateReader, AppConfiguration config, MetadataForm metadataForm)
+      public GeneratorForm(ITemplateMetadataReader templateReader, AppConfiguration config, MetadataForm metadataForm)
       {
          _templateReader = templateReader;
          _config = config;

@@ -20,6 +20,11 @@ namespace DotInitializr.UnitTests
             {
                Name = "file2",
                Content = "How can I help, {{firstName}}?"
+            },
+            new TemplateFile
+            {
+               Name = "file3",
+               Content = "{{firstName:lower}} {{lastName:lower}}"
             }
          };
 
@@ -34,6 +39,7 @@ namespace DotInitializr.UnitTests
 
          Assert.AreEqual("Greetings John Doe!", result.FirstOrDefault(x => x.Name == "file1").Content);
          Assert.AreEqual("How can I help, John?", result.FirstOrDefault(x => x.Name == "file2").Content);
+         Assert.AreEqual("john doe", result.FirstOrDefault(x => x.Name == "file3").Content);
       }
 
       [Test]

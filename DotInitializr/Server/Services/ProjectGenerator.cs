@@ -24,6 +24,9 @@ using DotInitializr.Shared;
 
 namespace DotInitializr.Server
 {
+   /// <summary>
+   /// Generates a zipped project from a metadata.
+   /// </summary>
    public interface IProjectGenerator
    {
       byte[] Generate(ProjectMetadata metadata);
@@ -46,8 +49,9 @@ namespace DotInitializr.Server
          if (templateSource == null)
             throw new Exception($"Template source '{metadata.TemplateSourceType}' is not found");
 
-         var filesToExclude = metadata.FilesToExclude?
+         var filesToExclude = string.Join(",", metadata.FilesToExclude, TemplateMetadata.FILE_NAME)
             .Replace(Path.AltDirectorySeparatorChar, Path.DirectorySeparatorChar)
+            .Trim(',')
             .Split(",");
 
          var files = templateSource

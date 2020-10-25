@@ -18,12 +18,31 @@ using System.Collections.Generic;
 
 namespace DotInitializr.Server
 {
+   /// <summary>
+   /// Provides a project template from a source repository.
+   /// </summary>
    public interface ITemplateSource
    {
+      /// <summary>
+      /// Identifies the source repository type, e.g. "git".
+      /// </summary>
       string SourceType { get; }
 
+      /// <summary>
+      /// Returns a file from a project template's source repository.
+      /// </summary>
+      /// <param name="fileName">File name to search.</param>
+      /// <param name="sourceUrl">Source repository URL.</param>
+      /// <param name="sourceDirectory">Directory in the source repository.</param>
+      /// <returns>The template file.</returns>
       TemplateFile GetFile(string fileName, string sourceUrl, string sourceDirectory = null);
 
+      /// <summary>
+      /// Returns all files from a project template's source repository.
+      /// </summary>
+      /// <param name="sourceUrl">Source repository URL.</param>
+      /// <param name="sourceDirectory">Directory in the source repository.</param>
+      /// <returns>All template files.</returns>
       IEnumerable<TemplateFile> GetFiles(string sourceUrl, string sourceDirectory = null);
    }
 }

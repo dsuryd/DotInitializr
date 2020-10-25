@@ -5,13 +5,13 @@ using NUnit.Framework;
 
 namespace DotInitializr.UnitTests
 {
-   public class TemplateReaderTest
+   public class TemplateMetadataReaderTest
    {
       [Test]
       [TestCase("https://github.com/dsuryd/DotInitializr", "DotInitializr.UnitTests\\TestTemplate")]
-      public void TemplateReader_GetMetadata_ReturnsMetadata(string sourceUrl, string directory)
+      public void TemplateMetadataReader_GetMetadata_ReturnsMetadata(string sourceUrl, string directory)
       {
-         var sut = new TemplateReader(new List<ITemplateSource> { new GitTemplateSource() });
+         var sut = new TemplateMetadataReader(new List<ITemplateSource> { new GitTemplateSource() });
 
          var result = sut.GetMetadata(new AppConfiguration.Template { Name = "TestTemplate", SourceType = "git", SourceUrl = sourceUrl, SourceDirectory = directory });
 
@@ -20,9 +20,9 @@ namespace DotInitializr.UnitTests
       }
 
       [Test]
-      public void TemplateReader_GeTags_ReturnsTagsWithDefaultValues()
+      public void TemplateMetadataReader_GeTags_ReturnsTagsWithDefaultValues()
       {
-         var sut = new TemplateReader(new List<ITemplateSource> { new GitTemplateSource() });
+         var sut = new TemplateMetadataReader(new List<ITemplateSource> { new GitTemplateSource() });
 
          var metadata = new TemplateMetadata
          {
@@ -52,9 +52,9 @@ namespace DotInitializr.UnitTests
       }
 
       [Test]
-      public void TemplateReader_GeConditionalTags_ReturnsConditionalTagsWithDefaultValues()
+      public void TemplateMetadataReader_GeConditionalTags_ReturnsConditionalTagsWithDefaultValues()
       {
-         var sut = new TemplateReader(new List<ITemplateSource> { new GitTemplateSource() });
+         var sut = new TemplateMetadataReader(new List<ITemplateSource> { new GitTemplateSource() });
 
          var metadata = new TemplateMetadata
          {
@@ -83,9 +83,9 @@ namespace DotInitializr.UnitTests
       }
 
       [Test]
-      public void TemplateReader_GetFilesToExclude_ReturnsFilesToExcludeString()
+      public void TemplateMetadataReader_GetFilesToExclude_ReturnsFilesToExcludeString()
       {
-         var sut = new TemplateReader(new List<ITemplateSource> { new GitTemplateSource() });
+         var sut = new TemplateMetadataReader(new List<ITemplateSource> { new GitTemplateSource() });
 
          var metadata = new TemplateMetadata
          {
@@ -111,9 +111,9 @@ namespace DotInitializr.UnitTests
       }
 
       [Test]
-      public void TemplateReader_GetComputedTags_ReturnsValidTags()
+      public void TemplateMetadataReader_GetComputedTags_ReturnsValidTags()
       {
-         var sut = new TemplateReader(new List<ITemplateSource> { new GitTemplateSource() });
+         var sut = new TemplateMetadataReader(new List<ITemplateSource> { new GitTemplateSource() });
 
          var metadata = new TemplateMetadata
          {
@@ -137,9 +137,9 @@ namespace DotInitializr.UnitTests
       }
 
       [Test]
-      public void TemplateReader_GetComputedTags_CountExpression_ReturnsValidTags()
+      public void TemplateMetadataReader_GetComputedTags_CountExpression_ReturnsValidTags()
       {
-         var sut = new TemplateReader(new List<ITemplateSource> { new GitTemplateSource() });
+         var sut = new TemplateMetadataReader(new List<ITemplateSource> { new GitTemplateSource() });
 
          var metadata = new TemplateMetadata
          {
@@ -162,9 +162,9 @@ namespace DotInitializr.UnitTests
       }
 
       [Test]
-      public void TemplateReader_GetComputedTagsEqual_EqualExpression_ReturnsValidTag()
+      public void TemplateMetadataReader_GetComputedTagsEqual_EqualExpression_ReturnsValidTag()
       {
-         var sut = new TemplateReader(new List<ITemplateSource> { new GitTemplateSource() });
+         var sut = new TemplateMetadataReader(new List<ITemplateSource> { new GitTemplateSource() });
 
          var metadata = new TemplateMetadata
          {

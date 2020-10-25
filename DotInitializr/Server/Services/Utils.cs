@@ -15,7 +15,6 @@ limitations under the License.
  */
 
 using System;
-using System.Diagnostics;
 using System.IO;
 
 namespace DotInitializr.Server

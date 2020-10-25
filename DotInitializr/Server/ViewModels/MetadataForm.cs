@@ -28,7 +28,7 @@ namespace DotInitializr.Server
       public const string ProjectNameKey = "projectName";
       public const string DefaultProjectName = "Starter";
 
-      private readonly ITemplateReader _templateReader;
+      private readonly ITemplateMetadataReader _templateReader;
 
       [Ignore]
       public ReactiveProperty<TemplateMetadata> MetadataLoadedEvent { get; } = new ReactiveProperty<TemplateMetadata>();
@@ -39,7 +39,7 @@ namespace DotInitializr.Server
       [Ignore]
       public TemplateMetadata ActiveMetadata => MetadataLoadedEvent.Value as TemplateMetadata;
 
-      public MetadataForm(ITemplateReader templateReader)
+      public MetadataForm(ITemplateMetadataReader templateReader)
       {
          _templateReader = templateReader;
 

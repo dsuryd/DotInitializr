@@ -18,8 +18,17 @@ using System.Collections.Generic;
 
 namespace DotInitializr.Server
 {
+   /// <summary>
+   /// Renders a set of project files from a project template and metadata.
+   /// </summary>
    public interface ITemplateRenderer
    {
+      /// <summary>
+      /// Applies the metadata tags to a set of files from a project template.
+      /// </summary>
+      /// <param name="files">Project template files.</param>
+      /// <param name="tags">Metadata tags.</param>
+      /// <returns>Project files with the metadata applied.</returns>
       IEnumerable<TemplateFile> Render(IEnumerable<TemplateFile> files, Dictionary<string, object> tags);
    }
 }
