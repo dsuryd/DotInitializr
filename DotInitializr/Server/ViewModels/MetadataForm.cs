@@ -124,8 +124,14 @@ namespace DotInitializr.Server
 
       private TemplateMetadata GetMetadata(AppConfiguration.Template template)
       {
-         var metadata = _templateReader.GetMetadata(template) ?? new TemplateMetadata();
+         TemplateMetadata metadata = null;
+         try
+         {
+            metadata = _templateReader.GetMetadata(template);
+         }
+         catch (TemplateException) { }
 
+         metadata ??= new TemplateMetadata();
          if (template != null)
          {
             var tags = metadata.Tags?.ToList() ?? new List<Tag>();

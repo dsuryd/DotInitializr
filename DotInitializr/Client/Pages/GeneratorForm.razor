@@ -2,56 +2,77 @@
 @inject HttpClient Http
 @inject IJSRuntime JSRuntime;
 
-<VMContext VM="GeneratorForm" TState="IGeneratorFormState" OnStateChange="UpdateState">
-  @if (state != null)
-  {
-    <d-form>
-        <d-panel horizontal="true">
-            <d-panel>
-                <d-dropdown-list id="Template" />
+<VMContext VM="GeneratorForm" TState="IGeneratorFormState" OnStateChange="UpdateState" OnException="HandleException">
+    @if (state != null)
+    {
+        <d-form>
+            @if (error != null)
+            {
+                <d-alert danger="true">@error</d-alert>
+            }
+            <d-panel horizontal="true">
+                <d-panel>
+                    <d-dropdown-list id="Template" />
+                </d-panel>
+                <d-panel center="true" flex="1" css="padding-top:1.5rem;color:#666">
+                    <d-label id="Description" />
+                </d-panel>
             </d-panel>
-            <d-panel center="true" flex="1" css="padding-top:1.5rem;color:#666">
-                <d-label id="Description" />
-            </d-panel>
-        </d-panel>
-        <MetadataForm />
-        <d-button id="Generate" label="Generate Project" submit="true" css="margin-top:1.5rem;padding:.25rem 3rem" />
-    </d-form>
-  }
+            <MetadataForm />
+            <d-button id="Generate" label="Generate Project" submit="true" css="margin-top:1.5rem;padding:.25rem 3rem" />
+        </d-form>
+    }
 </VMContext>
-@if (state?.Loading == true || loading)
+@if (ShowSpinner)
 {
-  <div class="spinner" />
+    <div class="spinner" />
 }
 
 @code {
-  private IGeneratorFormState state;
-  private bool loading;
+   private IGeneratorFormState state;
+   private bool loading;
+   private string error;
 
-  private void UpdateState(IGeneratorFormState state)
-  {
-    this.state = state;
-    if (state.ProjectMetadata != null)
-    {
-      this.loading = true;
-      _ = GenerateAsync(state.ProjectMetadata);
-      this.state.ClearProjectMetadata();
-    }
+   private bool ShowSpinner => (state?.Loading == true || loading) && error == null;
 
-    StateHasChanged();
-  }
+   private void UpdateState(IGeneratorFormState state)
+   {
+       this.state = state;
+       if (state.ProjectMetadata != null)
+       {
+           this.loading = true;
+           _ = GenerateAsync(state.ProjectMetadata);
+           this.state.ClearProjectMetadata();
+       }
 
-  private async Task GenerateAsync(ProjectMetadata metadata)
-  {
-    var response = await Http.PostAsJsonAsync("api/generator", state.ProjectMetadata);
-    await JSRuntime.InvokeAsync<string>("saveFile", new object[]
-    {
-      Convert.ToBase64String(await response.Content.ReadAsByteArrayAsync()),
-      response.Content.Headers.ContentDisposition.FileName,
-      response.Content.Headers.ContentType.ToString()
-    });
+       if (state.Loading == false)
+           this.error = null;
 
-    this.loading = false;
-    StateHasChanged();
-  }
+       StateHasChanged();
+   }
+
+   private async Task GenerateAsync(ProjectMetadata metadata)
+   {
+       var response = await Http.PostAsJsonAsync("api/generator", state.ProjectMetadata);
+       if (response.StatusCode == System.Net.HttpStatusCode.OK)
+       {
+           await JSRuntime.InvokeAsync<string>("saveFile", new object[]
+           {
+              Convert.ToBase64String(await response.Content.ReadAsByteArrayAsync()),
+              response.Content.Headers.ContentDisposition.FileName,
+              response.Content.Headers.ContentType.ToString()
+           });
+       }
+       else
+           this.error = await response.Content.ReadAsStringAsync();
+
+
+       this.loading = false;
+       StateHasChanged();
+   }
+
+   private void HandleException(ExceptionEventArgs e)
+   {
+       this.error = e.Message;
+   }
 }
