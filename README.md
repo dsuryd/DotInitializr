@@ -2,7 +2,7 @@
 
 DotInitializr is a simple web UI to generate an initial project structure from any project template in your git repo.
 
-It allows you to add input fields (textbox, dropdowns, radios, checkboxes) to customize your project metadata, such as the project namespace, package versions, inclusion of code snippets or files, by using either symbol-find-and-replace à la dotnet template or [Mustache](https://mustache.github.io/mustache.5.html) notation, paired with a JSON configuration file in the project template.
+It lets you add input fields (textbox, dropdowns, radios, checkboxes) to customize your project metadata, using either string-find-and-replace à la dotnet template or [Mustache](https://mustache.github.io/mustache.5.html) notation, paired with a JSON configuration file in the project template.
 
 Demo: https://dotinitializr.herokuapp.com/
 
