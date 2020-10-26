@@ -73,7 +73,7 @@ Use a tag to display a textbox, dropdown, or radio group in the Project Metadata
 
 The `projectName` tag is added by default.
 
-To change casing of a tag value, append `__lower` or `_upper` to the tag key in your source code.
+To change casing of a tag value, append `__lower` or `__upper` to the tag key in your source code.
 
 ### Conditional Tags
 
