@@ -8,6 +8,10 @@ Demo: https://dotinitializr.herokuapp.com/
 
 <img src="https://github.com/dsuryd/DotInitializr/blob/master/Screenshot.png"/>
 
+## Get Started
+
+Fork or download this repo and run it with Visual Studio 2019. The UI uses Blazor WebAssembly 3.2, so you'll need at least .NET Core SDK 3.1.300.
+
 ## How to Register a Template
 
 Add the template info to `appsettings.json`:
@@ -77,7 +81,7 @@ To change casing of a tag value, append `__lower` or `__upper` to the tag key in
 
 ### Conditional Tags
 
-Use a conditional tag to display a checkbox in the Dependencies section of the UI. The checkbox state will be used to include or exclude a code section between `#if tag_key` and `#endif` (dotnet) / `{{#tag_key}}` and `{{/tag_key}}` (mustache) in your project template. Example:
+Use a conditional tag to display a checkbox in the Dependencies section of the UI. The checkbox state will be used to include or exclude a code section between `#if tag_key` and `#endif` (dotnet) / `<!--#if tag_key-->` and `<!--#endif-->` (dotnet) / `{{#tag_key}}` and `{{/tag_key}}` (mustache) in your project template. Example:
 
 ```json
 {
