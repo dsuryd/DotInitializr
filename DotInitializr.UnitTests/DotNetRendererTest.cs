@@ -90,8 +90,19 @@ One
 #if !cond2
 Two
 #endif"
-            }
-         };
+            },
+            new TemplateFile
+            {
+               Name = "file3",
+               Content = @"You chose
+<!--#if cond1-->
+One
+<!--#endif-->
+not
+<!--#if !cond2-->
+Two
+<!--#endif-->"
+            } };
 
          var tags = new Dictionary<string, object>
          {
@@ -104,6 +115,7 @@ Two
 
          Assert.AreEqual("You chose\r\nOne\r\n", result.FirstOrDefault(x => x.Name == "file1").Content);
          Assert.AreEqual("You did not choose\r\n\r\nTwo", result.FirstOrDefault(x => x.Name == "file2").Content);
+         Assert.AreEqual("You chose\r\nOne\r\nnot\r\nTwo", result.FirstOrDefault(x => x.Name == "file3").Content);
       }
 
       [Test]

@@ -39,25 +39,12 @@ namespace DotInitializr.Server
                   if (x.Name.Contains(tag.Key))
                      x.Name = x.Name.Replace(tag.Key, string.Empty);
 
-                  Regex regex = new Regex($"#if {tag.Key}(.*?)#endif", RegexOptions.Singleline);
-                  var result = regex.Match(x.Content);
-                  if (result.Success)
-                  {
-                     if ((bool) tag.Value)
-                        x.Content = regex.Replace(x.Content, result.Groups[1].Value.Trim('\r', '\n'));
-                     else
-                        x.Content = regex.Replace(x.Content, string.Empty);
-                  }
+                  bool tagValue = (bool) tag.Value;
+                  x.Content = RenderConditional(x.Content, $"<!--#if {tag.Key}-->(.*?)<!--#endif-->", tagValue) ?? x.Content;
+                  x.Content = RenderConditional(x.Content, $"<!--#if !{tag.Key}-->(.*?)<!--#endif-->", !tagValue) ?? x.Content;
 
-                  regex = new Regex($"#if !{tag.Key}(.*?)#endif", RegexOptions.Singleline);
-                  result = regex.Match(x.Content);
-                  if (result.Success)
-                  {
-                     if ((bool) tag.Value)
-                        x.Content = regex.Replace(x.Content, string.Empty);
-                     else
-                        x.Content = regex.Replace(x.Content, result.Groups[1].Value.Trim('\r', '\n'));
-                  }
+                  x.Content = RenderConditional(x.Content, $"#if {tag.Key}(.*?)#endif", tagValue) ?? x.Content;
+                  x.Content = RenderConditional(x.Content, $"#if !{tag.Key}(.*?)#endif", !tagValue) ?? x.Content;
                }
             }
 
@@ -67,6 +54,20 @@ namespace DotInitializr.Server
                Content = x.Content
             };
          });
+      }
+
+      private string RenderConditional(string content, string pattern, bool tagValue)
+      {
+         Regex regex = new Regex(pattern, RegexOptions.Singleline);
+         var result = regex.Match(content);
+         if (result.Success)
+         {
+            if (tagValue)
+               return regex.Replace(content, result.Groups[1].Value.Trim('\r', '\n'));
+            else
+               return regex.Replace(content, string.Empty);
+         }
+         return null;
       }
    }
 }

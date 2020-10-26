@@ -1,8 +1,8 @@
 # DotInitializr
 
-DotInitializr is a simple web UI to generate an initial project structure from any project template in your git repo.  
+DotInitializr is a simple web UI to generate an initial project structure from any project template in your git repo.
 
-It allows you to add input fields (textbox, dropdowns, radios, checkboxes) to customize your project metadata, such as the project namespace, package versions, inclusion of code snippets or files, by using [Mustache](https://mustache.github.io/mustache.5.html) notation paired with a JSON configuration file in the project template.
+It allows you to add input fields (textbox, dropdowns, radios, checkboxes) to customize your project metadata, such as the project namespace, package versions, inclusion of code snippets or files, by using either symbol-find-and-replace à la dotnet template or [Mustache](https://mustache.github.io/mustache.5.html) notation, paired with a JSON configuration file in the project template.
 
 Demo: https://dotinitializr.herokuapp.com/
 
@@ -31,8 +31,10 @@ Add the template info to `appsettings.json`:
 ## How to Configure Metadata Inputs
 
 Add `dotInitializr.json` to the project root. The configuration is divided into 3 array groups:
+
 ```
 {
+  "TemplateType": "dotnet|mustache"
   "Tags": [],
   "ConditionalTags": [],
   "ComputedTags": []
@@ -41,7 +43,8 @@ Add `dotInitializr.json` to the project root. The configuration is divided into 
 
 ### Tags
 
-Use a tag to display a textbox, dropdown, or radio group in the Project Metadata section of the UI.  The input value will be used to replace the Mustache tag `{{tag_key}}` in your project template.  Example:
+Use a tag to display a textbox, dropdown, or radio group in the Project Metadata section of the UI. The input value will be used to replace `tag_key` (dotnet) / `{{tag_key}}` (mustache) in your project template. Example:
+
 ```json
 {
   "Tags": [
@@ -68,9 +71,14 @@ Use a tag to display a textbox, dropdown, or radio group in the Project Metadata
 }
 ```
 
+The `projectName` tag is added by default.
+
+To change casing of a tag value, append `__lower` or `_upper` to the tag key in your source code.
+
 ### Conditional Tags
 
-Use a conditional tag to display a checkbox in the Dependencies section of the UI.  The checkbox state will be used to include or exclude a code section between the Mustache tag `{{#tag_key}}` and `{{/tag_key}}` in your project template.  Example:
+Use a conditional tag to display a checkbox in the Dependencies section of the UI. The checkbox state will be used to include or exclude a code section between `#if tag_key` and `#endif` (dotnet) / `{{#tag_key}}` and `{{/tag_key}}` (mustache) in your project template. Example:
+
 ```json
 {
   "ConditionalTags": [
@@ -84,17 +92,18 @@ Use a conditional tag to display a checkbox in the Dependencies section of the U
       "DefaultValue": false,
       "Description": "Add Redis connectors",
       "FilesToInclude": "RedisExample1.cs,RedisExample2.cs"
-    },
+    }
   ]
 }
 ```
 
-Use the `FilesToInclude` property to specify comma-delimited files to include when the tag value is true. To include all files in a folder, use `folder_name/**`.
+Use the `FilesToInclude` property to specify comma-delimited paths to include when the tag value is true. To include all files in a folder, use `folder_name/**`.
 If a conditional tag key is used on a file name, it will be removed from the name when the file is included.
 
 ### Computed Tags
 
-Use a computed tag to derive a boolean value from the other tags with a logical expression.  Example:
+Use a computed tag to derive a boolean value from the other tags with a logical expression. Example:
+
 ```json
   "Tags": [
     {
@@ -114,7 +123,7 @@ Use a computed tag to derive a boolean value from the other tags with a logical 
       "Name": "MySql",
       "DefaultValue": false,
       "Description": "Add MySql connectors"
-    },  
+    },
   ],
   "ComputedTags": [
     {
@@ -136,7 +145,8 @@ Use a computed tag to derive a boolean value from the other tags with a logical 
 }
 ```
 
-The expression supports `Count()` custom function to count the number of conditional tags with true value.  Example:
+The expression supports `Count()` custom function to count the number of conditional tags with true value. Example:
+
 ```json
 "Expression": "Count(MongoDB, MySql) > 1"
 ```
