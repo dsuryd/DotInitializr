@@ -16,9 +16,9 @@ namespace projectName
         {
             var builder = WebAssemblyHostBuilder.CreateDefault(args);
             builder.RootComponents.Add<App>("app");
-
+#if __FetchData
             builder.Services.AddTransient(sp => new HttpClient { BaseAddress = new Uri(builder.HostEnvironment.BaseAddress) });
-
+#endif
             await builder.Build().RunAsync();
         }
     }
