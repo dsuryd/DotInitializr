@@ -1,0 +1,17 @@
+{
+  "TemplateType": "dotnet",
+  "ConditionalTags": [
+    {
+      "Key": "__Counter",
+      "Name": "Counter",
+      "Description": "Include Counter example",
+      "FilesToInclude": "Counter.razor"
+    },
+    {
+      "Key": "__FetchData",
+      "Name": "FetchData",
+      "Description": "Include FetchData example",
+      "FilesToInclude": "FetchData.razor,sample-data/**"
+    }
+  ]
+}
