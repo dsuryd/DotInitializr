@@ -26,15 +26,22 @@ namespace DotInitializr.Server
    /// </summary>
    public class MustacheRenderer : ITemplateRenderer
    {
-      private const string LOWER_CASE = ":lower";
+      public const string TEMPLATE_TYPE = "mustache";
+      private const string LOWER_CASE = "__lower";
+      private const string UPPER_CASE = "__upper";
+
+      public string TemplateType => TEMPLATE_TYPE;
 
       public IEnumerable<TemplateFile> Render(IEnumerable<TemplateFile> files, Dictionary<string, object> tags)
       {
          var conditionalTags = tags.Where(x => x.Value is bool)?.Select(x => x.Key);
 
-         var filesWithLowerCaseFormat = files.Where(x => x.Content.Contains(LOWER_CASE + "}}"));
-         foreach (var tag in tags.Where(x => x.Value is string && filesWithLowerCaseFormat.Any(y => y.Content.Contains($"{x.Key}{LOWER_CASE}"))).ToArray())
+         var filesWithFormat = files.Where(x => x.Content.Contains(LOWER_CASE) || x.Content.Contains(UPPER_CASE) || x.Name.Contains(LOWER_CASE) || x.Name.Contains(UPPER_CASE));
+         foreach (var tag in tags.Where(x => x.Value is string && filesWithFormat.Any(y => y.Content.Contains($"{x.Key}__") || y.Name.Contains($"{x.Key}__"))).ToArray())
+         {
             tags.Add($"{tag.Key}{LOWER_CASE}", tag.Value.ToString().ToLowerInvariant());
+            tags.Add($"{tag.Key}{UPPER_CASE}", tag.Value.ToString().ToUpperInvariant());
+         }
 
          try
          {

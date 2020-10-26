@@ -34,6 +34,8 @@ namespace DotInitializr.Server
    {
       public const string FILE_NAME = "dotInitializr.json";
 
+      public string TemplateType { get; set; } = DotNetRenderer.TEMPLATE_TYPE;
+
       public IEnumerable<Tag> Tags { get; set; }
       public IEnumerable<ConditionalTag> ConditionalTags { get; set; }
       public IEnumerable<ComputedTag> ComputedTags { get; set; }

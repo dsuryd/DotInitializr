@@ -5,26 +5,26 @@ using NUnit.Framework;
 
 namespace DotInitializr.UnitTests
 {
-   public class MustacheRendererTest
+   public class DotNetRendererTest
    {
       [Test]
-      public void MustacheRenderer_RenderTag()
+      public void DotNetRenderer_RenderTag()
       {
          var files = new List<TemplateFile> {
             new TemplateFile
             {
                Name = "file1",
-               Content = "Greetings {{firstName}} {{lastName}}!"
+               Content = "Greetings firstName lastName!"
             },
             new TemplateFile
             {
                Name = "file2",
-               Content = "How can I help, {{firstName}}?"
+               Content = "How can I help, firstName?"
             },
             new TemplateFile
             {
-               Name = "{{file3__upper}}",
-               Content = "{{firstName__lower}} {{lastName__upper}}"
+               Name = "file3__upper",
+               Content = "firstName__lower lastName__upper"
             }
          };
 
@@ -35,7 +35,7 @@ namespace DotInitializr.UnitTests
             { "file3", "filename3" }
          };
 
-         var sut = new MustacheRenderer();
+         var sut = new DotNetRenderer();
          var result = sut.Render(files, tags);
 
          Assert.AreEqual("Greetings John Doe!", result.FirstOrDefault(x => x.Name == "file1").Content);
@@ -44,12 +44,12 @@ namespace DotInitializr.UnitTests
       }
 
       [Test]
-      public void MustacheRenderer_RenderTagOnFileName()
+      public void DotNetRenderer_RenderTagOnFileName()
       {
          var files = new List<TemplateFile> {
             new TemplateFile
             {
-               Name = "{{projectName}}",
+               Name = "projectName",
                Content = "content"
             }
          };
@@ -59,25 +59,37 @@ namespace DotInitializr.UnitTests
             { "projectName", "StarterApp" }
          };
 
-         var sut = new MustacheRenderer();
+         var sut = new DotNetRenderer();
          var result = sut.Render(files, tags);
 
          Assert.IsTrue(result.Any(x => x.Name == "StarterApp"));
       }
 
       [Test]
-      public void MustacheRenderer_RenderConditionalTag()
+      public void DotNetRenderer_RenderConditionalTag()
       {
          var files = new List<TemplateFile> {
             new TemplateFile
             {
                Name = "file1",
-               Content = "You chose {{#cond1}}One{{/cond1}}{{#cond2}}Two{{/cond2}}"
+               Content = @"You chose
+#if cond1
+One
+#endif
+#if cond2
+Two
+#endif"
             },
             new TemplateFile
             {
                Name = "file2",
-               Content = "You did not choose {{^cond1}}One{{/cond1}}{{^cond2}}Two{{/cond2}}"
+               Content = @"You did not choose
+#if !cond1
+One
+#endif
+#if !cond2
+Two
+#endif"
             }
          };
 
@@ -87,25 +99,25 @@ namespace DotInitializr.UnitTests
             { "cond2", false }
          };
 
-         var sut = new MustacheRenderer();
+         var sut = new DotNetRenderer();
          var result = sut.Render(files, tags);
 
-         Assert.AreEqual("You chose One", result.FirstOrDefault(x => x.Name == "file1").Content);
-         Assert.AreEqual("You did not choose Two", result.FirstOrDefault(x => x.Name == "file2").Content);
+         Assert.AreEqual("You chose\r\nOne\r\n", result.FirstOrDefault(x => x.Name == "file1").Content);
+         Assert.AreEqual("You did not choose\r\n\r\nTwo", result.FirstOrDefault(x => x.Name == "file2").Content);
       }
 
       [Test]
-      public void MustacheRenderer_RenderConditionalTagOnFileName()
+      public void DotNetRenderer_RenderConditionalTagOnFileName()
       {
          var files = new List<TemplateFile> {
             new TemplateFile
             {
-               Name = "file{{cond1}}",
+               Name = "filecond1",
                Content = ""
             },
             new TemplateFile
             {
-               Name = "file{{cond1}}/subfile",
+               Name = "filecond1/subfile",
                Content = ""
             }
          };
@@ -115,7 +127,7 @@ namespace DotInitializr.UnitTests
             { "cond1", true }
          };
 
-         var sut = new MustacheRenderer();
+         var sut = new DotNetRenderer();
          var result = sut.Render(files, tags);
 
          Assert.IsTrue(result.Any(x => x.Name == "file"));

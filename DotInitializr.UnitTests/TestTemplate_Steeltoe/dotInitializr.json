@@ -1,4 +1,5 @@
 {
+  "TemplateType": "mustache",
   "Tags": [
     {
       "Key": "ProjectNameSpace",

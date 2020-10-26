@@ -24,6 +24,11 @@ namespace DotInitializr.Server
    public interface ITemplateRenderer
    {
       /// <summary>
+      /// Template system type, e.g. "mustache".
+      /// </summary>
+      string TemplateType { get; }
+
+      /// <summary>
       /// Applies the metadata tags to a set of files from a project template.
       /// </summary>
       /// <param name="files">Project template files.</param>

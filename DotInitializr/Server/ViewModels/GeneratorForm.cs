@@ -108,6 +108,7 @@ namespace DotInitializr.Server
          return new ProjectMetadata
          {
             ProjectName = nonComputedTags[MetadataForm.ProjectNameKey].ToString(),
+            TemplateType = metadata.TemplateType,
             TemplateSourceType = template.SourceType,
             TemplateSourceUrl = template.SourceUrl,
             TemplateSourceDirectory = template.SourceDirectory,

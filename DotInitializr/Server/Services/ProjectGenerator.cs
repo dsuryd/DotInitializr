@@ -35,16 +35,18 @@ namespace DotInitializr.Server
    public class ProjectGenerator : IProjectGenerator
    {
       private readonly IEnumerable<ITemplateSource> _templateSources;
-      private readonly ITemplateRenderer _mustacheRenderer;
+      private readonly IEnumerable<ITemplateRenderer> _renderers;
 
-      public ProjectGenerator(IEnumerable<ITemplateSource> templateSources, ITemplateRenderer mustacheRenderer)
+      public ProjectGenerator(IEnumerable<ITemplateSource> templateSources, IEnumerable<ITemplateRenderer> renderers)
       {
          _templateSources = templateSources;
-         _mustacheRenderer = mustacheRenderer;
+         _renderers = renderers;
       }
 
       public byte[] Generate(ProjectMetadata metadata)
       {
+         var renderer = _renderers.FirstOrDefault(x => string.Compare(x.TemplateType, metadata.TemplateType ?? MustacheRenderer.TEMPLATE_TYPE, true) == 0);
+
          var templateSource = _templateSources.FirstOrDefault(x => string.Equals(x.SourceType, metadata.TemplateSourceType, StringComparison.InvariantCultureIgnoreCase));
          if (templateSource == null)
             throw new Exception($"Template source '{metadata.TemplateSourceType}' is not found");
@@ -59,7 +61,7 @@ namespace DotInitializr.Server
             .Where(x => filesToExclude == null || !MatchFileName(x.Name, filesToExclude))
             .ToList();
 
-         return Zip(_mustacheRenderer.Render(files, metadata.Tags));
+         return Zip(renderer.Render(files, metadata.Tags));
       }
 
       private bool MatchFileName(string name, string[] files)

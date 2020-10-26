@@ -21,6 +21,7 @@ namespace DotInitializr.Shared
    public class ProjectMetadata
    {
       public string ProjectName { get; set; }
+      public string TemplateType { get; set; }
       public string TemplateSourceType { get; set; }
       public string TemplateSourceUrl { get; set; }
       public string TemplateSourceDirectory { get; set; }
