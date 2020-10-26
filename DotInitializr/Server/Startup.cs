@@ -25,6 +25,7 @@ namespace DotInitializr.Server
 
          services.AddSingleton<ITemplateSource, GitTemplateSource>();
          services.AddSingleton<ITemplateRenderer, MustacheRenderer>();
+         services.AddSingleton<ITemplateRenderer, DotNetRenderer>();
          services.AddSingleton<IProjectGenerator, ProjectGenerator>();
          services.AddSingleton<ITemplateMetadataReader, TemplateMetadataReader>();
          services.AddTransient<MetadataForm>();
