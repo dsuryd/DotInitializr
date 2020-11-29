@@ -20,9 +20,8 @@ using System.IO;
 using System.IO.Compression;
 using System.Linq;
 using System.Text;
-using DotInitializr.Shared;
 
-namespace DotInitializr.Server
+namespace DotInitializr
 {
    /// <summary>
    /// Generates a zipped project from a metadata.

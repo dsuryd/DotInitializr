@@ -1,4 +1,4 @@
-﻿namespace DotInitializr.Server
+﻿namespace DotInitializr
 {
    public class TemplateFile
    {

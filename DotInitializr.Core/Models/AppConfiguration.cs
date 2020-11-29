@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace DotInitializr.Server
+namespace DotInitializr
 {
    public class AppConfiguration
    {

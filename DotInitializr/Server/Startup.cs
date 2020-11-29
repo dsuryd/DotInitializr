@@ -22,15 +22,9 @@ namespace DotInitializr.Server
          services.AddSignalR();
          services.AddDotNetify();
          services.AddMvc();
+         services.AddDotInitializr(Configuration);
 
-         services.AddSingleton<ITemplateSource, GitTemplateSource>();
-         services.AddSingleton<ITemplateRenderer, MustacheRenderer>();
-         services.AddSingleton<ITemplateRenderer, DotNetRenderer>();
-         services.AddSingleton<IProjectGenerator, ProjectGenerator>();
-         services.AddSingleton<ITemplateMetadataReader, TemplateMetadataReader>();
          services.AddTransient<MetadataForm>();
-
-         services.AddSingleton(Configuration.GetSection(AppConfiguration.SECTION).Get<AppConfiguration>() ?? new AppConfiguration());
       }
 
       public void Configure(IApplicationBuilder app, IWebHostEnvironment env)

@@ -17,11 +17,10 @@ limitations under the License.
 using System;
 using System.Net;
 using System.Linq;
-using DotInitializr.Shared;
 using Microsoft.AspNetCore.Mvc;
 using System.Text.Json;
 
-namespace DotInitializr.Server
+namespace DotInitializr
 {
    [Route("api/[controller]")]
    [ApiController]

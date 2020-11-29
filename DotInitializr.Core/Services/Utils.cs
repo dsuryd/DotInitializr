@@ -17,7 +17,7 @@ limitations under the License.
 using System;
 using System.IO;
 
-namespace DotInitializr.Server
+namespace DotInitializr
 {
    public class Utils
    {

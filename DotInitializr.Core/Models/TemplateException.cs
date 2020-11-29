@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace DotInitializr.Server
+namespace DotInitializr
 {
    public class TemplateException : Exception
    {

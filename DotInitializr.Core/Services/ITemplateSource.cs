@@ -16,7 +16,7 @@ limitations under the License.
 
 using System.Collections.Generic;
 
-namespace DotInitializr.Server
+namespace DotInitializr
 {
    /// <summary>
    /// Provides a project template from a source repository.

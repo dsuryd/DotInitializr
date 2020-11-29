@@ -19,7 +19,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Stubble.Core.Builders;
 
-namespace DotInitializr.Server
+namespace DotInitializr
 {
    /// <summary>
    /// Renders a set of project files from a project template and metadata that uses Mustache notations (http://mustache.github.io/mustache.5.html).

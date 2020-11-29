@@ -20,7 +20,7 @@ using System.Linq;
 using System.Text.Json;
 using DynamicExpresso;
 
-namespace DotInitializr.Server
+namespace DotInitializr
 {
    /// <summary>
    /// Reads metadata from a project template.

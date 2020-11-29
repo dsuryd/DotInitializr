@@ -16,7 +16,7 @@ limitations under the License.
 
 using System.Collections.Generic;
 
-namespace DotInitializr.Server
+namespace DotInitializr
 {
    /// <summary>
    /// Renders a set of project files from a project template and metadata.
