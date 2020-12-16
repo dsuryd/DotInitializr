@@ -1,5 +1,7 @@
 # DotInitializr
 
+[![NuGet](https://img.shields.io/nuget/v/DotInitializr.svg?style=flat-square)](https://www.nuget.org/packages/DotInitializr/)
+
 DotInitializr is a simple web UI to generate an initial project structure from any project template in your git repo.
 
 It lets you add input fields (textbox, dropdowns, radios, checkboxes) to customize your project metadata, using either string-find-and-replace à la dotnet template or [Mustache](https://mustache.github.io/mustache.5.html) notation, paired with a JSON configuration file in the project template.
@@ -8,9 +10,38 @@ Demo: https://dotinitializr.herokuapp.com/
 
 ## Get Started
 
+### Use only the API
+
+Add the Nuget package __DotInitializr__  to your ASP.NET Core 3.x project, and include the following in the `ConfigureServices`:
+```c#
+services.AddDotInitializr(Configuration);
+```
+
+Access the API through the `api/generator` endpoint.  Specify the metadata in the JSON body, for example:
+```json
+{
+   "projectName":"Starter",
+   "templateType":"mustache",
+   "templateSourceType":"git",
+   "templateSourceUrl":"https://github.com/dsuryd/DotInitializr",
+   "templateSourceDirectory":"DotInitializr.UnitTests\\TestTemplate",
+   "tags":{
+      "projectName":"Starter",
+      "namespace":"Starter",
+      "ui":"React",
+      "grpc":false,
+      "react":true
+   },
+   "filesToExclude":"Services/**,Proto/**,ClientApp{{ng}}/**"
+}
+```
+
+
+### Use the Website + API
+
 Fork or download this repo and run it with Visual Studio 2019. The UI uses Blazor WebAssembly 3.2, so you'll need at least .NET Core SDK 3.1.300.
 
-## How to Register a Template
+### How to Register a Template
 
 Add the template info to `appsettings.json`:
 
