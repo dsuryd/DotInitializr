@@ -3,8 +3,8 @@ using System.Net;
 using System.Net.Http.Json;
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using DotInitializr.Server;
-using DotInitializr.Shared;
+using DotInitializr.Website.Server;
+using DotInitializr.Website.Shared;
 using Microsoft.AspNetCore.Mvc.Testing;
 using NUnit.Framework;
 

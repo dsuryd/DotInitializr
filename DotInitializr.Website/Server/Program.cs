@@ -7,7 +7,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 
-namespace DotInitializr.Server
+namespace DotInitializr.Website.Server
 {
    public class Program
    {

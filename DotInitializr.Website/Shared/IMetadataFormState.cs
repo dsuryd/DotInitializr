@@ -16,7 +16,7 @@ limitations under the License.
 
 using System.Collections.Generic;
 
-namespace DotInitializr.Shared
+namespace DotInitializr.Website.Shared
 {
    public enum InputType
    {

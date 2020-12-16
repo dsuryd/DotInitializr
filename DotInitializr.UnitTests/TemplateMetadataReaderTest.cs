@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
-using DotInitializr.Server;
+using DotInitializr.Website.Server;
 using NUnit.Framework;
 
 namespace DotInitializr.UnitTests

@@ -27,7 +27,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\DotInitializr\Server\DotInitializr.Server.csproj" />
+    <ProjectReference Include="..\DotInitializr.Website\Server\DotInitializr.Website.Server.csproj" />
   </ItemGroup>
 
 </Project>

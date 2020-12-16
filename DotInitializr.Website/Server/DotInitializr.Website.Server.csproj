@@ -12,8 +12,8 @@
 
   <ItemGroup>
     <ProjectReference Include="..\..\DotInitializr.Core\DotInitializr.Core.csproj" />
-    <ProjectReference Include="..\Client\DotInitializr.Client.csproj" />
-    <ProjectReference Include="..\Shared\DotInitializr.Shared.csproj" />
+    <ProjectReference Include="..\Client\DotInitializr.Website.Client.csproj" />
+    <ProjectReference Include="..\Shared\DotInitializr.Website.Shared.csproj" />
   </ItemGroup>
 
 

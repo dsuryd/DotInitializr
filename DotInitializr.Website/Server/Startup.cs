@@ -6,7 +6,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 
-namespace DotInitializr.Server
+namespace DotInitializr.Website.Server
 {
    public class Startup
    {

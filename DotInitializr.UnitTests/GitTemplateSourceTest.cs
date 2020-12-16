@@ -1,6 +1,6 @@
 using System.Linq;
 using System.Text.Json;
-using DotInitializr.Server;
+using DotInitializr.Website.Server;
 using NUnit.Framework;
 
 namespace DotInitializr.UnitTests

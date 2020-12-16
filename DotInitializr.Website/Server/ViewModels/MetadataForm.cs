@@ -17,11 +17,11 @@ limitations under the License.
 using System.Collections.Generic;
 using System.Linq;
 using System.Reactive.Linq;
-using DotInitializr.Shared;
+using DotInitializr.Website.Shared;
 using DotNetify;
 using DotNetify.Elements;
 
-namespace DotInitializr.Server
+namespace DotInitializr.Website.Server
 {
    public class MetadataForm : BaseVM
    {

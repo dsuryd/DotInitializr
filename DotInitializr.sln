@@ -3,15 +3,15 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 16
 VisualStudioVersion = 16.0.30128.74
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DotInitializr.Server", "DotInitializr\Server\DotInitializr.Server.csproj", "{415C9E90-4080-4421-93A7-B56F282FCCAB}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DotInitializr.Website.Server", "DotInitializr.Website\Server\DotInitializr.Website.Server.csproj", "{415C9E90-4080-4421-93A7-B56F282FCCAB}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DotInitializr.Client", "DotInitializr\Client\DotInitializr.Client.csproj", "{6B8C938E-3297-4215-83EA-EDFDEDACA0B0}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DotInitializr.Website.Client", "DotInitializr.Website\Client\DotInitializr.Website.Client.csproj", "{6B8C938E-3297-4215-83EA-EDFDEDACA0B0}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DotInitializr.Shared", "DotInitializr\Shared\DotInitializr.Shared.csproj", "{2BF069AE-0E49-48C4-8B32-FFE745DE33C5}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DotInitializr.Website.Shared", "DotInitializr.Website\Shared\DotInitializr.Website.Shared.csproj", "{2BF069AE-0E49-48C4-8B32-FFE745DE33C5}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DotInitializr.UnitTests", "DotInitializr.UnitTests\DotInitializr.UnitTests.csproj", "{3B75B872-0CCE-4C55-AE06-07496F90A58B}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DotInitializr.Core", "DotInitializr.Core\DotInitializr.Core.csproj", "{D9CE4E5C-0466-4278-834F-BE1D0AAB07B8}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DotInitializr.Core", "DotInitializr.Core\DotInitializr.Core.csproj", "{D9CE4E5C-0466-4278-834F-BE1D0AAB07B8}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
