@@ -10,7 +10,7 @@ Demo: https://dotinitializr.herokuapp.com/
 
 ## Get Started
 
-### Use only the API
+### Run the API only
 
 Add the Nuget package __DotInitializr__  to your ASP.NET Core 3.x project, and include the following in the `ConfigureServices`:
 ```c#
@@ -37,11 +37,11 @@ Access the API through the `api/generator` endpoint.  Specify the metadata in th
 ```
 
 
-### Use the Website + API
+### Run the Website 
 
 Fork or download this repo and run it with Visual Studio 2019. The UI uses Blazor WebAssembly 3.2, so you'll need at least .NET Core SDK 3.1.300.
 
-### How to Register a Template
+#### How to Register a Template
 
 Add the template info to `appsettings.json`:
 
@@ -61,7 +61,7 @@ Add the template info to `appsettings.json`:
 }
 ```
 
-## How to Configure Metadata Inputs
+## How to Configure Your Template Metadata
 
 Add `dotInitializr.json` to the project root. The configuration is divided into 3 array groups:
 
