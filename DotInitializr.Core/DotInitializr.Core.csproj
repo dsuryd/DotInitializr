@@ -10,7 +10,7 @@
     <Copyright>Copyright 2020</Copyright>
     <PackageLicenseFile>LICENSE</PackageLicenseFile>
     <PackageProjectUrl>https://github.com/dsuryd/DotInitializr</PackageProjectUrl>
-    <RepositoryUrl>https://github.com/dsuryd/dotNetify</RepositoryUrl>
+    <RepositoryUrl>https://github.com/dsuryd/DotInitializr</RepositoryUrl>
     <PackageTags>dotnet initializr</PackageTags>
   </PropertyGroup>
 
