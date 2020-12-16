@@ -6,8 +6,6 @@ It lets you add input fields (textbox, dropdowns, radios, checkboxes) to customi
 
 Demo: https://dotinitializr.herokuapp.com/
 
-<img src="https://github.com/dsuryd/DotInitializr/blob/master/Screenshot.png"/>
-
 ## Get Started
 
 Fork or download this repo and run it with Visual Studio 2019. The UI uses Blazor WebAssembly 3.2, so you'll need at least .NET Core SDK 3.1.300.
