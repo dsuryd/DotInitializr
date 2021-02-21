@@ -39,9 +39,11 @@ namespace DotInitializr.Website.Server
             app.UseExceptionHandler("/Error");
          }
 
-         // Don;t use DefaultTraceListener to prevent "fail fast".
+         // Don't use DefaultTraceListener to prevent "fail fast".
          Trace.Listeners.Clear();
          Trace.Listeners.Add(new ConsoleTraceListener());
+
+         app.UseHttpsRedirection();
 
          app.UseWebSockets();
          app.UseDotNetify(config =>
