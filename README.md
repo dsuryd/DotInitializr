@@ -6,7 +6,7 @@ DotInitializr is a simple web UI to generate an initial project structure from a
 
 It lets you add input fields (textbox, dropdowns, radios, checkboxes) to customize your project metadata, using either string-find-and-replace à la dotnet template or [Mustache](https://mustache.github.io/mustache.5.html) notation, paired with a JSON configuration file in the project template.
 
-Demo: https://apptemplate.donetify.net
+Demo: https://apptemplate.dotnetify.net
 
 ## Get Started
 
