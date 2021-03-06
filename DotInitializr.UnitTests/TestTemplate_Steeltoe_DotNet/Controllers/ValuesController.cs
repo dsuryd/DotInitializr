@@ -290,7 +290,7 @@ namespace ProjectNameSpace.Controllers
             return new string[] { appInstance, appName };
         }
 #endif
-#endif
+#endif //!MoreThanOneValuesControllerWithArgs
 #if MoreThanOneValuesControllerWithArgs
         [HttpGet]
 public ActionResult<string> Get()
