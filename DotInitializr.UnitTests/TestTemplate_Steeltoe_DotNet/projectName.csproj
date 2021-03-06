@@ -2,82 +2,82 @@
 
   <PropertyGroup>
     <TargetFramework>netcoreapp3.1</TargetFramework>
- <!--if #Auth -->
+ <!--#if Auth -->
     <UserSecretsId >UserSecretsId</UserSecretsId>
 <!--#endif-->
-<!--if #ExcludeLaunchSettings -->
+<!--#if ExcludeLaunchSettings -->
     <NoDefaultLaunchSettingsFile>True</NoDefaultLaunchSettingsFile>
 <!--#endif-->
     <AspNetCoreHostingModel>InProcess</AspNetCoreHostingModel>
     </PropertyGroup>
 
   <ItemGroup >
-<!--if #OrganizationalAuth -->  
+<!--#if OrganizationalAuth -->  
     <PackageReference Include="Microsoft.AspNetCore.Authentication.AzureAD.UI" Version="3.1.12" />
 <!--#endif-->
-<!--if #IndividualB2CAuth -->  
+<!--#if IndividualB2CAuth -->  
     <PackageReference Include="Microsoft.AspNetCore.Authentication.AzureADB2C.UI" Version="3.1.12" />
 <!--#endif-->
-<!--if #RequiresHttps -->      
+<!--#if RequiresHttps -->      
     <PackageReference Include="Microsoft.AspNetCore.HttpsPolicy" Version="2.2.0" />
 <!--#endif-->
-<!--if #AnyEFCore -->          
+<!--#if AnyEFCore -->          
     <PackageReference Include="Microsoft.EntityFrameworkCore" Version="3.1.12" />
 <!--#endif-->
 <!--if #MongoDB -->              
     <PackageReference Include="MongoDB.Driver" Version="2.8.1" />
 <!--#endif-->
-<!--if #MySql -->       
+<!--#if MySql -->       
     <PackageReference Include="MySql.Data" Version="8.0.16" />
 <!--#endif-->
-<!--if #Postgres -->           
+<!--#if Postgres -->           
     <PackageReference Include="Npgsql" Version="4.1.2" />
 <!--#endif-->
-<!--if #CircuitBreaker -->        
+<!--#if CircuitBreaker -->        
     <PackageReference Include="Steeltoe.CircuitBreaker.HystrixCore" Version="3.0.0" />
 <!--#endif-->
-<!--if #CloudFoundry -->       
+<!--#if CloudFoundry -->       
     <PackageReference Include="Steeltoe.Common.Hosting"  Version="3.0.0" />
 <!--#endif-->
-<!--if #AnyConnector -->           
+<!--#if AnyConnector -->           
     <PackageReference Include="Steeltoe.Connector.ConnectorCore"  Version="3.0.0"/>
     <PackageReference Include="Steeltoe.Connector.CloudFoundry"  Version="3.0.0"/>
 <!--#endif-->
-<!--if #AnyEFCore -->       
+<!--#if AnyEFCore -->       
     <PackageReference Include="Steeltoe.Connector.EFCore"  Version="3.0.0" />
 <!--#endif-->
-<!--if #SQLServer -->           
+<!--#if SQLServer -->           
     <PackageReference Include="Steeltoe.Connector.EFCore"  Version="3.0.0" />
 <!--#endif-->
-<!--if #Discovery -->               
+<!--#if Discovery -->               
     <PackageReference Include="Steeltoe.Discovery.ClientCore" Version="3.0.0"/>
 <!--#endif-->
-<!--if #CloudFoundry -->       
+<!--#if CloudFoundry -->       
     <PackageReference Include="Steeltoe.Extensions.Configuration.CloudFoundryCore"  Version="3.0.0" />
 <!--#endif-->
-<!--if #PlaceholderConfig --> 
+<!--#if PlaceholderConfig --> 
     <PackageReference Include="Steeltoe.Extensions.Configuration.PlaceholderCore" Version="3.0.0" />
 <!--#endif-->
-<!--if #ActuatorsOrCloudFoundry -->  
+<!--#if ActuatorsOrCloudFoundry -->  
     <PackageReference Include="Steeltoe.Extensions.Logging.DynamicSerilogCore" Version="3.0.0" />
 <!--#endif-->
-<!--if #DynamicLogger -->      
+<!--#if DynamicLogger -->      
     <PackageReference Include="Steeltoe.Extensions.Logging.DynamicSerilogCore" Version="3.0.0" />
 <!--#endif-->
 <!--if #ActuatorsOrCloudFoundry -->          
     <PackageReference Include="Steeltoe.Management.CloudFoundryCore" Version="3.0.0" />
 <!--#endif-->
-<!--if #ConfigServer --> 
+<!--#if ConfigServer --> 
     <PackageReference Include="Steeltoe.Extensions.Configuration.ConfigServerCore" Version="3.0.0" />
 <!--#endif-->
-<!--if #RandomValueConfig --> 
+<!--#if RandomValueConfig --> 
     <PackageReference Include="Steeltoe.Extensions.Configuration.RandomValueBase" Version="3.0.0" />
 <!--#endif-->
-<!--if #AzureSpringCloud -->    
+<!--#if AzureSpringCloud -->    
     <PackageReference Include="Microsoft.Azure.SpringCloud.Client" Version="1.0.0-alpha.1" />
 <!--#endif-->
     <PackageReference Include="Newtonsoft.Json" Version="12.0.2" />
-<!--if #Redis -->        
+<!--#if Redis -->        
     <PackageReference Include="Microsoft.Extensions.Caching.StackExchangeRedis" Version="3.1.0" />
 <!--#endif-->
 <!--if #PostgresEFCore -->        
@@ -87,7 +87,7 @@
     <PackageReference Include="RabbitMQ.Client"  Version="5.1.0" />
 <!--#endif-->
   </ItemGroup>
-<!--if #CircuitBreaker -->              
+<!--#if CircuitBreaker -->              
   <ItemGroup Condition="'$(BUILD)' == ''">
     <PackageReference Include="Steeltoe.CircuitBreaker.Hystrix.MetricsStreamCore" Version="3.0.0" />
     <PackageReference Include="RabbitMQ.Client" Version="5.1.0" />
