@@ -13,6 +13,7 @@
       "Name": "SteeltoeVersion",
       "DefaultValue": "3.0.0",
       "Description": "Target the appropriate Steeltoe version",
+      "Regex": "<PackageReference Include=\"Steeltoe.[\\w|.]+\" Version=\"([0-9|.]+)+\" />",
       "RadioOptions": ["2.4.4", "3.0.0"]
     },
     {
@@ -23,21 +24,25 @@
     },
     {
       "Name": "MySqlVersion",
+      "Regex": "<PackageReference Include=\"MySql.Data\" Version=\"([0-9|.]+)+\" />",
       "DefaultValue": "8.0.16"
     },
 
     {
       "Name": "NpgSqlVersion",
+      "Regex": "<PackageReference Include=\"Npgsql\" Version=\"([0-9|.]+)+\" />",
       "DefaultValue": "4.1.2"
     },
 
     {
       "Name": "MongoDBVersion",
+      "Regex": "<PackageReference Include=\"MongoDB.Driver\" Version=\"([0-9|.]+)+\" />",      
       "DefaultValue": "2.8.1"
     },
 
     {
       "Name": "RabbitMQVersion",
+      "Regex": "<PackageReference Include=\"RabbitMQ.Client\" Version=\"([0-9|.]+)+\" />",
       "DefaultValue": "5.1.0"
     }
   ],
