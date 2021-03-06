@@ -110,7 +110,7 @@ The `projectName` tag is added by default.
 
 To change casing of a tag value, append `__lower` or `__upper` to the tag key in your source code.
 
-#### Matching with Regex
+#### Regex Matching
 
 If matching by tag key isn't possible, you can specify a _Regex_ property.  Example:
 
