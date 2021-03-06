@@ -245,5 +245,73 @@ Two
 
          Assert.AreEqual("You chose\r\nTwo\r\n", result.FirstOrDefault(x => x.Name == "file1").Content);
       }
+
+      [Test]
+      public void DotNetRenderer_RenderTagRegex()
+      {
+         var files = new List<TemplateFile> {
+            new TemplateFile
+            {
+               Name = "file1",
+               Content = @"<ItemGroup>
+   <PackageReference Include=""MongoDB.Driver"" Version=""2.8.1"" />
+   <PackageReference Include=""AspNetCore.App"" Version=""2.2.0"" />
+</ItemGroup>"
+            }
+         };
+
+         var tags = new Dictionary<string, object>
+         {
+            { "mongo_ver", "3.0.1" }
+         };
+
+         var tagPatterns = new Dictionary<string, string>
+         {
+            { "mongo_ver", "<PackageReference Include=\"MongoDB.Driver\" Version=\"([0-9|.]+)+\" />" }
+         };
+
+         var sut = new DotNetRenderer();
+         var result = sut.Render(files, tags, tagPatterns);
+
+         Assert.AreEqual(@"<ItemGroup>
+   <PackageReference Include=""MongoDB.Driver"" Version=""3.0.1"" />
+   <PackageReference Include=""AspNetCore.App"" Version=""2.2.0"" />
+</ItemGroup>",
+            result.FirstOrDefault(x => x.Name == "file1").Content);
+      }
+
+      [Test]
+      public void DotNetRenderer_RenderMultipleTagRegex()
+      {
+         var files = new List<TemplateFile> {
+            new TemplateFile
+            {
+               Name = "file1",
+               Content = @"<ItemGroup>
+   <PackageReference Include=""Steeltoe.Common.Hosting"" Version=""2.8.1"" />
+   <PackageReference Include=""Steeltoe.Connector.EFCore"" Version=""2.2.0"" />
+</ItemGroup>"
+            }
+         };
+
+         var tags = new Dictionary<string, object>
+         {
+            { "steeltoe_ver", "3.0.1" }
+         };
+
+         var tagPatterns = new Dictionary<string, string>
+         {
+            { "steeltoe_ver", "<PackageReference Include=\"Steeltoe.[\\w|.]+\" Version=\"([0-9|.]+)+\" />" }
+         };
+
+         var sut = new DotNetRenderer();
+         var result = sut.Render(files, tags, tagPatterns);
+
+         Assert.AreEqual(@"<ItemGroup>
+   <PackageReference Include=""Steeltoe.Common.Hosting"" Version=""3.0.1"" />
+   <PackageReference Include=""Steeltoe.Connector.EFCore"" Version=""3.0.1"" />
+</ItemGroup>",
+            result.FirstOrDefault(x => x.Name == "file1").Content);
+      }
    }
 }

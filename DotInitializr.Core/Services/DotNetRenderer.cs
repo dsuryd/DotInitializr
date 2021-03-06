@@ -12,8 +12,11 @@ namespace DotInitializr
 
       public string TemplateType => TEMPLATE_TYPE;
 
-      public IEnumerable<TemplateFile> Render(IEnumerable<TemplateFile> files, Dictionary<string, object> tags)
+      public IEnumerable<TemplateFile> Render(IEnumerable<TemplateFile> files, Dictionary<string, object> tags) => Render(files, tags, null);
+
+      public IEnumerable<TemplateFile> Render(IEnumerable<TemplateFile> files, Dictionary<string, object> tags, Dictionary<string, string> tagPatterns)
       {
+         // Add tag lower-case and upper-case support.
          var filesWithFormat = files.Where(x => x.Content.Contains(LOWER_CASE) || x.Content.Contains(UPPER_CASE) || x.Name.Contains(LOWER_CASE) || x.Name.Contains(UPPER_CASE));
          foreach (var tag in tags.Where(x => x.Value is string && filesWithFormat.Any(y => y.Content.Contains($"{x.Key}__") || y.Name.Contains($"{x.Key}__"))).ToArray())
          {
@@ -27,11 +30,20 @@ namespace DotInitializr
             {
                foreach (var tag in tags.Where(x => x.Value is string).OrderByDescending(x => x.Key.Length))
                {
-                  if (x.Name.Contains(tag.Key))
-                     x.Name = x.Name.Replace(tag.Key, tag.Value.ToString());
+                  string tagPattern = tagPatterns?.ContainsKey(tag.Key) == true ? tagPatterns[tag.Key] : null;
+                  if (tagPattern != null)
+                  {
+                     x.Name = RenderPattern(x.Name, tagPattern, tag.Value.ToString());
+                     x.Content = RenderPattern(x.Content, tagPattern, tag.Value.ToString());
+                  }
+                  else
+                  {
+                     if (x.Name.Contains(tag.Key))
+                        x.Name = x.Name.Replace(tag.Key, tag.Value.ToString());
 
-                  if (x.Content.Contains(tag.Key))
-                     x.Content = x.Content.Replace(tag.Key, tag.Value.ToString());
+                     if (x.Content.Contains(tag.Key))
+                        x.Content = x.Content.Replace(tag.Key, tag.Value.ToString());
+                  }
                }
 
                foreach (var tag in tags.Where(x => x.Value is bool))
@@ -43,17 +55,17 @@ namespace DotInitializr
                   string singleNewLine = "(?:\\r\\n|\\n)";
                   string newLine = $"{singleNewLine}?";
 
-                  x.Content = RenderConditional(x.Content, $"<!--#if {tag.Key}-->(.*?)<!--#endif-->{newLine}", tagValue) ?? x.Content;
-                  x.Content = RenderConditional(x.Content, $"<!--#if !{tag.Key}-->(.*?)<!--#endif-->{newLine}", !tagValue) ?? x.Content;
+                  x.Content = RenderConditional(x.Content, $"<!--#if {tag.Key}-->(.*?)<!--#endif-->{newLine}", tagValue);
+                  x.Content = RenderConditional(x.Content, $"<!--#if !{tag.Key}-->(.*?)<!--#endif-->{newLine}", !tagValue);
 
-                  x.Content = RenderConditional(x.Content, $"\"#if {tag.Key}\": \"\"(.*?)\"#endif\": \"\",?{newLine}", tagValue) ?? x.Content;
-                  x.Content = RenderConditional(x.Content, $"\"#if !{tag.Key}\": \"\"(.*?)\"#endif\": \"\",?{newLine}", !tagValue) ?? x.Content;
+                  x.Content = RenderConditional(x.Content, $"\"#if {tag.Key}\": \"\"(.*?)\"#endif\": \"\",?{newLine}", tagValue);
+                  x.Content = RenderConditional(x.Content, $"\"#if !{tag.Key}\": \"\"(.*?)\"#endif\": \"\",?{newLine}", !tagValue);
 
-                  x.Content = RenderConditional(x.Content, $"#if {tag.Key}(.*?)#endif //{tag.Key}{newLine}", tagValue) ?? x.Content;
-                  x.Content = RenderConditional(x.Content, $"#if !{tag.Key}(.*?)#endif //!{tag.Key}{newLine}", !tagValue) ?? x.Content;
+                  x.Content = RenderConditional(x.Content, $"#if {tag.Key}(.*?)#endif //{tag.Key}{newLine}", tagValue);
+                  x.Content = RenderConditional(x.Content, $"#if !{tag.Key}(.*?)#endif //!{tag.Key}{newLine}", !tagValue);
 
-                  x.Content = RenderConditional(x.Content, $"#if {tag.Key}{singleNewLine}(.*?)#endif{newLine}", tagValue) ?? x.Content;
-                  x.Content = RenderConditional(x.Content, $"#if !{tag.Key}{singleNewLine}(.*?)#endif{newLine}", !tagValue) ?? x.Content;
+                  x.Content = RenderConditional(x.Content, $"#if {tag.Key}{singleNewLine}(.*?)#endif{newLine}", tagValue);
+                  x.Content = RenderConditional(x.Content, $"#if !{tag.Key}{singleNewLine}(.*?)#endif{newLine}", !tagValue);
                }
             }
 
@@ -76,7 +88,17 @@ namespace DotInitializr
             else
                return regex.Replace(content, string.Empty);
          }
-         return null;
+         return content;
+      }
+
+      private string RenderPattern(string content, string pattern, string value)
+      {
+         Regex regex = new Regex(pattern, RegexOptions.Singleline);
+         var result = regex.Match(content);
+         if (result.Success && result.Groups.Count > 1)
+            return regex.Replace(content, m => m.Groups[0].Value.Replace(m.Groups[1].Value, value));
+
+         return content;
       }
    }
 }

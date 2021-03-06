@@ -8,6 +8,7 @@ namespace DotInitializr
       public string Name { get; set; }
       public string Description { get; set; }
       public string DefaultValue { get; set; }
+      public string Regex { get; set; }
       public string ValidationRegex { get; set; }
       public string ValidationError { get; set; }
       public string[] Options { get; set; }

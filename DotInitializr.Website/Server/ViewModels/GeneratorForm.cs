@@ -114,6 +114,7 @@ namespace DotInitializr.Website.Server
             TemplateSourceDirectory = template.SourceDirectory,
             FilesToExclude = _templateReader.GetFilesToExclude(metadata, booleanTags),
             Tags = allTags,
+            TagRegexes = _templateReader.GetTagRegexes(metadata)
          };
       }
    }

@@ -32,7 +32,9 @@ namespace DotInitializr
 
       public string TemplateType => TEMPLATE_TYPE;
 
-      public IEnumerable<TemplateFile> Render(IEnumerable<TemplateFile> files, Dictionary<string, object> tags)
+      public IEnumerable<TemplateFile> Render(IEnumerable<TemplateFile> files, Dictionary<string, object> tags) => Render(files, tags, null);
+
+      public IEnumerable<TemplateFile> Render(IEnumerable<TemplateFile> files, Dictionary<string, object> tags, Dictionary<string, string> tagRegexes)
       {
          var conditionalTags = tags.Where(x => x.Value is bool)?.Select(x => x.Key);
 

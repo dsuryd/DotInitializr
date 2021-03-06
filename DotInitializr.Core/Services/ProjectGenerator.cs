@@ -60,7 +60,7 @@ namespace DotInitializr
             .Where(x => filesToExclude == null || !MatchFileName(x.Name, filesToExclude))
             .ToList();
 
-         return Zip(renderer.Render(files, metadata.Tags));
+         return Zip(renderer.Render(files, metadata.Tags, metadata.TagRegexes));
       }
 
       private bool MatchFileName(string name, string[] files)

@@ -26,6 +26,7 @@ namespace DotInitializr
       public string TemplateSourceUrl { get; set; }
       public string TemplateSourceDirectory { get; set; }
       public Dictionary<string, object> Tags { get; set; }
+      public Dictionary<string, string> TagRegexes { get; set; }
       public string FilesToExclude { get; set; }
    }
 }

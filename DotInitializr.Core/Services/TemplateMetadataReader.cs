@@ -35,6 +35,8 @@ namespace DotInitializr
 
       Dictionary<string, string> GetTags(TemplateMetadata metadata);
 
+      Dictionary<string, string> GetTagRegexes(TemplateMetadata metadata);
+
       string GetFilesToExclude(TemplateMetadata metadata, Dictionary<string, bool> conditionalTags);
    }
 
@@ -135,6 +137,17 @@ namespace DotInitializr
          if (metadata?.Tags != null)
             foreach (var tag in metadata.Tags)
                result.Add(tag.Key, tag.DefaultValue);
+
+         return result;
+      }
+
+      public Dictionary<string, string> GetTagRegexes(TemplateMetadata metadata)
+      {
+         var result = new Dictionary<string, string>();
+
+         if (metadata?.Tags != null)
+            foreach (var tag in metadata.Tags.Where(x => !string.IsNullOrWhiteSpace(x.Regex)))
+               result.Add(tag.Key, tag.Regex);
 
          return result;
       }
