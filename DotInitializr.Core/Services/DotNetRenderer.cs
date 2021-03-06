@@ -40,7 +40,9 @@ namespace DotInitializr
                      x.Name = x.Name.Replace(tag.Key, string.Empty);
 
                   bool tagValue = (bool) tag.Value;
-                  string newLine = "(\\r\\n)?";
+                  string singleNewLine = "(?:\\r\\n|\\n)";
+                  string newLine = $"{singleNewLine}?";
+
                   x.Content = RenderConditional(x.Content, $"<!--#if {tag.Key}-->(.*?)<!--#endif-->{newLine}", tagValue) ?? x.Content;
                   x.Content = RenderConditional(x.Content, $"<!--#if !{tag.Key}-->(.*?)<!--#endif-->{newLine}", !tagValue) ?? x.Content;
 
@@ -50,8 +52,8 @@ namespace DotInitializr
                   x.Content = RenderConditional(x.Content, $"#if {tag.Key}(.*?)#endif //{tag.Key}{newLine}", tagValue) ?? x.Content;
                   x.Content = RenderConditional(x.Content, $"#if !{tag.Key}(.*?)#endif //!{tag.Key}{newLine}", !tagValue) ?? x.Content;
 
-                  x.Content = RenderConditional(x.Content, $"#if {tag.Key}\\r\\n(.*?)#endif{newLine}", tagValue) ?? x.Content;
-                  x.Content = RenderConditional(x.Content, $"#if !{tag.Key}\\r\\n(.*?)#endif{newLine}", !tagValue) ?? x.Content;
+                  x.Content = RenderConditional(x.Content, $"#if {tag.Key}{singleNewLine}(.*?)#endif{newLine}", tagValue) ?? x.Content;
+                  x.Content = RenderConditional(x.Content, $"#if !{tag.Key}{singleNewLine}(.*?)#endif{newLine}", !tagValue) ?? x.Content;
                }
             }
 
