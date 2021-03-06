@@ -1,0 +1,100 @@
+﻿<Project Sdk="Microsoft.NET.Sdk.Web">
+
+  <PropertyGroup>
+    <TargetFramework>netcoreapp3.1</TargetFramework>
+ <!--if #Auth -->
+    <UserSecretsId >UserSecretsId</UserSecretsId>
+<!--#endif-->
+<!--if #ExcludeLaunchSettings -->
+    <NoDefaultLaunchSettingsFile>True</NoDefaultLaunchSettingsFile>
+<!--#endif-->
+    <AspNetCoreHostingModel>InProcess</AspNetCoreHostingModel>
+    </PropertyGroup>
+
+  <ItemGroup >
+<!--if #OrganizationalAuth -->  
+    <PackageReference Include="Microsoft.AspNetCore.Authentication.AzureAD.UI" Version="3.1.12" />
+<!--#endif-->
+<!--if #IndividualB2CAuth -->  
+    <PackageReference Include="Microsoft.AspNetCore.Authentication.AzureADB2C.UI" Version="3.1.12" />
+<!--#endif-->
+<!--if #RequiresHttps -->      
+    <PackageReference Include="Microsoft.AspNetCore.HttpsPolicy" Version="2.2.0" />
+<!--#endif-->
+<!--if #AnyEFCore -->          
+    <PackageReference Include="Microsoft.EntityFrameworkCore" Version="3.1.12" />
+<!--#endif-->
+<!--if #MongoDB -->              
+    <PackageReference Include="MongoDB.Driver" Version="2.8.1" />
+<!--#endif-->
+<!--if #MySql -->       
+    <PackageReference Include="MySql.Data" Version="8.0.16" />
+<!--#endif-->
+<!--if #Postgres -->           
+    <PackageReference Include="Npgsql" Version="4.1.2" />
+<!--#endif-->
+<!--if #CircuitBreaker -->        
+    <PackageReference Include="Steeltoe.CircuitBreaker.HystrixCore" Version="3.0.0" />
+<!--#endif-->
+<!--if #CloudFoundry -->       
+    <PackageReference Include="Steeltoe.Common.Hosting"  Version="3.0.0" />
+<!--#endif-->
+<!--if #AnyConnector -->           
+    <PackageReference Include="Steeltoe.Connector.ConnectorCore"  Version="3.0.0"/>
+    <PackageReference Include="Steeltoe.Connector.CloudFoundry"  Version="3.0.0"/>
+<!--#endif-->
+<!--if #AnyEFCore -->       
+    <PackageReference Include="Steeltoe.Connector.EFCore"  Version="3.0.0" />
+<!--#endif-->
+<!--if #SQLServer -->           
+    <PackageReference Include="Steeltoe.Connector.EFCore"  Version="3.0.0" />
+<!--#endif-->
+<!--if #Discovery -->               
+    <PackageReference Include="Steeltoe.Discovery.ClientCore" Version="3.0.0"/>
+<!--#endif-->
+<!--if #CloudFoundry -->       
+    <PackageReference Include="Steeltoe.Extensions.Configuration.CloudFoundryCore"  Version="3.0.0" />
+<!--#endif-->
+<!--if #PlaceholderConfig --> 
+    <PackageReference Include="Steeltoe.Extensions.Configuration.PlaceholderCore" Version="3.0.0" />
+<!--#endif-->
+<!--if #ActuatorsOrCloudFoundry -->  
+    <PackageReference Include="Steeltoe.Extensions.Logging.DynamicSerilogCore" Version="3.0.0" />
+<!--#endif-->
+<!--if #DynamicLogger -->      
+    <PackageReference Include="Steeltoe.Extensions.Logging.DynamicSerilogCore" Version="3.0.0" />
+<!--#endif-->
+<!--if #ActuatorsOrCloudFoundry -->          
+    <PackageReference Include="Steeltoe.Management.CloudFoundryCore" Version="3.0.0" />
+<!--#endif-->
+<!--if #ConfigServer --> 
+    <PackageReference Include="Steeltoe.Extensions.Configuration.ConfigServerCore" Version="3.0.0" />
+<!--#endif-->
+<!--if #RandomValueConfig --> 
+    <PackageReference Include="Steeltoe.Extensions.Configuration.RandomValueBase" Version="3.0.0" />
+<!--#endif-->
+<!--if #AzureSpringCloud -->    
+    <PackageReference Include="Microsoft.Azure.SpringCloud.Client" Version="1.0.0-alpha.1" />
+<!--#endif-->
+    <PackageReference Include="Newtonsoft.Json" Version="12.0.2" />
+<!--if #Redis -->        
+    <PackageReference Include="Microsoft.Extensions.Caching.StackExchangeRedis" Version="3.1.0" />
+<!--#endif-->
+<!--if #PostgresEFCore -->        
+    <PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL"  Version="3.1.0" />
+<!--#endif-->
+<!--if #RabbitMQ -->            
+    <PackageReference Include="RabbitMQ.Client"  Version="5.1.0" />
+<!--#endif-->
+  </ItemGroup>
+<!--if #CircuitBreaker -->              
+  <ItemGroup Condition="'$(BUILD)' == ''">
+    <PackageReference Include="Steeltoe.CircuitBreaker.Hystrix.MetricsStreamCore" Version="3.0.0" />
+    <PackageReference Include="RabbitMQ.Client" Version="5.1.0" />
+  </ItemGroup>
+  <ItemGroup Condition="'$(BUILD)' == 'LOCAL'">
+    <PackageReference Include="Steeltoe.CircuitBreaker.Hystrix.MetricsEventsCore" Version="3.0.0" />
+    <PackageReference Include="System.Threading.ThreadPool" Version="4.3.0" />
+  </ItemGroup>
+<!--#endif-->
+</Project>
