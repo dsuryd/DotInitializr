@@ -84,7 +84,7 @@
     <PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL"  Version="3.1.0" />
 <!--#endif-->
 <!--#if RabbitMQ-->            
-    <PackageReference Include="RabbitMQ.Client"  Version="5.1.0" />
+    <PackageReference Include="RabbitMQ.Client" Version="5.1.0" />
 <!--#endif-->
   </ItemGroup>
 <!--#if CircuitBreaker-->              
