@@ -106,7 +106,25 @@ Use a tag to display a textbox, dropdown, or radio group in the Project Metadata
 
 The `projectName` tag is added by default.
 
+#### Casing
+
 To change casing of a tag value, append `__lower` or `__upper` to the tag key in your source code.
+
+#### Regex Matching
+
+If matching by tag key isn't possible, you can specify a _Regex_ property.  Example:
+
+```json
+{
+  "Tags": [
+    {
+      "Key": "AspNetCoreVersion",
+      "Name": "ASP.NET Core Version",
+      "DefaultValue": "3.1.0",
+      "Regex": "<PackageReference Include=\"Microsoft.AspNetCore.App\" Version=\"([0-9|.]+)+\" />"
+    }]
+}
+```
 
 ### Conditional Tags
 
@@ -138,6 +156,19 @@ Example:
 
 Use the `FilesToInclude` property to specify comma-delimited paths to include when the tag value is true. To include all files in a folder, use `folder_name/**`.
 If a conditional tag key is used on a file name, it will be removed from the name when the file is included.
+
+#### Nesting
+
+If using `#if tag_key` dotnet tag, if the tag is placed within another tag, the parent tag must be closed with `#endif //tag_key".  Example:
+
+```csharp
+#if CloudFoundry
+...
+#if ConfigServer
+...
+#endif
+#endif //CloudFoundry
+```
 
 ### Computed Tags
 
@@ -189,16 +220,4 @@ The expression supports `Count()` custom function to count the number of conditi
 ```json
 "Expression": "Count(MongoDB, MySql) > 1"
 ```
-
-### Nested Tags
-
-If using `#if tag_key` dotnet tag, if the tag is placed within another tag, the parent tag must be closed with `#endif //tag_key".  Example:
-
-```csharp
-#if CloudFoundry
-...
-#if ConfigServer
-...
-#endif
-#endif //CloudFoundry
-```
+ 
