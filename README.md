@@ -121,7 +121,7 @@ If matching by tag key isn't possible, you can specify a _Regex_ property.  Exam
       "Key": "AspNetCoreVersion",
       "Name": "ASP.NET Core Version",
       "DefaultValue": "3.1.0",
-      "Regex": "<PackageReference Include="Microsoft.AspNetCore.App" Version="([0-9|.]+)+" />"
+      "Regex": "<PackageReference Include=\"Microsoft.AspNetCore.App\" Version=\"([0-9|.]+)+\" />"
     }]
 }
 ```
