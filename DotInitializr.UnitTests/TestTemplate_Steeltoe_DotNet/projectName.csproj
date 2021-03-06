@@ -24,7 +24,7 @@
 <!--#if AnyEFCore -->          
     <PackageReference Include="Microsoft.EntityFrameworkCore" Version="3.1.12" />
 <!--#endif-->
-<!--if #MongoDB -->              
+<!--#if MongoDB -->              
     <PackageReference Include="MongoDB.Driver" Version="2.8.1" />
 <!--#endif-->
 <!--#if MySql -->       
@@ -64,7 +64,7 @@
 <!--#if DynamicLogger -->      
     <PackageReference Include="Steeltoe.Extensions.Logging.DynamicSerilogCore" Version="3.0.0" />
 <!--#endif-->
-<!--if #ActuatorsOrCloudFoundry -->          
+<!--#if ActuatorsOrCloudFoundry -->          
     <PackageReference Include="Steeltoe.Management.CloudFoundryCore" Version="3.0.0" />
 <!--#endif-->
 <!--#if ConfigServer --> 
@@ -80,10 +80,10 @@
 <!--#if Redis -->        
     <PackageReference Include="Microsoft.Extensions.Caching.StackExchangeRedis" Version="3.1.0" />
 <!--#endif-->
-<!--if #PostgresEFCore -->        
+<!--#if PostgresEFCore -->        
     <PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL"  Version="3.1.0" />
 <!--#endif-->
-<!--if #RabbitMQ -->            
+<!--#if RabbitMQ -->            
     <PackageReference Include="RabbitMQ.Client"  Version="5.1.0" />
 <!--#endif-->
   </ItemGroup>
