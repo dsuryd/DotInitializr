@@ -33,11 +33,13 @@
 
     {
       "Name": "MongoDBVersion",
+      "Regex": "<PackageReference Include=\"MongoDB.Driver\"  Version=\"([0-9|.]+)+\" />",      
       "DefaultValue": "2.8.1"
     },
 
     {
       "Name": "RabbitMQVersion",
+      "Regex": "<PackageReference Include=\"RabbitMQ.Client\"  Version=\"([0-9|.]+)+\" />",
       "DefaultValue": "5.1.0"
     }
   ],
