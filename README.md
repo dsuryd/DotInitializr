@@ -110,7 +110,13 @@ To change casing of a tag value, append `__lower` or `__upper` to the tag key in
 
 ### Conditional Tags
 
-Use a conditional tag to display a checkbox in the Dependencies section of the UI. The checkbox state will be used to include or exclude a code section between `#if tag_key` and `#endif` (dotnet) / `<!--#if tag_key-->` and `<!--#endif-->` (dotnet) / `{{#tag_key}}` and `{{/tag_key}}` (mustache) in your project template. Example:
+Use a conditional tag to display a checkbox in the Dependencies section of the UI. The checkbox state will be used to include or exclude a code section in your projecte template  inside the following tags:
+- `#if tag_key` and `#endif` (dotnet; for C# code)
+- `<!--#if tag_key-->` and `<!--#endif-->` (dotnet; for HTML/XML)
+- `"#if tag_key": ""` and `"#if !tag_key": ""` (dotnet; for JSON) 
+- `{{#tag_key}}` and `{{/tag_key}}` (mustache) 
+
+Example:
 
 ```json
 {
@@ -182,4 +188,17 @@ The expression supports `Count()` custom function to count the number of conditi
 
 ```json
 "Expression": "Count(MongoDB, MySql) > 1"
+```
+
+### Nested Tags
+
+If using `#if tag_key` dotnet tag, if the tag is placed within another tag, the parent tag must be closed with `#endif //tag_key".  Example:
+
+```csharp
+#if CloudFoundry
+...
+#if ConfigServer
+...
+#endif
+#endif //CloudFoundry
 ```
