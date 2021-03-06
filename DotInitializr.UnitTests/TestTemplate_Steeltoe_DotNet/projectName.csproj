@@ -40,8 +40,8 @@
     <PackageReference Include="Steeltoe.Common.Hosting" Version="3.0.0" />
 <!--#endif-->
 <!--#if AnyConnector-->           
-    <PackageReference Include="Steeltoe.Connector.ConnectorCore" Version="3.0.0"/>
-    <PackageReference Include="Steeltoe.Connector.CloudFoundry" Version="3.0.0"/>
+    <PackageReference Include="Steeltoe.Connector.ConnectorCore" Version="3.0.0" />
+    <PackageReference Include="Steeltoe.Connector.CloudFoundry" Version="3.0.0" />
 <!--#endif-->
 <!--#if AnyEFCore-->       
     <PackageReference Include="Steeltoe.Connector.EFCore" Version="3.0.0" />
@@ -50,7 +50,7 @@
     <PackageReference Include="Steeltoe.Connector.EFCore" Version="3.0.0" />
 <!--#endif-->
 <!--#if Discovery-->               
-    <PackageReference Include="Steeltoe.Discovery.ClientCore" Version="3.0.0"/>
+    <PackageReference Include="Steeltoe.Discovery.ClientCore" Version="3.0.0" />
 <!--#endif-->
 <!--#if CloudFoundry-->       
     <PackageReference Include="Steeltoe.Extensions.Configuration.CloudFoundryCore" Version="3.0.0" />
