@@ -40,11 +40,18 @@ namespace DotInitializr
                      x.Name = x.Name.Replace(tag.Key, string.Empty);
 
                   bool tagValue = (bool) tag.Value;
-                  x.Content = RenderConditional(x.Content, $"<!--#if {tag.Key}-->(.*?)<!--#endif-->", tagValue) ?? x.Content;
-                  x.Content = RenderConditional(x.Content, $"<!--#if !{tag.Key}-->(.*?)<!--#endif-->", !tagValue) ?? x.Content;
+                  string newLine = "(\\r\\n)?";
+                  x.Content = RenderConditional(x.Content, $"<!--#if {tag.Key}-->(.*?)<!--#endif-->{newLine}", tagValue) ?? x.Content;
+                  x.Content = RenderConditional(x.Content, $"<!--#if !{tag.Key}-->(.*?)<!--#endif-->{newLine}", !tagValue) ?? x.Content;
 
-                  x.Content = RenderConditional(x.Content, $"#if {tag.Key}(.*?)#endif", tagValue) ?? x.Content;
-                  x.Content = RenderConditional(x.Content, $"#if !{tag.Key}(.*?)#endif", !tagValue) ?? x.Content;
+                  x.Content = RenderConditional(x.Content, $"\"#if {tag.Key}\": \"\"(.*?)\"#endif\": \"\",?{newLine}", tagValue) ?? x.Content;
+                  x.Content = RenderConditional(x.Content, $"\"#if !{tag.Key}\": \"\"(.*?)\"#endif\": \"\",?{newLine}", !tagValue) ?? x.Content;
+
+                  x.Content = RenderConditional(x.Content, $"#if {tag.Key}(.*?)#endif //{tag.Key}{newLine}", tagValue) ?? x.Content;
+                  x.Content = RenderConditional(x.Content, $"#if !{tag.Key}(.*?)#endif //!{tag.Key}{newLine}", !tagValue) ?? x.Content;
+
+                  x.Content = RenderConditional(x.Content, $"#if {tag.Key}\\r\\n(.*?)#endif{newLine}", tagValue) ?? x.Content;
+                  x.Content = RenderConditional(x.Content, $"#if !{tag.Key}\\r\\n(.*?)#endif{newLine}", !tagValue) ?? x.Content;
                }
             }
 
@@ -63,7 +70,7 @@ namespace DotInitializr
          if (result.Success)
          {
             if (tagValue)
-               return regex.Replace(content, result.Groups[1].Value.Trim('\r', '\n'));
+               return regex.Replace(content, m => m.Groups[1].Value.TrimStart('\r', '\n'));
             else
                return regex.Replace(content, string.Empty);
          }

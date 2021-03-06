@@ -113,6 +113,8 @@ namespace DotInitializr
                   object value = interpreter.Eval(computedTag.Expression);
                   if (value is bool && (bool) value == true)
                      result.Add(computedTag.Key, true);
+                  else
+                     result.Add(computedTag.Key, false);
                }
                catch (Exception ex)
                {

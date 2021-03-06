@@ -10,12 +10,15 @@
     <Compile Remove="TestTemplate\**" />
     <Compile Remove="TestTemplate_Blazor\**" />
     <Compile Remove="TestTemplate_Steeltoe\**" />
+    <Compile Remove="TestTemplate_Steeltoe_DotNet\**" />
     <EmbeddedResource Remove="TestTemplate\**" />
     <EmbeddedResource Remove="TestTemplate_Blazor\**" />
     <EmbeddedResource Remove="TestTemplate_Steeltoe\**" />
+    <EmbeddedResource Remove="TestTemplate_Steeltoe_DotNet\**" />
     <None Remove="TestTemplate\**" />
     <None Remove="TestTemplate_Blazor\**" />
     <None Remove="TestTemplate_Steeltoe\**" />
+    <None Remove="TestTemplate_Steeltoe_DotNet\**" />
   </ItemGroup>
 
   <ItemGroup>
