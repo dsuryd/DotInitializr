@@ -12,7 +12,6 @@ using Steeltoe.Common.Hosting;
 #if !ConfigServer
 using Steeltoe.Extensions.Configuration.CloudFoundry;
 #endif
-#endif
 #if ConfigServer
 using Steeltoe.Extensions.Configuration.ConfigServer;
 #endif
@@ -43,9 +42,9 @@ namespace ProjectNameSpace
              .UseDefaultServiceProvider(configure => configure.ValidateScopes = false)
 #if CloudFoundry
                 .UseCloudHosting() //Enable listening on a Env provided port
+#endif
 #if !ConfigServer
                 .AddCloudFoundryConfiguration() //Add cloudfoundry environment variables as a configuration source
-#endif
 #endif
 #if ConfigServer
                 .AddConfigServer()
