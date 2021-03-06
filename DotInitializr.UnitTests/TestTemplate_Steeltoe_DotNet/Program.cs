@@ -42,13 +42,13 @@ namespace ProjectNameSpace
              .UseDefaultServiceProvider(configure => configure.ValidateScopes = false)
 #if CloudFoundry
                 .UseCloudHosting() //Enable listening on a Env provided port
-#endif
 #if !ConfigServer
                 .AddCloudFoundryConfiguration() //Add cloudfoundry environment variables as a configuration source
 #endif
 #if ConfigServer
                 .AddConfigServer()
 #endif
+#endif //CloudFoundry
 #if PlaceholderConfig
                 .AddPlaceholderResolver()
 #endif
