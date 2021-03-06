@@ -53,6 +53,16 @@
       "Description": "Add Authentication"
     },
     {
+      "Name": "OrganizationalAuth",
+      "DefaultValue": false,
+      "Description": "Steeltoe: Add organizational auth"
+    },  
+    {
+      "Name": "IndividualB2CAuth",
+      "DefaultValue": false,
+      "Description": "Steeltoe: Add individual b2c auth"
+    },        
+    {
       "Key": "CircuitBreaker",
       "Name": "Circuit Breakers",
       "DefaultValue": false,
@@ -121,6 +131,16 @@
       "DefaultValue": false,
       "Description": "Steeltoe: Add Redis connectors"
     },
+    {
+      "Name": "SQLServer",
+      "DefaultValue": false,
+      "Description": "Steeltoe: Add SQL Server connectors"
+    },
+    {
+      "Name": "RequiresHttps",
+      "DefaultValue": false,
+      "Description": "Requires Https"
+    },    
     {
       "Key": "ConfigServer",
       "Name": "Config Server",
