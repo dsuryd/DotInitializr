@@ -48,7 +48,7 @@ namespace DotInitializr
 
                foreach (var tag in tags.Where(x => x.Value is bool))
                {
-                  if (x.Name.Contains(tag.Key))
+                  if (x.Name.Contains(tag.Key) && x.Name != tag.Key)
                      x.Name = x.Name.Replace(tag.Key, string.Empty);
 
                   bool tagValue = (bool) tag.Value;
