@@ -86,6 +86,11 @@
       "Description": "Steeltoe: Add Dynamic Logger"
     },
     {
+      "Name": "ExcludeLaunchSettings",
+      "DefaultValue": false,
+      "Description": "Steeltoe: Exclude launch settings"
+    },
+    {
       "Key": "AzureSpringCloud",
       "Name": "Microsoft Azure Spring Cloud",
       "DefaultValue": false,
