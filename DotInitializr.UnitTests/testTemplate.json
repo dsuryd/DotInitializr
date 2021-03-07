@@ -1,0 +1,729 @@
+﻿{
+  "$schema": "http://json.schemastore.org/template",
+  "author": ".NET Boxed",
+  "classifications": [
+    ".NET Boxed",
+    "Cloud",
+    "Service",
+    "Web"
+  ],
+  "name": "ASP.NET Core API Boxed",
+  "description": "A solution and project for creating and publishing an Open API (Swagger) based API.",
+  "groupIdentity": "Dotnet.Boxed.API",
+  "identity": "Dotnet.Boxed.API.CSharp",
+  "shortName": "api",
+  "defaultName": "ApiApplication1",
+  "tags": {
+    "language": "C#",
+    "type": "project"
+  },
+  "sourceName": "ApiTemplate",
+  "preferNameDirectory": true,
+  "guids": [
+    "113f2d04-69f0-40c3-8797-ba3f356dd812"
+  ],
+  "primaryOutputs": [
+    { "path": "ApiTemplate.sln" }
+  ],
+  "sources": [
+    {
+      "modifiers": [
+        {
+          "condition": "(!EditorConfig)",
+          "exclude": [
+            ".editorconfig"
+          ]
+        },
+        {
+          "condition": "(!GitHub)",
+          "exclude": [
+            ".github/ISSUE_TEMPLATE/**/*",
+            ".github/CODE_OF_CONDUCT.md",
+            ".github/CONTRIBUTING.md",
+            ".github/PULL_REQUEST_TEMPLATE.md",
+            ".github/SECURITY.md"
+          ]
+        },
+        {
+          "condition": "(!ReadMe)",
+          "exclude": [
+            "README.md"
+          ]
+        },
+        {
+          "condition": "(!Swagger)",
+          "exclude": [
+            "Source/ApiTemplate/OperationFilters/**/*",
+            "Source/ApiTemplate/ConfigureSwaggerOptions.cs"
+          ]
+        },
+        {
+          "condition": "(!Versioning)",
+          "exclude": [
+            "Constants/ApiVersionName.cs",
+            "Source/ApiTemplate/OperationFilters/**/*"
+          ]
+        },
+        {
+          "condition": "(!IIS)",
+          "exclude": [
+            "Source/ApiTemplate/web.config"
+          ]
+        },
+        {
+          "condition": "(!NGINX)",
+          "exclude": [
+            "Source/ApiTemplate/mime.types",
+            "Source/ApiTemplate/nginx.conf"
+          ]
+        },
+        {
+          "condition": "(!CORS)",
+          "exclude": [
+            "Source/ApiTemplate/Constants/CorsPolicyName.cs"
+          ]
+        },
+        {
+          "condition": "(!ResponseCompression)",
+          "exclude": [
+            "Source/ApiTemplate/Options/CompressionOptions.cs"
+          ]
+        },
+        {
+          "condition": "(!RobotsTxt)",
+          "exclude": [
+            "Source/ApiTemplate/wwwroot/robots.txt"
+          ]
+        },
+        {
+          "condition": "(!SecurityTxt)",
+          "exclude": [
+            "Source/ApiTemplate/wwwroot/.well-known/security.txt"
+          ]
+        },
+        {
+          "condition": "(!HumansTxt)",
+          "exclude": [
+            "Source/ApiTemplate/wwwroot/humans.txt"
+          ]
+        },
+        {
+          "condition": "(!HealthCheck)",
+          "exclude": [
+            "Tests/ApiTemplate.IntegrationTest/HealthCheckTest.cs"
+          ]
+        },
+        {
+          "condition": "(!IntegrationTest)",
+          "exclude": [
+            "Tests/ApiTemplate.IntegrationTest/**/*"
+          ]
+        },
+        {
+          "condition": "(!Docker)",
+          "exclude": [
+            "Source/ApiTemplate/Dockerfile",
+            ".dockerignore"
+          ]
+        },
+        {
+          "condition": "(!GitHubActions)",
+          "exclude": [
+            ".github/workflows/build.yml",
+            ".github/workflows/codeql-analysis.yml",
+            ".github/workflows/release-drafter.yml",
+            ".github/release-drafter.yml"
+          ]
+        },
+        {
+          "condition": "(!OpenTelemetry)",
+          "exclude": [
+            "Source/ApiTemplate/Constants/OpenTelemetryAttributeName.cs"
+          ]
+        }
+      ]
+    }
+  ],
+  "symbols": {
+    "Framework": {
+      "type": "parameter",
+      "description": "The target framework for the project.",
+      "datatype": "choice",
+      "choices": [
+        {
+          "choice": "netcoreapp3.1",
+          "description": "Target netcoreapp3.1"
+        }
+      ],
+      "replaces": "netcoreapp3.1",
+      "defaultValue": "netcoreapp3.1"
+    },
+    "Title": {
+      "type": "parameter",
+      "datatype": "string",
+      "defaultValue": "Project Title",
+      "replaces": "PROJECT-TITLE",
+      "description": "The name of the project which determines the assembly product name. If the Swagger feature is enabled, shows the title on the Swagger UI."
+    },
+    "TitleXmlEncoded": {
+      "type": "derived",
+      "replaces": "PROJECT-TITLE-XML",
+      "valueSource": "Title",
+      "valueTransform": "xmlEncode"
+    },
+    "Description": {
+      "type": "parameter",
+      "datatype": "string",
+      "defaultValue": "Project Description",
+      "replaces": "PROJECT-DESCRIPTION",
+      "description": "A description of the project which determines the assembly description. If the Swagger feature is enabled, shows the description on the Swagger UI."
+    },
+    "DescriptionXmlEncoded": {
+      "type": "derived",
+      "replaces": "PROJECT-DESCRIPTION-XML",
+      "valueSource": "Description",
+      "valueTransform": "xmlEncode"
+    },
+    "Author": {
+      "type": "parameter",
+      "datatype": "string",
+      "defaultValue": "Project Author",
+      "replaces": "PROJECT-AUTHOR",
+      "description": "The name of the author of the project which determines the assembly author, company and copyright information."
+    },
+    "AuthorXmlEncoded": {
+      "type": "derived",
+      "replaces": "PROJECT-AUTHOR-XML",
+      "valueSource": "Author",
+      "valueTransform": "xmlEncode"
+    },
+    "Contact": {
+      "type": "parameter",
+      "datatype": "string",
+      "defaultValue": "[user@example.com|@ExampleUser]",
+      "replaces": "PROJECT-CONTACT",
+      "description": "The contact details to use if someone wants to contact you about a security vulnerability or code of conduct issues."
+    },
+    "ContactXmlEncoded": {
+      "type": "derived",
+      "replaces": "PROJECT-CONTACT-XML",
+      "valueSource": "Contact",
+      "valueTransform": "xmlEncode"
+    },
+    "EditorConfig": {
+      "type": "parameter",
+      "datatype": "bool",
+      "defaultValue": "true",
+      "description": "Add a .editorconfig file to set a fixed code style."
+    },
+    "SourceControl": {
+      "type": "parameter",
+      "datatype": "choice",
+      "choices": [
+        {
+          "choice": "GitHub",
+          "description": "Adds a .github directory containing a code of conduct, contributing guide, pull request template and issue templates."
+        },
+        {
+          "choice": "None",
+          "description": "No source control provider is being used."
+        }
+      ],
+      "defaultValue": "GitHub",
+      "description": "Select which source control provider you are using if any, to add provider specific features."
+    },
+    "GitHub": {
+      "type": "computed",
+      "value": "(SourceControl == \"GitHub\")"
+    },
+    "GitHubUsername": {
+      "type": "parameter",
+      "datatype": "string",
+      "defaultValue": "Username",
+      "replaces": "GITHUB-USERNAME",
+      "description": "Your GitHub username or organisation name that the project lives under."
+    },
+    "GitHubProject": {
+      "type": "parameter",
+      "datatype": "string",
+      "defaultValue": "Project",
+      "replaces": "GITHUB-PROJECT",
+      "description": "The name of your GitHub project."
+    },
+    "ReadMe": {
+      "type": "parameter",
+      "datatype": "bool",
+      "defaultValue": "true",
+      "description": "Add a README.md markdown file describing the project."
+    },
+    "TreatWarningsAsErrors": {
+      "type": "parameter",
+      "datatype": "bool",
+      "defaultValue": "true",
+      "description": "Treat warnings as errors."
+    },
+
+    "Swagger": {
+      "type": "parameter",
+      "datatype": "bool",
+      "defaultValue": "true",
+      "description": "Swagger is a format for describing the endpoints in your API and letting you try out your site using its user interface."
+    },
+    "Versioning": {
+      "type": "parameter",
+      "datatype": "bool",
+      "defaultValue": "true",
+      "description": "Enable API versioning to version API endpoints."
+    },
+    "ForwardedHeaders": {
+      "type": "parameter",
+      "datatype": "bool",
+      "defaultValue": "true",
+      "description": "If you use a load balancer, updates the request host and scheme using the X-Forwarded-Host and X-Forwarded-Proto HTTP headers."
+    },
+    "HostFiltering": {
+      "type": "parameter",
+      "datatype": "bool",
+      "defaultValue": "true",
+      "description": "A white-list of host names allowed by the Kestrel web server e.g. example.com. You don't need this if you are using a properly configured reverse proxy."
+    },
+    "ReverseProxyWebServer": {
+      "type": "parameter",
+      "datatype": "choice",
+      "choices": [
+        {
+          "choice": "None",
+          "description": "Use Kestrel directly instead of a reverse proxy."
+        },
+        {
+          "choice": "IIS",
+          "description": "A flexible, secure and manageable Web server for hosting anything on the Web using Windows Server. Select this option if you are deploying your site to Azure web apps."
+        },
+        {
+          "choice": "NGINX",
+          "description": "A free, open-source, cross-platform high-performance HTTP server and reverse proxy."
+        },
+        {
+          "choice": "Both",
+          "description": "Support both reverse proxy web servers."
+        }
+      ],
+      "defaultValue": "Both",
+      "description": "The internet facing reverse proxy web server you want to use in front of the primary web server to host the site."
+    },
+    "IIS": {
+      "type": "computed",
+      "value": "(ReverseProxyWebServer == \"IIS\" || ReverseProxyWebServer == \"Both\")"
+    },
+    "NGINX": {
+      "type": "computed",
+      "value": "(ReverseProxyWebServer == \"NGINX\" || ReverseProxyWebServer == \"Both\")"
+    },
+    "CloudProvider": {
+      "type": "parameter",
+      "datatype": "choice",
+      "choices": [
+        {
+          "choice": "Azure",
+          "description": "The Microsoft Azure cloud. Adds logging features that let you see logs in the Azure portal."
+        },
+        {
+          "choice": "None",
+          "description": "No cloud provider is being used."
+        }
+      ],
+      "defaultValue": "None",
+      "description": "Select which cloud provider you are using if any, to add cloud specific features."
+    },
+    "Azure": {
+      "type": "computed",
+      "value": "(CloudProvider == \"Azure\")"
+    },
+    "OpenTelemetry": {
+      "type": "parameter",
+      "datatype": "bool",
+      "defaultValue": "false",
+      "description": "Instrument, generate, collect, and export telemetry data (metrics, logs, and traces) using the Open Telemetry standard."
+    },
+    "Analytics": {
+      "type": "parameter",
+      "datatype": "choice",
+      "choices": [
+        {
+          "choice": "Application Insights",
+          "description": "Monitor internal information about how your application is running, as well as external user information using the Microsoft Azure cloud."
+        },
+        {
+          "choice": "None",
+          "description": "Not using any analytics."
+        }
+      ],
+      "defaultValue": "None",
+      "description": "Monitor internal information about how your application is running, as well as external user information."
+    },
+    "ApplicationInsights": {
+      "type": "computed",
+      "value": "(Analytics == \"Application Insights\")"
+    },
+    "ApplicationInsightsKey": {
+      "type": "parameter",
+      "datatype": "string",
+      "replaces": "APPLICATION-INSIGHTS-INSTRUMENTATION-KEY",
+      "description": "Your Application Insights instrumentation key e.g. 11111111-2222-3333-4444-555555555555."
+    },
+    "HttpsEverywhere": {
+      "type": "parameter",
+      "datatype": "bool",
+      "defaultValue": "false",
+      "description": "Use the HTTPS scheme and TLS security across the entire site, redirects HTTP to HTTPS and adds a Strict Transport Security (HSTS) HTTP header with preloading enabled."
+    },
+    "HstsPreload": {
+      "type": "parameter",
+      "datatype": "bool",
+      "defaultValue": "false",
+      "description": "Enable Strict Transport Security (HSTS) HTTP header with preloading."
+    },
+    "CORS": {
+      "type": "parameter",
+      "datatype": "bool",
+      "defaultValue": "true",
+      "description": "Browser security prevents a web page from making AJAX requests to another domain."
+    },
+    "ResponseCaching": {
+      "type": "parameter",
+      "datatype": "bool",
+      "defaultValue": "true",
+      "description": "Response caching is allows the use of the [ResponseCache] attribute on your action methods. Cache settings (cache profiles) are stored in the configuration file and referred to by name."
+    },
+    "ResponseCompression": {
+      "type": "parameter",
+      "datatype": "bool",
+      "defaultValue": "true",
+      "description": "Enables dynamic GZIP response compression of HTTP responses. Not enabled for HTTPS to avoid the BREACH security vulnerability."
+    },
+    "XmlFormatter": {
+      "type": "parameter",
+      "datatype": "choice",
+      "choices": [
+        {
+          "choice": "DataContractSerializer",
+          "description": "The default XML serializer you should use. Requires the use of [DataContract] and [DataMember] attributes."
+        },
+        {
+          "choice": "XmlSerializer",
+          "description": "The alternative XML serializer which is slower but gives more control. Uses the [XmlRoot], [XmlElement] and [XmlAttribute] attributes."
+        },
+        {
+          "choice": "None",
+          "description": "No XML formatter."
+        }
+      ],
+      "defaultValue": "None",
+      "description": "Choose whether to use the XML input/output formatter and which serializer to use."
+    },
+    "DataContractSerializer": {
+      "type": "computed",
+      "value": "(XmlFormatter == \"DataContractSerializer\")"
+    },
+    "XmlSerializer": {
+      "type": "computed",
+      "value": "(XmlFormatter == \"XmlSerializer\")"
+    },
+    "HealthCheck": {
+      "type": "parameter",
+      "datatype": "bool",
+      "defaultValue": "true",
+      "description": "A health-check endpoint that returns the status of this API and its dependencies, giving an indication of its health."
+    },
+    "RobotsTxt": {
+      "type": "parameter",
+      "datatype": "bool",
+      "defaultValue": "true",
+      "description": "Adds a robots.txt file to tell search engines not to index this site."
+    },
+    "SecurityTxt": {
+      "type": "parameter",
+      "datatype": "bool",
+      "defaultValue": "true",
+      "description": "Adds a security.txt file to allow people to contact you if they find a security vulnerability."
+    },
+    "HumansTxt": {
+      "type": "parameter",
+      "datatype": "bool",
+      "defaultValue": "true",
+      "description": "Adds a humans.txt file where you can tell the world who wrote the application. This file is a good place to thank your developers."
+    },
+    "HttpPort": {
+      "type": "parameter",
+      "datatype": "integer",
+      "description": "Port number to use for the Kestrel HTTP endpoint in launchSettings.json.",
+      "defaultValue": "5000"
+    },
+    "HttpPortConstant": {
+      "type": "generated",
+      "generator": "constant",
+      "parameters": {
+        "value": "5000"
+      }
+    },
+    "HttpPortReplacer": {
+      "type": "generated",
+      "generator": "coalesce",
+      "parameters": {
+        "sourceVariableName": "HttpPort",
+        "fallbackVariableName": "HttpPortConstant"
+      },
+      "replaces": "5000"
+    },
+    "HttpsPort": {
+      "type": "parameter",
+      "datatype": "integer",
+      "description": "Port number to use for the Kestrel HTTPS endpoint in launchSettings.json."
+    },
+    "HttpsPortConstant": {
+      "type": "generated",
+      "generator": "constant",
+      "parameters": {
+        "value": "5001"
+      }
+    },
+    "HttpsPortReplacer": {
+      "type": "generated",
+      "generator": "coalesce",
+      "parameters": {
+        "sourceVariableName": "HttpsPort",
+        "fallbackVariableName": "HttpsPortConstant"
+      },
+      "replaces": "5001"
+    },
+    "IISExpressHttpsPort": {
+      "type": "parameter",
+      "datatype": "integer",
+      "description": "Port number to use for the IIS Express HTTPS endpoint in launchSettings.json (Must be between 44300 and 44399)."
+    },
+    "IISExpressHttpsPortConstant": {
+      "type": "generated",
+      "generator": "constant",
+      "parameters": {
+        "value": "44300"
+      }
+    },
+    "IISExpressHttpsPortReplacer": {
+      "type": "generated",
+      "generator": "coalesce",
+      "parameters": {
+        "sourceVariableName": "IISExpressHttpsPort",
+        "fallbackVariableName": "IISExpressHttpsPortConstant"
+      },
+      "replaces": "44300"
+    },
+    "IntegrationTest": {
+      "type": "parameter",
+      "datatype": "bool",
+      "description": "Adds an integration test project.",
+      "defaultValue": "true"
+    },
+    "StyleCop": {
+      "type": "parameter",
+      "datatype": "bool",
+      "description": "Adds and enforces StyleCop analysers. NOTE: You may need to sort using statements if you enable this due to limitations in the dotnet new templating engine.",
+      "defaultValue": "false"
+    },
+    "Docker": {
+      "type": "parameter",
+      "datatype": "bool",
+      "description": "Adds an optimised Dockerfile to add the ability build a Docker image.",
+      "defaultValue": "true"
+    },
+    "GitHubActions": {
+      "type": "parameter",
+      "datatype": "bool",
+      "description": "Adds GitHub Actions continuous integration, automatic release drafting and CodeQL security scanning.",
+      "defaultValue": "true"
+    },
+
+    "AuthoringMode": {
+      "type": "generated",
+      "generator": "constant",
+      "parameters": {
+        "value": "false"
+      }
+    },
+    "SkipOpenToDo": {
+      "type": "parameter",
+      "datatype": "bool",
+      "description": "Skips opening the to-do list for the project in a web browser.",
+      "defaultValue": "false"
+    }
+  },
+  "SpecialCustomOperations": {
+    "**/*.md": {
+      "operations": [
+        {
+          "type": "conditional",
+          "configuration": {
+            "actionableIf": [ "<!--#if" ],
+            "actionableElse": [ "#else", "<!--#else" ],
+            "actionableElseif": [ "#elseif", "<!--#elseif", "#elif", "<!--#elif" ],
+            "endif": [ "#endif", "<!--#endif" ],
+            "trim": "true",
+            "wholeLine": "true",
+            "actions": [ "fixPseudoNestedComments" ]
+          }
+        },
+        {
+          "type": "balancednesting",
+          "configuration": {
+            "id": "fixPseudoNestedComments",
+            "startToken": "<!--",
+            "realEndToken": "-->",
+            "pseudoEndToken": "-- >",
+            "resetFlag": "_TestResetFlag_"
+          }
+        }
+      ]
+    },
+    "**/.editorconfig": {
+      "operations": [
+        {
+          "type": "conditional",
+          "configuration": {
+            "if": [ "#if" ],
+            "else": [ "#else" ],
+            "elseif": [ "#elseif" ],
+            "endif": [ "#endif" ],
+            "actionableIf": [ "##if" ],
+            "actionableElse": [ "##else" ],
+            "actionableElseif": [ "##elseif" ],
+            "actions": [ "uncomment", "reduceComment" ],
+            "trim": "true",
+            "wholeLine": "true",
+            "evaluator": "C++"
+          }
+        },
+        {
+          "type": "replacement",
+          "configuration": {
+            "original": "#",
+            "replacement": "",
+            "id": "uncomment"
+          }
+        },
+        {
+          "type": "replacement",
+          "configuration": {
+            "original": "##",
+            "replacement": "#",
+            "id": "reduceComment"
+          }
+        }
+      ]
+    },
+    "**/Dockerfile": {
+      "operations": [
+        {
+          "type": "conditional",
+          "configuration": {
+            "if": [ "#if" ],
+            "else": [ "#else" ],
+            "elseif": [ "#elseif" ],
+            "endif": [ "#endif" ],
+            "actionableIf": [ "##if" ],
+            "actionableElse": [ "##else" ],
+            "actionableElseif": [ "##elseif" ],
+            "actions": [ "uncomment", "reduceComment" ],
+            "trim": "true",
+            "wholeLine": "true",
+            "evaluator": "C++"
+          }
+        },
+        {
+          "type": "replacement",
+          "configuration": {
+            "original": "#",
+            "replacement": "",
+            "id": "uncomment"
+          }
+        },
+        {
+          "type": "replacement",
+          "configuration": {
+            "original": "##",
+            "replacement": "#",
+            "id": "reduceComment"
+          }
+        }
+      ]
+    },
+    "**/*.yml": {
+      "operations": [
+        {
+          "type": "conditional",
+          "configuration": {
+            "if": [ "#if" ],
+            "else": [ "#else" ],
+            "elseif": [ "#elseif" ],
+            "endif": [ "#endif" ],
+            "actionableIf": [ "##if" ],
+            "actionableElse": [ "##else" ],
+            "actionableElseif": [ "##elseif" ],
+            "actions": [ "uncomment", "reduceComment" ],
+            "trim": "true",
+            "wholeLine": "true",
+            "evaluator": "C++"
+          }
+        },
+        {
+          "type": "replacement",
+          "configuration": {
+            "original": "#",
+            "replacement": "",
+            "id": "uncomment"
+          }
+        },
+        {
+          "type": "replacement",
+          "configuration": {
+            "original": "##",
+            "replacement": "#",
+            "id": "reduceComment"
+          }
+        }
+      ]
+    }
+  },
+  "postActions": [
+    {
+      "actionId": "3A7C4B45-1F5D-4A30-959A-51B88E82B5D2",
+      "condition": "(!SkipOpenToDo) && (OS == \"Windows_NT\")",
+      "continueOnError": true,
+      "description ": "Open the to-do list for the project in a web browser.",
+      "args": {
+        "executable": "powershell.exe",
+        "args": "start TODO.html",
+        "redirectStandardOutput": "false"
+      },
+      "manualInstructions": [
+        {
+          "text": "Open the TODO.html in a web browser to see a to-do list."
+        }
+      ]
+    },
+    {
+      "actionId": "3A7C4B45-1F5D-4A30-959A-51B88E82B5D2",
+      "condition": "(!SkipOpenToDo) && (OS != \"Windows_NT\")",
+      "continueOnError": true,
+      "description ": "Open the to-do list for the project in a web browser.",
+      "args": {
+        "executable": "bash",
+        "args": "open TODO.html",
+        "redirectStandardOutput": "false"
+      },
+      "manualInstructions": [
+        {
+          "text": "Open the TODO.html in a web browser to see a to-do list."
+        }
+      ]
+    }
+  ]
+}

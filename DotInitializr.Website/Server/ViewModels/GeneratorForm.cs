@@ -105,9 +105,19 @@ namespace DotInitializr.Website.Server
             .Union(computedTags.ToDictionary(x => x.Key, x => (object) x.Value))
             .ToDictionary(x => x.Key, x => x.Value);
 
+         string projectName = MetadataForm.DEFAULT_PROJECT_NAME;
+         if (nonComputedTags.ContainsKey(MetadataForm.PROJECT_NAME_KEY))
+            projectName = nonComputedTags[MetadataForm.PROJECT_NAME_KEY].ToString();
+         else
+         {
+            var projectNameTag = metadata.Tags.FirstOrDefault(x => x.Name == MetadataForm.PROJECT_NAME);
+            if (projectNameTag != null)
+               projectName = nonComputedTags[projectNameTag.Key].ToString();
+         }
+
          return new ProjectMetadata
          {
-            ProjectName = nonComputedTags[MetadataForm.ProjectNameKey].ToString(),
+            ProjectName = projectName,
             TemplateType = metadata.TemplateType,
             TemplateSourceType = template.SourceType,
             TemplateSourceUrl = template.SourceUrl,

@@ -55,44 +55,63 @@ namespace DotInitializr
       {
          TemplateMetadata metadata = null;
 
-         var templateSource = _templateSources.FirstOrDefault(x => string.Equals(x.SourceType, template?.SourceType, StringComparison.InvariantCultureIgnoreCase));
-         if (templateSource != null)
+         var metadataFile = GetMetadataFile(template);
+         if (metadataFile != null && !string.IsNullOrEmpty(metadataFile.Content))
          {
-            var metadataFile = templateSource.GetFile(TemplateMetadata.FILE_NAME, template.SourceUrl, template.SourceDirectory);
-            if (metadataFile != null && !string.IsNullOrEmpty(metadataFile.Content))
+            try
             {
-               try
-               {
+               if (metadataFile.Name.EndsWith(DotNetTemplateMetadata.FILE_NAME, StringComparison.InvariantCultureIgnoreCase))
+                  metadata = new DotNetTemplateMetadataMapper().Map(DotNetTemplateMetadata.FromJson(metadataFile.Content));
+               else
                   metadata = JsonSerializer.Deserialize<TemplateMetadata>(metadataFile.Content);
-               }
-               catch (Exception ex)
-               {
-                  var error = $"`{TemplateMetadata.FILE_NAME}` in `{template.SourceUrl}` must be in JSON";
-                  Console.WriteLine(error + Environment.NewLine + ex.ToString());
-                  throw new TemplateException(error);
-               }
-
-               // Make sure the tags have keys. Names can be used to substitute keys.
-               if (metadata.Tags != null)
-               {
-                  foreach (var tag in metadata.Tags.Where(x => string.IsNullOrEmpty(x.Key)))
-                     tag.Key = tag.Name;
-                  metadata.Tags = metadata.Tags.Where(x => !string.IsNullOrEmpty(x.Key));
-               }
-
-               if (metadata.ConditionalTags != null)
-               {
-                  foreach (var tag in metadata.ConditionalTags.Where(x => string.IsNullOrEmpty(x.Key)))
-                     tag.Key = tag.Name;
-                  metadata.ConditionalTags = metadata.ConditionalTags.Where(x => !string.IsNullOrEmpty(x.Key));
-               }
-
-               if (metadata.ComputedTags != null)
-                  metadata.ComputedTags = metadata.ComputedTags.Where(x => !string.IsNullOrEmpty(x.Key));
             }
+            catch (Exception ex)
+            {
+               var error = $"`{metadataFile.Name}` in `{template.SourceUrl}` must be in JSON";
+               Console.WriteLine(error + Environment.NewLine + ex.ToString());
+               throw new TemplateException(error);
+            }
+
+            // Make sure the tags have keys. Names can be used to substitute keys.
+            if (metadata.Tags != null)
+            {
+               foreach (var tag in metadata.Tags.Where(x => string.IsNullOrEmpty(x.Key)))
+                  tag.Key = tag.Name;
+               metadata.Tags = metadata.Tags.Where(x => !string.IsNullOrEmpty(x.Key));
+            }
+
+            if (metadata.ConditionalTags != null)
+            {
+               foreach (var tag in metadata.ConditionalTags.Where(x => string.IsNullOrEmpty(x.Key)))
+                  tag.Key = tag.Name;
+               metadata.ConditionalTags = metadata.ConditionalTags.Where(x => !string.IsNullOrEmpty(x.Key));
+            }
+
+            if (metadata.ComputedTags != null)
+               metadata.ComputedTags = metadata.ComputedTags.Where(x => !string.IsNullOrEmpty(x.Key));
          }
 
          return metadata;
+      }
+
+      private TemplateFile GetMetadataFile(AppConfiguration.Template template)
+      {
+         TemplateFile metadataFile = null;
+
+         var templateSource = _templateSources.FirstOrDefault(x => string.Equals(x.SourceType, template?.SourceType, StringComparison.InvariantCultureIgnoreCase));
+         if (templateSource != null)
+         {
+            try
+            {
+               metadataFile = templateSource.GetFile(TemplateMetadata.FILE_NAME, template.SourceUrl, template.SourceDirectory);
+            }
+            catch (TemplateException) { }
+
+            if (metadataFile == null)
+               metadataFile = templateSource.GetFile("template.json", template.SourceUrl, template.SourceDirectory + "/.template.config");
+         }
+
+         return metadataFile;
       }
 
       public Dictionary<string, bool> GetComputedTags(TemplateMetadata metadata, Dictionary<string, object> tagValues)
@@ -113,10 +132,8 @@ namespace DotInitializr
                try
                {
                   object value = interpreter.Eval(computedTag.Expression);
-                  if (value is bool && (bool) value == true)
-                     result.Add(computedTag.Key, true);
-                  else
-                     result.Add(computedTag.Key, false);
+                  if (value is bool)
+                     result.Add(computedTag.Key, (bool) value == true);
                }
                catch (Exception ex)
                {

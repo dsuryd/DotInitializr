@@ -33,4 +33,10 @@
     <ProjectReference Include="..\DotInitializr.Website\Server\DotInitializr.Website.Server.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <None Update="testTemplate.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+
 </Project>
