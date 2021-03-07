@@ -25,10 +25,6 @@ namespace DotInitializr.Website.Server
 {
    public class MetadataForm : BaseVM
    {
-      public const string PROJECT_NAME_KEY = "projectName";
-      public const string PROJECT_NAME = "Project Name";
-      public const string DEFAULT_PROJECT_NAME = "Starter";
-
       private readonly ITemplateMetadataReader _templateReader;
 
       [Ignore]
@@ -153,12 +149,12 @@ namespace DotInitializr.Website.Server
          {
             var tags = metadata.Tags?.ToList() ?? new List<Tag>();
 
-            if (!tags.Any(x => x.Name == PROJECT_NAME || x.Key == PROJECT_NAME_KEY))
+            if (!tags.Any(x => x.Name == TemplateMetadataReader.PROJECT_NAME || x.Key == TemplateMetadataReader.PROJECT_NAME_KEY))
                tags.Insert(0, new Tag
                {
-                  Key = PROJECT_NAME_KEY,
-                  Name = PROJECT_NAME,
-                  DefaultValue = DEFAULT_PROJECT_NAME,
+                  Key = TemplateMetadataReader.PROJECT_NAME_KEY,
+                  Name = TemplateMetadataReader.PROJECT_NAME,
+                  DefaultValue = TemplateMetadataReader.DEFAULT_PROJECT_NAME,
                   ValidationRegex = @"^[\w\-. ]+$",
                   ValidationError = "Must be a valid filename",
                });

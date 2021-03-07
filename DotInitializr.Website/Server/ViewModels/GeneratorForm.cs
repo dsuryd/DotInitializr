@@ -105,12 +105,12 @@ namespace DotInitializr.Website.Server
             .Union(computedTags.ToDictionary(x => x.Key, x => (object) x.Value))
             .ToDictionary(x => x.Key, x => x.Value);
 
-         string projectName = MetadataForm.DEFAULT_PROJECT_NAME;
-         if (nonComputedTags.ContainsKey(MetadataForm.PROJECT_NAME_KEY))
-            projectName = nonComputedTags[MetadataForm.PROJECT_NAME_KEY].ToString();
+         string projectName = TemplateMetadataReader.DEFAULT_PROJECT_NAME;
+         if (nonComputedTags.ContainsKey(TemplateMetadataReader.PROJECT_NAME_KEY))
+            projectName = nonComputedTags[TemplateMetadataReader.PROJECT_NAME_KEY].ToString();
          else
          {
-            var projectNameTag = metadata.Tags.FirstOrDefault(x => x.Name == MetadataForm.PROJECT_NAME);
+            var projectNameTag = metadata.Tags.FirstOrDefault(x => x.Name == TemplateMetadataReader.PROJECT_NAME);
             if (projectNameTag != null)
                projectName = nonComputedTags[projectNameTag.Key].ToString();
          }

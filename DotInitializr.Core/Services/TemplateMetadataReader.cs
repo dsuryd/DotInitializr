@@ -42,6 +42,10 @@ namespace DotInitializr
 
    public class TemplateMetadataReader : ITemplateMetadataReader
    {
+      public const string PROJECT_NAME_KEY = "projectName";
+      public const string PROJECT_NAME = "Project Name";
+      public const string DEFAULT_PROJECT_NAME = "Starter";
+
       private readonly IEnumerable<ITemplateSource> _templateSources;
 
       private delegate int CountDelegate(params bool[] tags);

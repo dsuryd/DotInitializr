@@ -12,32 +12,49 @@ Demo: https://apptemplate.dotnetify.net
 
 ### Run the API only
 
-Add the Nuget package __DotInitializr__  to your ASP.NET Core 3.x project, and include the following in the `ConfigureServices`:
+Add the Nuget package **DotInitializr** to your ASP.NET Core 3.x project, and include the following in the `ConfigureServices`:
+
 ```c#
 services.AddDotInitializr(Configuration);
 ```
 
-Access the API through the `api/generator` endpoint.  Specify the metadata in the JSON body, for example:
+#### Metadata Reader
+
+Use the HTTP POST `api/metadata` endpoint to read the template metadata from a git repo. Specify the project repo information in the JSON body, for example:
+
 ```json
 {
-   "projectName":"Starter",
-   "templateType":"mustache",
-   "templateSourceType":"git",
-   "templateSourceUrl":"https://github.com/dsuryd/DotInitializr",
-   "templateSourceDirectory":"DotInitializr.UnitTests\\TestTemplate",
-   "tags":{
-      "projectName":"Starter",
-      "namespace":"Starter",
-      "ui":"React",
-      "grpc":false,
-      "react":true
-   },
-   "filesToExclude":"Services/**,Proto/**,ClientApp{{ng}}/**"
+  "Name": "Steeltoe Template (dotnet)",
+  "Description": "Demo project for Steeltoe",
+  "SourceType": "git",
+  "SourceUrl": "https://github.com/dsuryd/DotInitializr",
+  "SourceDirectory": "DotInitializr.UnitTests\\TestTemplate_Steeltoe_DotNet"
 }
 ```
 
+#### Project Generator
 
-### Run the Website 
+Use the HTTP POST `api/generator` endpoint to generate a project. Specify the project repo and the metadata values in the JSON body, for example:
+
+```json
+{
+  "projectName": "Starter",
+  "templateType": "mustache",
+  "templateSourceType": "git",
+  "templateSourceUrl": "https://github.com/dsuryd/DotInitializr",
+  "templateSourceDirectory": "DotInitializr.UnitTests\\TestTemplate",
+  "tags": {
+    "projectName": "Starter",
+    "namespace": "Starter",
+    "ui": "React",
+    "grpc": false,
+    "react": true
+  },
+  "filesToExclude": "Services/**,Proto/**,ClientApp{{ng}}/**"
+}
+```
+
+### Run the Website
 
 Fork or download this repo and run it with Visual Studio 2019. The UI uses Blazor WebAssembly 3.2, so you'll need at least .NET Core SDK 3.1.300.
 
@@ -112,7 +129,7 @@ To change casing of a tag value, append `__lower` or `__upper` to the tag key in
 
 #### Regex Matching
 
-If matching by tag key isn't possible, you can specify a _Regex_ property.  Example:
+If matching by tag key isn't possible, you can specify a _Regex_ property. Example:
 
 ```json
 {
@@ -122,17 +139,19 @@ If matching by tag key isn't possible, you can specify a _Regex_ property.  Exam
       "Name": "ASP.NET Core Version",
       "DefaultValue": "3.1.0",
       "Regex": "<PackageReference Include=\"Microsoft.AspNetCore.App\" Version=\"([0-9|.]+)+\" />"
-    }]
+    }
+  ]
 }
 ```
 
 ### Conditional Tags
 
-Use a conditional tag to display a checkbox in the Dependencies section of the UI. The checkbox state will be used to include or exclude a code section in your projecte template  inside the following tags:
+Use a conditional tag to display a checkbox in the Dependencies section of the UI. The checkbox state will be used to include or exclude a code section in your projecte template inside the following tags:
+
 - `#if tag_key` and `#endif` (dotnet; for C# code)
 - `<!--#if tag_key-->` and `<!--#endif-->` (dotnet; for HTML/XML)
-- `"#if tag_key": ""` and `"#if !tag_key": ""` (dotnet; for JSON) 
-- `{{#tag_key}}` and `{{/tag_key}}` (mustache) 
+- `"#if tag_key": ""` and `"#if !tag_key": ""` (dotnet; for JSON)
+- `{{#tag_key}}` and `{{/tag_key}}` (mustache)
 
 Example:
 
@@ -159,7 +178,7 @@ If a conditional tag key is used on a file name, it will be removed from the nam
 
 #### Nesting
 
-If using `#if tag_key` dotnet tag, if the tag is placed within another tag, the parent tag must be closed with `#endif //tag_key".  Example:
+If using `#if tag_key` dotnet tag, if the tag is placed within another tag, the parent tag must be closed with `#endif //tag_key". Example:
 
 ```csharp
 #if CloudFoundry
@@ -220,4 +239,3 @@ The expression supports `Count()` custom function to count the number of conditi
 ```json
 "Expression": "Count(MongoDB, MySql) > 1"
 ```
- 
