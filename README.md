@@ -169,7 +169,7 @@ Use a conditional tag to display a checkbox in the Dependencies section of the U
 
 - `#if tag_key` and `#endif` (dotnet; for C# code)
 - `<!--#if tag_key-->` and `<!--#endif-->` (dotnet; for HTML/XML)
-- `"#if tag_key": ""` and `"#if !tag_key": ""` (dotnet; for JSON)
+- `"#if tag_key": ""` and `"#endif tag_key": ""` (dotnet; for JSON)
 - `{{#tag_key}}` and `{{/tag_key}}` (mustache)
 
 Example:
