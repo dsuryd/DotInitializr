@@ -3,6 +3,11 @@
 body {
     background-color: #f4f4f4;
     height: 100vh;
+    font-size: 14px;
+}
+
+.form-control {
+    font-size: 14px;
 }
 
 .dot {
@@ -88,6 +93,7 @@ body {
 d-radio-group section {
     display: flex;
 }
-d-radio-group section > * {
-    margin-right: 1.5rem;
-}
+
+    d-radio-group section > * {
+        margin-right: 1.5rem;
+    }

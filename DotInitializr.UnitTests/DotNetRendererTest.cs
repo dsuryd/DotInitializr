@@ -75,33 +75,10 @@ namespace DotInitializr.UnitTests
 #if cond1
 One
 #endif
-#if cond2
+#if (cond2)
 Two
 #endif"
-            },
-            new TemplateFile
-            {
-               Name = "file2",
-               Content = @"You did not choose
-#if !cond1
-One
-#endif
-#if !cond2
-Two
-#endif"
-            },
-            new TemplateFile
-            {
-               Name = "file3",
-               Content = $@"You chose
-<!--#if cond1-->
-One
-<!--#endif-->
-not
-<!--#if !cond2-->
-Two
-<!--#endif-->"
-            } };
+            }};
 
          var tags = new Dictionary<string, object>
          {
@@ -113,7 +90,153 @@ Two
          var result = sut.Render(files, tags);
 
          Assert.AreEqual("You chose\r\nOne\r\n", result.FirstOrDefault(x => x.Name == "file1").Content);
+      }
+
+      [Test]
+      public void DotNetRenderer_RenderNotConditionalTag()
+      {
+         var files = new List<TemplateFile> {
+            new TemplateFile
+            {
+               Name = "file2",
+               Content = @"You did not choose
+#if !cond1
+One
+#endif
+#if (!cond2)
+Two
+#endif"
+            } };
+
+         var tags = new Dictionary<string, object>
+         {
+            { "cond1", true },
+            { "cond2", false }
+         };
+
+         var sut = new DotNetRenderer();
+         var result = sut.Render(files, tags);
+
          Assert.AreEqual("You did not choose\r\nTwo\r\n", result.FirstOrDefault(x => x.Name == "file2").Content);
+      }
+
+      [Test]
+      public void DotNetRenderer_RenderElseConditionalTag()
+      {
+         var files = new List<TemplateFile> {
+            new TemplateFile
+            {
+               Name = "file1",
+               Content = @"You chose
+#if cond1
+One
+#else
+Two
+#endif"
+            } };
+
+         var tags = new Dictionary<string, object>
+         {
+            { "cond1", false }
+         };
+
+         var sut = new DotNetRenderer();
+         var result = sut.Render(files, tags);
+
+         Assert.AreEqual("You chose\r\nTwo\r\n", result.FirstOrDefault(x => x.Name == "file1").Content);
+      }
+
+      [Test]
+      public void DotNetRenderer_RenderElifConditionalTag()
+      {
+         var files = new List<TemplateFile> {
+            new TemplateFile
+            {
+               Name = "file1",
+               Content = @"You chose
+#if cond0
+Zero
+#endif
+#if cond1
+One
+#elif cond2
+Two
+#endif"
+            } };
+
+         var tags = new Dictionary<string, object>
+         {
+            { "cond0", true },
+            { "cond1", false },
+            { "cond2", true }
+         };
+
+         var sut = new DotNetRenderer();
+         var result = sut.Render(files, tags);
+
+         Assert.AreEqual("You chose\r\nZero\r\nTwo\r\n", result.FirstOrDefault(x => x.Name == "file1").Content);
+      }
+
+      [Test]
+      public void DotNetRenderer_RenderMarkupConditionalTag()
+      {
+         var files = new List<TemplateFile> {
+            new TemplateFile
+            {
+               Name = "file3",
+               Content = $@"You chose
+<!--#if cond1-->
+One
+<!--#endif-->
+not
+<!--#if !cond2-->
+Two
+<!--#endif-->
+<!--#if (cond3)-->
+Three
+<!--#endif-->
+"
+            } };
+
+         var tags = new Dictionary<string, object>
+         {
+            { "cond1", true },
+            { "cond2", false },
+            { "cond3", false },
+         };
+
+         var sut = new DotNetRenderer();
+         var result = sut.Render(files, tags);
+
+         Assert.AreEqual("You chose\r\nOne\r\nnot\r\nTwo\r\n", result.FirstOrDefault(x => x.Name == "file3").Content);
+      }
+
+      [Test]
+      public void DotNetRenderer_RenderJsonConditionalTag()
+      {
+         var files = new List<TemplateFile> {
+            new TemplateFile
+            {
+               Name = "file3",
+               Content = $@"You chose
+""#if cond1"": """",
+One
+""#endif"": """",
+not
+""#if !cond2"": """",
+Two
+""#endif"": """""
+            } };
+
+         var tags = new Dictionary<string, object>
+         {
+            { "cond1", true },
+            { "cond2", false }
+         };
+
+         var sut = new DotNetRenderer();
+         var result = sut.Render(files, tags);
+
          Assert.AreEqual("You chose\r\nOne\r\nnot\r\nTwo\r\n", result.FirstOrDefault(x => x.Name == "file3").Content);
       }
 
@@ -158,7 +281,7 @@ One
 #if cond2
 Two
 #endif
-#endif //cond1"
+#endif"
             },
             new TemplateFile
             {
@@ -169,7 +292,7 @@ One
 #if cond4
 Two
 #endif
-#endif //cond3"
+#endif"
             }
          };
 

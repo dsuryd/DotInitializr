@@ -26,18 +26,16 @@ namespace DotInitializr.Website.Server
 {
    public class GeneratorForm : BaseVM
    {
-      private readonly ITemplateMetadataReader _templateReader;
+      private readonly IProjectGenerator _generator;
       private readonly MetadataForm _metadataForm;
       private readonly AppConfiguration _config;
       private readonly ReactiveProperty<string> _templateProp;
-      private Dictionary<string, string> _tags;
-      private Dictionary<string, bool> _conditionalTags;
 
       public bool Loading { get => Get<bool>(); set => Set(value); }
 
-      public GeneratorForm(ITemplateMetadataReader templateReader, AppConfiguration config, MetadataForm metadataForm)
+      public GeneratorForm(IProjectGenerator generator, AppConfiguration config, MetadataForm metadataForm)
       {
-         _templateReader = templateReader;
+         _generator = generator;
          _config = config;
          _metadataForm = metadataForm;
          _metadataForm.MetadataLoadedEvent.Subscribe(_ => Loading = false);
@@ -54,9 +52,6 @@ namespace DotInitializr.Website.Server
             {
                Loading = true;
                PushUpdates();
-
-               _tags = null;
-               _conditionalTags = null;
                return _config.Templates.FirstOrDefault(x => x.Key == key);
             })
             .SubscribedBy(AddProperty<string>("Description"), key => _config.Templates.FirstOrDefault(x => x.Key == key)?.Description);
@@ -79,53 +74,7 @@ namespace DotInitializr.Website.Server
       private ProjectMetadata BuildProjectMetadata(Dictionary<string, string> formData, TemplateMetadata metadata)
       {
          var template = _config.Templates.FirstOrDefault(x => x.Key == _templateProp.Value.ToString());
-         if (template == null)
-            return null;
-
-         _tags ??= _templateReader.GetTags(metadata);
-         _conditionalTags ??= _templateReader.GetConditionalTags(metadata);
-
-         foreach (var key in formData.Keys.Where(x => _tags.ContainsKey(x)))
-            _tags[key] = formData[key]?.ToString();
-
-         foreach (var key in formData.Keys.Where(x => _conditionalTags.ContainsKey(x)))
-         {
-            if (bool.TryParse(formData[key]?.ToString(), out bool value))
-               _conditionalTags[key] = value;
-         }
-
-         var nonComputedTags = _tags.ToDictionary(x => x.Key, x => (object) x.Value)
-            .Union(_conditionalTags.ToDictionary(x => x.Key, x => (object) x.Value))
-            .ToDictionary(x => x.Key, x => x.Value);
-
-         var computedTags = _templateReader.GetComputedTags(metadata, nonComputedTags);
-         var booleanTags = _conditionalTags.Union(computedTags).ToDictionary(x => x.Key, x => x.Value);
-
-         var allTags = nonComputedTags
-            .Union(computedTags.ToDictionary(x => x.Key, x => (object) x.Value))
-            .ToDictionary(x => x.Key, x => x.Value);
-
-         string projectName = TemplateMetadataReader.DEFAULT_PROJECT_NAME;
-         if (nonComputedTags.ContainsKey(TemplateMetadataReader.PROJECT_NAME_KEY))
-            projectName = nonComputedTags[TemplateMetadataReader.PROJECT_NAME_KEY].ToString();
-         else
-         {
-            var projectNameTag = metadata.Tags.FirstOrDefault(x => x.Name == TemplateMetadataReader.PROJECT_NAME);
-            if (projectNameTag != null)
-               projectName = nonComputedTags[projectNameTag.Key].ToString();
-         }
-
-         return new ProjectMetadata
-         {
-            ProjectName = projectName,
-            TemplateType = metadata.TemplateType,
-            TemplateSourceType = template.SourceType,
-            TemplateSourceUrl = template.SourceUrl,
-            TemplateSourceDirectory = template.SourceDirectory,
-            FilesToExclude = _templateReader.GetFilesToExclude(metadata, booleanTags),
-            Tags = allTags,
-            TagRegexes = _templateReader.GetTagRegexes(metadata)
-         };
+         return template != null ? _generator.BuildProjectMetadata(formData, metadata, template) : null;
       }
    }
 }

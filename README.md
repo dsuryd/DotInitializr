@@ -32,6 +32,15 @@ Use the HTTP POST `api/metadata` endpoint to read the template metadata from a g
 }
 ```
 
+To access the service directly, inject `ITemplateMetadataReader`:
+
+```csharp
+public interface ITemplateMetadataReader
+{
+  TemplateMetadata GetMetadata(AppConfiguration.Template template);
+}
+```
+
 #### Project Generator
 
 Use the HTTP POST `api/generator` endpoint to generate a project. Specify the project repo and the metadata values in the JSON body, for example:
@@ -51,6 +60,16 @@ Use the HTTP POST `api/generator` endpoint to generate a project. Specify the pr
     "react": true
   },
   "filesToExclude": "Services/**,Proto/**,ClientApp{{ng}}/**"
+}
+```
+
+To access the service directly, inject `IProjectGenerator`:
+
+```csharp
+public interface IProjectGenerator
+{
+  ProjectMetadata BuildProjectMetadata(Dictionary<string, string> formData, TemplateMetadata metadata, AppConfiguration.Template template);
+  byte[] Generate(ProjectMetadata metadata);
 }
 ```
 
@@ -175,19 +194,6 @@ Example:
 
 Use the `FilesToInclude` property to specify comma-delimited paths to include when the tag value is true. To include all files in a folder, use `folder_name/**`.
 If a conditional tag key is used on a file name, it will be removed from the name when the file is included.
-
-#### Nesting
-
-If using `#if tag_key` dotnet tag, if the tag is placed within another tag, the parent tag must be closed with `#endif //tag_key". Example:
-
-```csharp
-#if CloudFoundry
-...
-#if ConfigServer
-...
-#endif
-#endif //CloudFoundry
-```
 
 ### Computed Tags
 

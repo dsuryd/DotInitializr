@@ -46,26 +46,15 @@ namespace DotInitializr
                   }
                }
 
+               x.Content = RenderConditional(x.Content, tags, "<!--", "-->\\s*"); // for XML/HTML.
+               x.Content = RenderConditional(x.Content, tags, @"""", @""": """",?"); // for JSON.
+               x.Content = RenderConditional(x.Content, tags);
+               x.Content = RenderElifConditional(x.Content, tags);
+
                foreach (var tag in tags.Where(x => x.Value is bool))
                {
                   if (x.Name.Contains(tag.Key) && x.Name != tag.Key)
                      x.Name = x.Name.Replace(tag.Key, string.Empty);
-
-                  bool tagValue = (bool) tag.Value;
-                  string singleNewLine = "(?:\\r\\n|\\n)";
-                  string newLine = $"{singleNewLine}?";
-
-                  x.Content = RenderConditional(x.Content, $"<!--#if {tag.Key}-->(.*?)<!--#endif-->{newLine}", tagValue);
-                  x.Content = RenderConditional(x.Content, $"<!--#if !{tag.Key}-->(.*?)<!--#endif-->{newLine}", !tagValue);
-
-                  x.Content = RenderConditional(x.Content, $"\"#if {tag.Key}\": \"\"(.*?)\"#endif\": \"\",?{newLine}", tagValue);
-                  x.Content = RenderConditional(x.Content, $"\"#if !{tag.Key}\": \"\"(.*?)\"#endif\": \"\",?{newLine}", !tagValue);
-
-                  x.Content = RenderConditional(x.Content, $"#if {tag.Key}(.*?)#endif //{tag.Key}{newLine}", tagValue);
-                  x.Content = RenderConditional(x.Content, $"#if !{tag.Key}(.*?)#endif //!{tag.Key}{newLine}", !tagValue);
-
-                  x.Content = RenderConditional(x.Content, $"#if {tag.Key}{singleNewLine}(.*?)#endif{newLine}", tagValue);
-                  x.Content = RenderConditional(x.Content, $"#if !{tag.Key}{singleNewLine}(.*?)#endif{newLine}", !tagValue);
                }
             }
 
@@ -77,17 +66,103 @@ namespace DotInitializr
          });
       }
 
-      private string RenderConditional(string content, string pattern, bool tagValue)
+      private string RenderConditional(string content, Dictionary<string, object> tags, string openTag = "", string closeTag = "")
       {
-         Regex regex = new Regex(pattern, RegexOptions.Singleline);
-         var result = regex.Match(content);
-         if (result.Success)
+         string singleNewLine = @"(?:\r\n|\n)";
+         string newLine = $"{singleNewLine}?";
+         string comment = @"(?://)?";
+         string tagPattern = @"\(?((?:(?!\n).)*?)\)?";
+         string bodyPattern = @"((?:(?!#if|#elif).)*?)";
+
+         string regexPattern = $@"{comment}{openTag}#if {tagPattern}{closeTag}{singleNewLine}{bodyPattern}(?:{comment}{openTag}#else{closeTag}{singleNewLine}{bodyPattern})?{comment}{openTag}#endif{closeTag}{newLine}";
+         Regex regex = new Regex(regexPattern, RegexOptions.Singleline);
+         bool updated = false;
+         Match result;
+
+         do
          {
-            if (tagValue)
-               return regex.Replace(content, m => m.Groups[1].Value.TrimStart('\r', '\n'));
-            else
-               return regex.Replace(content, string.Empty);
+            result = regex.Match(content);
+            if (result.Success)
+            {
+               updated = false;
+               content = regex.Replace(content, m =>
+               {
+                  bool negation = false;
+                  string key = m.Groups[1].Value.Trim('\r', '\n');
+                  if (key.StartsWith("!"))
+                  {
+                     key = key.TrimStart('!');
+                     negation = true;
+                  }
+
+                  string body = m.Groups[2].Value.TrimStart('\r', '\n');
+                  string elseBody = m.Groups.Count == 4 ? m.Groups[3].Value.TrimStart('\r', '\n') : string.Empty;
+
+                  if (tags.ContainsKey(key) && tags[key] is bool value)
+                  {
+                     updated = true;
+                     return value ^ negation ? body : elseBody;
+                  }
+                  else
+                     return m.Groups[0].Value;
+               });
+            }
          }
+         while (result.Success && updated);
+         return content;
+      }
+
+      private string RenderElifConditional(string content, Dictionary<string, object> tags)
+      {
+         string singleNewLine = @"(?:\r\n|\n)";
+         string newLine = $"{singleNewLine}?";
+         string comment = @"(?://)?";
+         string tagPattern = @"\(?((?:(?!\n).)*?)\)?";
+         string bodyPattern = @"((?:(?!#if|#elif).)*?)";
+
+         string regexPattern = $@"{comment}#if {tagPattern}{singleNewLine}{bodyPattern}(?:{comment}#elif {tagPattern}{singleNewLine}{bodyPattern})+{comment}#endif{newLine}";
+         Regex regex = new Regex(regexPattern, RegexOptions.Singleline);
+         bool updated = false;
+         Match result;
+
+         do
+         {
+            result = regex.Match(content);
+            if (result.Success)
+            {
+               updated = true;
+               content = regex.Replace(content, m =>
+               {
+                  int i = 1;
+                  for (i = 1; i < m.Groups.Count; i += 2)
+                  {
+                     bool negation = false;
+                     var key = m.Groups[i].Value.Trim('\r', '\n');
+                     if (key.StartsWith("!"))
+                     {
+                        key = key.TrimStart('!');
+                        negation = true;
+                     }
+
+                     var body = m.Groups[i + 1].Value.TrimStart('\r', '\n');
+
+                     if (tags.ContainsKey(key) && tags[key] is bool value)
+                     {
+                        if (value ^ negation)
+                           return body;
+                     }
+                     else
+                     {
+                        updated = false;
+                        return m.Groups[0].Value;
+                     }
+                  }
+
+                  return string.Empty;
+               });
+            }
+         }
+         while (result.Success && updated);
          return content;
       }
 

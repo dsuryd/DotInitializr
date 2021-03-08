@@ -90,12 +90,14 @@ namespace DotInitializr
 
       private Tag BuildOptionsTag(string symbolKey, Generator generator)
       {
+         var options = generator.Choices.Select(x => x.ChoiceClass?.Choice).ToArray();
          return new Tag
          {
             Key = symbolKey,
             Name = symbolKey,
             Description = generator.Description,
-            Options = generator.Choices.Select(x => x.ChoiceClass?.Choice).ToArray(),
+            RadioOptions = options.Length == 2 ? options : null,
+            Options = options.Length > 2 ? options : null,
             DefaultValue = generator.DefaultValue
          };
       }

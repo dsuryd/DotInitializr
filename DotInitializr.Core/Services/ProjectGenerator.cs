@@ -28,6 +28,8 @@ namespace DotInitializr
    /// </summary>
    public interface IProjectGenerator
    {
+      ProjectMetadata BuildProjectMetadata(Dictionary<string, string> formData, TemplateMetadata metadata, AppConfiguration.Template template);
+
       byte[] Generate(ProjectMetadata metadata);
    }
 
@@ -35,11 +37,61 @@ namespace DotInitializr
    {
       private readonly IEnumerable<ITemplateSource> _templateSources;
       private readonly IEnumerable<ITemplateRenderer> _renderers;
+      private readonly ITemplateMetadataReader _templateReader;
 
-      public ProjectGenerator(IEnumerable<ITemplateSource> templateSources, IEnumerable<ITemplateRenderer> renderers)
+      public ProjectGenerator(IEnumerable<ITemplateSource> templateSources, IEnumerable<ITemplateRenderer> renderers, ITemplateMetadataReader templateReader)
       {
          _templateSources = templateSources;
          _renderers = renderers;
+         _templateReader = templateReader;
+      }
+
+      public ProjectMetadata BuildProjectMetadata(Dictionary<string, string> formData, TemplateMetadata metadata, AppConfiguration.Template template)
+      {
+         var tags = _templateReader.GetTags(metadata);
+         var conditionalTags = _templateReader.GetConditionalTags(metadata);
+
+         foreach (var key in formData.Keys.Where(x => tags.ContainsKey(x)))
+            tags[key] = formData[key]?.ToString();
+
+         foreach (var key in formData.Keys.Where(x => conditionalTags.ContainsKey(x)))
+         {
+            if (bool.TryParse(formData[key]?.ToString(), out bool value))
+               conditionalTags[key] = value;
+         }
+
+         var nonComputedTags = tags.ToDictionary(x => x.Key, x => (object) x.Value)
+            .Union(conditionalTags.ToDictionary(x => x.Key, x => (object) x.Value))
+            .ToDictionary(x => x.Key, x => x.Value);
+
+         var computedTags = _templateReader.GetComputedTags(metadata, nonComputedTags);
+         var booleanTags = conditionalTags.Union(computedTags).ToDictionary(x => x.Key, x => x.Value);
+
+         var allTags = nonComputedTags
+            .Union(computedTags.ToDictionary(x => x.Key, x => (object) x.Value))
+            .ToDictionary(x => x.Key, x => x.Value);
+
+         string projectName = TemplateMetadataReader.DEFAULT_PROJECT_NAME;
+         if (nonComputedTags.ContainsKey(TemplateMetadataReader.PROJECT_NAME_KEY))
+            projectName = nonComputedTags[TemplateMetadataReader.PROJECT_NAME_KEY].ToString();
+         else
+         {
+            var projectNameTag = metadata.Tags.FirstOrDefault(x => x.Name == TemplateMetadataReader.PROJECT_NAME);
+            if (projectNameTag != null)
+               projectName = nonComputedTags[projectNameTag.Key].ToString();
+         }
+
+         return new ProjectMetadata
+         {
+            ProjectName = projectName,
+            TemplateType = metadata.TemplateType,
+            TemplateSourceType = template.SourceType,
+            TemplateSourceUrl = template.SourceUrl,
+            TemplateSourceDirectory = template.SourceDirectory,
+            FilesToExclude = _templateReader.GetFilesToExclude(metadata, booleanTags),
+            Tags = allTags,
+            TagRegexes = _templateReader.GetTagRegexes(metadata)
+         };
       }
 
       public byte[] Generate(ProjectMetadata metadata)
