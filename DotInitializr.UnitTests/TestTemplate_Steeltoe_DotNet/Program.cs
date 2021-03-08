@@ -15,7 +15,7 @@ using Steeltoe.Extensions.Configuration.CloudFoundry;
 #if ConfigServer
 using Steeltoe.Extensions.Configuration.ConfigServer;
 #endif
-#endif //CloudFoundry
+#endif
 #if PlaceholderConfig
 using Steeltoe.Extensions.Configuration.Placeholder;
 #endif
@@ -49,7 +49,7 @@ namespace ProjectNameSpace
 #if ConfigServer
                 .AddConfigServer()
 #endif
-#endif //CloudFoundry
+#endif
 #if PlaceholderConfig
                 .AddPlaceholderResolver()
 #endif
