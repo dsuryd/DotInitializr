@@ -34,7 +34,13 @@ namespace DotInitializr
                   tags.Add(BuildOptionsTag(symbol.Key, generator));
             }
             else if (generator.Type == SymbolType.Computed)
+            {
                computedTags.Add(BuildComputedTag(symbol.Key, generator));
+            }
+            else if (generator.Type == SymbolType.Derived)
+            {
+               computedTags.Add(BuildComputedTagFromDerived(symbol.Key, generator));
+            }
          }
 
          foreach (var source in dotNetMetadata.Sources)
@@ -81,8 +87,9 @@ namespace DotInitializr
       {
          return new Tag
          {
-            Key = generator.Replaces,
+            Key = symbolKey,
             Name = symbolKey,
+            Regex = generator.Replaces,
             Description = generator.Description,
             DefaultValue = generator.DefaultValue
          };
@@ -95,6 +102,7 @@ namespace DotInitializr
          {
             Key = symbolKey,
             Name = symbolKey,
+            Regex = generator.Replaces,
             Description = generator.Description,
             RadioOptions = options.Length == 2 ? options : null,
             Options = options.Length > 2 ? options : null,
@@ -119,6 +127,15 @@ namespace DotInitializr
          {
             Key = symbolKey,
             Expression = generator.Value
+         };
+      }
+
+      private ComputedTag BuildComputedTagFromDerived(string symbolKey, Generator generator)
+      {
+         return new ComputedTag
+         {
+            Key = generator.Replaces ?? symbolKey,
+            Expression = $"{generator.ValueTransform}({generator.ValueSource})"
          };
       }
    }

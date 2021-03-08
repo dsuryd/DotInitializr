@@ -240,8 +240,19 @@ Use a computed tag to derive a boolean value from the other tags with a logical 
 }
 ```
 
-The expression supports `Count()` custom function to count the number of conditional tags with true value. Example:
+#### Expression Functions
+
+The expression supports various functions such as `count()`. For example:
 
 ```json
-"Expression": "Count(MongoDB, MySql) > 1"
+"Expression": "count(MongoDB, MySql) > 1"
 ```
+
+| Function              | Description                                           |
+| --------------------- | ----------------------------------------------------- |
+| `count(param bool[])` | Count the number of conditional tags with true value. |
+| `xmlEncode(string)`   | XML encode a tag value.                               |
+| `upperCase(string)`   | Converts tag value to upper case.                     |
+| `lowerCase(string)`   | Converts tag value to lower case.                     |
+| `titleCase(string)`   | Converts tag value to title case.                     |
+| `kebabCase(string)`   | Converts tag value to kebab case.                     |

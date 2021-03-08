@@ -50,12 +50,6 @@ namespace DotInitializr
                x.Content = RenderConditional(x.Content, tags, @"""", @""": """",?"); // for JSON.
                x.Content = RenderConditional(x.Content, tags);
                x.Content = RenderElifConditional(x.Content, tags);
-
-               foreach (var tag in tags.Where(x => x.Value is bool))
-               {
-                  if (x.Name.Contains(tag.Key) && x.Name != tag.Key)
-                     x.Name = x.Name.Replace(tag.Key, string.Empty);
-               }
             }
 
             return new TemplateFile

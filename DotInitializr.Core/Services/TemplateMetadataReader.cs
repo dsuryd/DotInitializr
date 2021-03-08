@@ -16,8 +16,10 @@ limitations under the License.
 
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using System.Text.Json;
+using System.Text.RegularExpressions;
 using DynamicExpresso;
 
 namespace DotInitializr
@@ -29,7 +31,7 @@ namespace DotInitializr
    {
       TemplateMetadata GetMetadata(AppConfiguration.Template template);
 
-      Dictionary<string, bool> GetComputedTags(TemplateMetadata metadata, Dictionary<string, object> tagValues);
+      Dictionary<string, object> GetComputedTags(TemplateMetadata metadata, Dictionary<string, object> tagValues);
 
       Dictionary<string, bool> GetConditionalTags(TemplateMetadata metadata);
 
@@ -49,6 +51,8 @@ namespace DotInitializr
       private readonly IEnumerable<ITemplateSource> _templateSources;
 
       private delegate int CountDelegate(params bool[] tags);
+
+      private delegate string TransformDelegate(string value);
 
       public TemplateMetadataReader(IEnumerable<ITemplateSource> templateSources)
       {
@@ -118,9 +122,9 @@ namespace DotInitializr
          return metadataFile;
       }
 
-      public Dictionary<string, bool> GetComputedTags(TemplateMetadata metadata, Dictionary<string, object> tagValues)
+      public Dictionary<string, object> GetComputedTags(TemplateMetadata metadata, Dictionary<string, object> tagValues)
       {
-         var result = new Dictionary<string, bool>();
+         var result = new Dictionary<string, object>();
 
          if (metadata.ComputedTags != null)
          {
@@ -129,7 +133,18 @@ namespace DotInitializr
                interpreter.SetVariable(tag.Key, tag.Value);
 
             CountDelegate countFunc = Count;
+            TransformDelegate xmlEncodeFunc = XmlEncode;
+            TransformDelegate lowerCaseFunc = LowerCase;
+            TransformDelegate upperCaseFunc = UpperCase;
+            TransformDelegate titleCaseFunc = TitleCase;
+            TransformDelegate kebabCaseFunc = KebabCase;
             interpreter.SetFunction("Count", countFunc);
+            interpreter.SetFunction("count", countFunc);
+            interpreter.SetFunction("xmlEncode", xmlEncodeFunc);
+            interpreter.SetFunction("lowerCase", lowerCaseFunc);
+            interpreter.SetFunction("upperCase", upperCaseFunc);
+            interpreter.SetFunction("titleCase", titleCaseFunc);
+            interpreter.SetFunction("kebabCase", kebabCaseFunc);
 
             foreach (var computedTag in metadata.ComputedTags)
             {
@@ -137,7 +152,9 @@ namespace DotInitializr
                {
                   object value = interpreter.Eval(computedTag.Expression);
                   if (value is bool)
-                     result.Add(computedTag.Key, (bool) value == true);
+                     result.Add(computedTag.Key, ((bool) value) == true);
+                  else
+                     result.Add(computedTag.Key, value);
                }
                catch (Exception ex)
                {
@@ -200,5 +217,27 @@ namespace DotInitializr
       }
 
       private int Count(params bool[] tags) => tags.Where(x => x).Count();
+
+      private string XmlEncode(string value) => System.Security.SecurityElement.Escape(value);
+
+      private string LowerCase(string value) => value?.ToLower();
+
+      private string UpperCase(string value) => value?.ToUpper();
+
+      private string TitleCase(string value) => new CultureInfo("en-US", false).TextInfo.ToTitleCase(value);
+
+      private string KebabCase(string value)
+      {
+         if (string.IsNullOrEmpty(value))
+            return value;
+
+         return Regex.Replace(
+             value,
+             "(?<!^)([A-Z][a-z]|(?<=[a-z])[A-Z])",
+             "-$1",
+             RegexOptions.Compiled)
+             .Trim()
+             .ToLower();
+      }
    }
 }

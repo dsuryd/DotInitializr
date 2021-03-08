@@ -65,10 +65,11 @@ namespace DotInitializr
             .ToDictionary(x => x.Key, x => x.Value);
 
          var computedTags = _templateReader.GetComputedTags(metadata, nonComputedTags);
-         var booleanTags = conditionalTags.Union(computedTags).ToDictionary(x => x.Key, x => x.Value);
+         var boolComputedTags = computedTags.Where(x => x.Value is bool).ToDictionary(x => x.Key, x => (bool) x.Value);
+         var booleanTags = conditionalTags.Union(boolComputedTags).ToDictionary(x => x.Key, x => x.Value);
 
          var allTags = nonComputedTags
-            .Union(computedTags.ToDictionary(x => x.Key, x => (object) x.Value))
+            .Union(computedTags.ToDictionary(x => x.Key, x => x.Value))
             .ToDictionary(x => x.Key, x => x.Value);
 
          string projectName = TemplateMetadataReader.DEFAULT_PROJECT_NAME;

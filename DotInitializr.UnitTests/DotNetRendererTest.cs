@@ -241,34 +241,6 @@ Two
       }
 
       [Test]
-      public void DotNetRenderer_RenderConditionalTagOnFileName()
-      {
-         var files = new List<TemplateFile> {
-            new TemplateFile
-            {
-               Name = "filecond1",
-               Content = ""
-            },
-            new TemplateFile
-            {
-               Name = "filecond1/subfile",
-               Content = ""
-            }
-         };
-
-         var tags = new Dictionary<string, object>
-         {
-            { "cond1", true }
-         };
-
-         var sut = new DotNetRenderer();
-         var result = sut.Render(files, tags);
-
-         Assert.IsTrue(result.Any(x => x.Name == "file"));
-         Assert.IsTrue(result.Any(x => x.Name == "file/subfile"));
-      }
-
-      [Test]
       public void DotNetRenderer_RenderNestedConditionalTag()
       {
          var files = new List<TemplateFile> {

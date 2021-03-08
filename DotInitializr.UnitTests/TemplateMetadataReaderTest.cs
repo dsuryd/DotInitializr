@@ -157,8 +157,8 @@ namespace DotInitializr.UnitTests
          var result1 = sut.GetComputedTags(metadata, new Dictionary<string, object> { { "cond1", false }, { "cond2", true } });
          var result2 = sut.GetComputedTags(metadata, new Dictionary<string, object> { { "cond1", true }, { "cond2", true } });
 
-         Assert.IsTrue(result1.ContainsKey("computed1") && result1["computed1"] == false);
-         Assert.IsTrue(result2.ContainsKey("computed1") && result2["computed1"] == true);
+         Assert.IsTrue(result1.ContainsKey("computed1") && (bool) result1["computed1"] == false);
+         Assert.IsTrue(result2.ContainsKey("computed1") && (bool) result2["computed1"] == true);
       }
 
       [Test]
@@ -181,8 +181,8 @@ namespace DotInitializr.UnitTests
          var result1 = sut.GetComputedTags(metadata, new Dictionary<string, object> { { "tag1", "A" } });
          var result2 = sut.GetComputedTags(metadata, new Dictionary<string, object> { { "tag1", "B" } });
 
-         Assert.IsTrue(result1.ContainsKey("computed1") && result1["computed1"] == false);
-         Assert.IsTrue(result2.ContainsKey("computed1") && result2["computed1"] == true);
+         Assert.IsTrue(result1.ContainsKey("computed1") && (bool) result1["computed1"] == false);
+         Assert.IsTrue(result2.ContainsKey("computed1") && (bool) result2["computed1"] == true);
       }
    }
 }
