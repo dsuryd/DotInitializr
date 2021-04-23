@@ -42,7 +42,8 @@ namespace DotInitializr
 
          try
          {
-            if (!string.IsNullOrEmpty(Repository.Clone(sourceUrl, tempPath, new CloneOptions { Checkout = false })))
+            var cloneOptions = new CloneOptions { CredentialsProvider = (url, user, cred) => new DefaultCredentials() };
+            if (!string.IsNullOrEmpty(Repository.Clone(sourceUrl, tempPath, cloneOptions)))
             {
                var filePath = string.IsNullOrEmpty(sourceDirectory) ? fileName : Path.Combine(sourceDirectory, fileName);
 
@@ -78,8 +79,9 @@ namespace DotInitializr
          try
          {
             string fullTempPath = Path.Combine(Path.GetFullPath(tempPath), sourceDirectory);
+            var cloneOptions = new CloneOptions { CredentialsProvider = (url, user, cred) => new DefaultCredentials() };
 
-            if (!string.IsNullOrEmpty(Repository.Clone(sourceUrl, tempPath)))
+            if (!string.IsNullOrEmpty(Repository.Clone(sourceUrl, tempPath, cloneOptions)))
             {
                string filePath = string.IsNullOrEmpty(sourceDirectory) ? tempPath : Path.Combine(tempPath, sourceDirectory);
                foreach (var fileName in Directory.EnumerateFiles(filePath, "*", SearchOption.AllDirectories))
