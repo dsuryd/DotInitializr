@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using NUnit.Framework;
 
@@ -89,7 +90,7 @@ Two
          var sut = new DotNetRenderer();
          var result = sut.Render(files, tags);
 
-         Assert.AreEqual("You chose\r\nOne\r\n", result.FirstOrDefault(x => x.Name == "file1").Content);
+         Assert.AreEqual($"You chose{Environment.NewLine}One{Environment.NewLine}", result.FirstOrDefault(x => x.Name == "file1").Content);
       }
 
       [Test]
@@ -117,7 +118,7 @@ Two
          var sut = new DotNetRenderer();
          var result = sut.Render(files, tags);
 
-         Assert.AreEqual("You did not choose\r\nTwo\r\n", result.FirstOrDefault(x => x.Name == "file2").Content);
+         Assert.AreEqual($"You did not choose{Environment.NewLine}Two{Environment.NewLine}", result.FirstOrDefault(x => x.Name == "file2").Content);
       }
 
       [Test]
@@ -143,7 +144,7 @@ Two
          var sut = new DotNetRenderer();
          var result = sut.Render(files, tags);
 
-         Assert.AreEqual("You chose\r\nTwo\r\n", result.FirstOrDefault(x => x.Name == "file1").Content);
+         Assert.AreEqual($"You chose{Environment.NewLine}Two{Environment.NewLine}", result.FirstOrDefault(x => x.Name == "file1").Content);
       }
 
       [Test]
@@ -174,7 +175,7 @@ Two
          var sut = new DotNetRenderer();
          var result = sut.Render(files, tags);
 
-         Assert.AreEqual("You chose\r\nZero\r\nTwo\r\n", result.FirstOrDefault(x => x.Name == "file1").Content);
+         Assert.AreEqual($"You chose{Environment.NewLine}Zero{Environment.NewLine}Two{Environment.NewLine}", result.FirstOrDefault(x => x.Name == "file1").Content);
       }
 
       [Test]
@@ -208,7 +209,7 @@ Three
          var sut = new DotNetRenderer();
          var result = sut.Render(files, tags);
 
-         Assert.AreEqual("You chose\r\nOne\r\nnot\r\nTwo\r\n", result.FirstOrDefault(x => x.Name == "file3").Content);
+         Assert.AreEqual($"You chose{Environment.NewLine}One{Environment.NewLine}not{Environment.NewLine}Two{Environment.NewLine}", result.FirstOrDefault(x => x.Name == "file3").Content);
       }
 
       [Test]
@@ -237,7 +238,7 @@ Two
          var sut = new DotNetRenderer();
          var result = sut.Render(files, tags);
 
-         Assert.AreEqual("You chose\r\nOne\r\nnot\r\nTwo\r\n", result.FirstOrDefault(x => x.Name == "file3").Content);
+         Assert.AreEqual($"You chose{Environment.NewLine}One{Environment.NewLine}not{Environment.NewLine}Two{Environment.NewLine}", result.FirstOrDefault(x => x.Name == "file3").Content);
       }
 
       [Test]
@@ -279,8 +280,8 @@ Two
          var sut = new DotNetRenderer();
          var result = sut.Render(files, tags);
 
-         Assert.AreEqual("You chose\r\nOne\r\nTwo\r\n", result.FirstOrDefault(x => x.Name == "file1").Content);
-         Assert.AreEqual("You chose\r\nOne\r\n", result.FirstOrDefault(x => x.Name == "file2").Content);
+         Assert.AreEqual($"You chose{Environment.NewLine}One{Environment.NewLine}Two{Environment.NewLine}", result.FirstOrDefault(x => x.Name == "file1").Content);
+         Assert.AreEqual($"You chose{Environment.NewLine}One{Environment.NewLine}", result.FirstOrDefault(x => x.Name == "file2").Content);
       }
 
       [Test]
@@ -308,7 +309,7 @@ Two
          var sut = new DotNetRenderer();
          var result = sut.Render(files, tags);
 
-         Assert.AreEqual("You chose\r\nOne\r\nTwo\r\n", result.FirstOrDefault(x => x.Name == "file1").Content);
+         Assert.AreEqual($"You chose{Environment.NewLine}One{Environment.NewLine}Two{Environment.NewLine}", result.FirstOrDefault(x => x.Name == "file1").Content);
       }
 
       [Test]
@@ -337,7 +338,7 @@ Two
          var sut = new DotNetRenderer();
          var result = sut.Render(files, tags);
 
-         Assert.AreEqual("You chose\r\nTwo\r\n", result.FirstOrDefault(x => x.Name == "file1").Content);
+         Assert.AreEqual($"You chose{Environment.NewLine}Two{Environment.NewLine}", result.FirstOrDefault(x => x.Name == "file1").Content);
       }
 
       [Test]
