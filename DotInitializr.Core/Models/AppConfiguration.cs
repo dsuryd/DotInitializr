@@ -15,6 +15,7 @@ namespace DotInitializr
          public string SourceType { get; set; } = "git";
          public string SourceUrl { get; set; }
          public string SourceDirectory { get; set; }
+         public string TemplateType { get; set; } = "dotinitializr";
       }
 
       public IEnumerable<Template> Templates { get; set; }

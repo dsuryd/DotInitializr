@@ -10,6 +10,7 @@ namespace DotInitializr
    public partial class DotNetTemplateMetadata
    {
       public const string FILE_NAME = "template.json";
+      public const string FILE_PATH = "/.template.config";
 
       /// <summary>
       /// The author of the template

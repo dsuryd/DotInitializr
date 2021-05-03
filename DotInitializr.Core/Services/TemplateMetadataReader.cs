@@ -104,22 +104,20 @@ namespace DotInitializr
 
       private TemplateFile GetMetadataFile(AppConfiguration.Template template)
       {
-         TemplateFile metadataFile = null;
-
          var templateSource = _templateSources.FirstOrDefault(x => string.Equals(x.SourceType, template?.SourceType, StringComparison.InvariantCultureIgnoreCase));
          if (templateSource != null)
          {
             try
             {
-               metadataFile = templateSource.GetFile(TemplateMetadata.FILE_NAME, template.SourceUrl, template.SourceDirectory);
+               if (template.TemplateType?.ToLower() == "dotnet")
+                  return templateSource.GetFile(DotNetTemplateMetadata.FILE_NAME, template.SourceUrl, template.SourceDirectory + DotNetTemplateMetadata.FILE_PATH);
+               else
+                  return templateSource.GetFile(TemplateMetadata.FILE_NAME, template.SourceUrl, template.SourceDirectory);
             }
             catch (TemplateException) { }
-
-            if (metadataFile == null)
-               metadataFile = templateSource.GetFile("template.json", template.SourceUrl, template.SourceDirectory + "/.template.config");
          }
 
-         return metadataFile;
+         return null;
       }
 
       public Dictionary<string, object> GetComputedTags(TemplateMetadata metadata, Dictionary<string, object> tagValues)
