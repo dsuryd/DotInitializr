@@ -77,7 +77,7 @@ namespace DotInitializr
             {
                var error = $"`{metadataFile.Name}` in `{template.SourceUrl}` must be in JSON";
                Console.WriteLine(error + Environment.NewLine + ex.ToString());
-               throw new TemplateException(error);
+               throw new TemplateException(error, ex);
             }
 
             // Make sure the tags have keys. Names can be used to substitute keys.
@@ -107,14 +107,10 @@ namespace DotInitializr
          var templateSource = _templateSources.FirstOrDefault(x => string.Equals(x.SourceType, template?.SourceType, StringComparison.InvariantCultureIgnoreCase));
          if (templateSource != null)
          {
-            try
-            {
-               if (template.TemplateType?.ToLower() == "dotnet")
-                  return templateSource.GetFile(DotNetTemplateMetadata.FILE_NAME, template.SourceUrl, template.SourceDirectory + DotNetTemplateMetadata.FILE_PATH);
-               else
-                  return templateSource.GetFile(TemplateMetadata.FILE_NAME, template.SourceUrl, template.SourceDirectory);
-            }
-            catch (TemplateException) { }
+            if (template.TemplateType?.ToLower() == "dotnet")
+               return templateSource.GetFile(DotNetTemplateMetadata.FILE_NAME, template.SourceUrl, template.SourceDirectory + DotNetTemplateMetadata.FILE_PATH);
+            else
+               return templateSource.GetFile(TemplateMetadata.FILE_NAME, template.SourceUrl, template.SourceDirectory);
          }
 
          return null;
@@ -158,7 +154,7 @@ namespace DotInitializr
                {
                   var error = $"Cannot compute `{computedTag.Key}` expression `{computedTag.Expression}`";
                   Console.WriteLine(error + Environment.NewLine + ex.ToString());
-                  throw new TemplateException(error);
+                  throw new TemplateException(error, ex);
                }
             }
          }

@@ -65,7 +65,7 @@ namespace DotInitializr
          }
          catch (Exception ex)
          {
-            throw new TemplateException(ex.Message);
+            throw new TemplateException(ex.Message, ex);
          }
       }
    }

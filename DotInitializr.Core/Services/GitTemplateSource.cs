@@ -61,7 +61,7 @@ namespace DotInitializr
          {
             var error = $"Failed to get file `{fileName}` from `{sourceUrl}`";
             Console.WriteLine(error + Environment.NewLine + ex.ToString());
-            throw new TemplateException(error);
+            throw new TemplateException(error, ex);
          }
 
          Utils.DeleteDirectory(tempPath);
@@ -103,7 +103,7 @@ namespace DotInitializr
          {
             var error = $"Failed to get files from `{sourceUrl}`";
             Console.WriteLine(error + Environment.NewLine + ex.ToString());
-            throw new TemplateException(error);
+            throw new TemplateException(error, ex);
          }
 
          Utils.DeleteDirectory(tempPath);
