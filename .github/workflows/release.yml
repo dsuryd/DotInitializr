@@ -22,4 +22,4 @@ jobs:
       uses: brandedoutcast/publish-nuget@v2.5.2
       with:
           PROJECT_FILE_PATH: DotInitializr.Core/DotInitializr.Core.csproj
-          NUGET_KEY: oy2fafofcedljno4s32qyzhst4fo6cwefhqdmut2rgizgi
+          NUGET_KEY: oy2gcv2kzjeqxqoqkhhajpsyichs67pexcton72dqniscy
