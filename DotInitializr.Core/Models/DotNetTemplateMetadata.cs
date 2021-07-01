@@ -688,7 +688,7 @@ namespace DotInitializr
    /// <summary>
    /// The type of template: project or item
    /// </summary>
-   public enum TagsType { Item, Project };
+   public enum TagsType { Item, Project, Solution };
 
    /// <summary>
    /// A value used to determine how preferred this template is among the other templates with
@@ -1568,6 +1568,9 @@ namespace DotInitializr
 
             case "project":
                return TagsType.Project;
+
+            case "solution":
+               return TagsType.Solution;
          }
          throw new Exception("Cannot unmarshal type TagsType");
       }
