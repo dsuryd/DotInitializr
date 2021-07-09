@@ -1,1 +1,40 @@
 
+{
+  "TemplateType": "mustache",
+  "Tags": [
+    {
+      "Key": "namespace",
+      "Name": "Namespace",
+      "DefaultValue": "Starter",
+      "ValidationRegex": "^[\\w\\-. ]+$",
+      "ValidationError": "Must be valid namespace"
+    },
+    {
+      "Key": "ui",
+      "Name": "UI",
+      "DefaultValue": "React",
+      "RadioOptions": ["Angular", "React"]
+    }
+  ],
+  "ConditionalTags": [
+    {
+      "Key": "grpc",
+      "Name": "gRPC",
+      "Description": "gRPC Service",
+      "DefaultValue": false,
+      "FilesToInclude": "Services/**,Proto/**"
+    }
+  ],
+  "ComputedTags": [
+    {
+      "Key": "ng",
+      "Expression": "ui == \"Angular\"",
+      "FilesToInclude": "ClientApp{{ng}}/**"
+    },
+    {
+      "Key": "react",
+      "Expression": "ui == \"React\"",
+      "FilesToInclude": "ClientApp{{react}}/**"
+    }
+  ]
+}
