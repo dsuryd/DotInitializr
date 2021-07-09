@@ -26,13 +26,13 @@ namespace DotInitializr
    public class GitController : ControllerBase
    {
       [HttpGet]
-      public ActionResult<string> Get([FromServices] ITemplateSource templateSource, [FromQuery] string source, [FromQuery] string path)
+      public ActionResult<string> Get([FromServices] ITemplateSource templateSource, [FromQuery] string source, [FromQuery] string path, [FromQuery] string branch)
       {
          try
          {
             string fileName = Path.GetFileName(path);
             string directory = Path.GetDirectoryName(path);
-            var templateFile = templateSource.GetFile(fileName, source, directory);
+            var templateFile = templateSource.GetFile(fileName, source, directory, branch);
             return templateFile.Content;
          }
          catch (TemplateException ex)

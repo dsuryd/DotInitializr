@@ -108,9 +108,9 @@ namespace DotInitializr
          if (templateSource != null)
          {
             if (template.TemplateType?.ToLower() == "dotnet")
-               return templateSource.GetFile(DotNetTemplateMetadata.FILE_NAME, template.SourceUrl, template.SourceDirectory + DotNetTemplateMetadata.FILE_PATH);
+               return templateSource.GetFile(DotNetTemplateMetadata.FILE_NAME, template.SourceUrl, template.SourceDirectory + DotNetTemplateMetadata.FILE_PATH, template.SourceBranch);
             else
-               return templateSource.GetFile(TemplateMetadata.FILE_NAME, template.SourceUrl, template.SourceDirectory);
+               return templateSource.GetFile(TemplateMetadata.FILE_NAME, template.SourceUrl, template.SourceDirectory, template.SourceBranch);
          }
 
          return null;

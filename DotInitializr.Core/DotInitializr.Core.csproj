@@ -7,12 +7,12 @@
     <Authors>Dicky Suryadi</Authors>
     <Company />
     <Description>Quickstart project generator from git repos.</Description>
-    <Copyright>Copyright 2020</Copyright>
+    <Copyright>Copyright 2020-2021</Copyright>
     <PackageLicenseFile>LICENSE</PackageLicenseFile>
     <PackageProjectUrl>https://github.com/dsuryd/DotInitializr</PackageProjectUrl>
     <RepositoryUrl>https://github.com/dsuryd/DotInitializr</RepositoryUrl>
     <PackageTags>dotnet initializr</PackageTags>
-    <Version>1.2.0</Version>
+    <Version>1.3.0</Version>
   </PropertyGroup>
 
   <ItemGroup>

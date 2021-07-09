@@ -9,20 +9,20 @@ namespace DotInitializr.UnitTests
    {
       [Test]
       [TestCase("https://github.com/dsuryd/DotInitializr", "DotInitializr.UnitTests\\TestTemplate")]
-      public void GitTemplateSource_GetFiles_ReturnsFiles(string sourceUrl, string directory)
+      public void GitTemplateSource_GetFiles_ReturnsFiles(string sourceUrl, string directory, string branch = null)
       {
          var source = new GitTemplateSource();
-         var files = source.GetFiles(sourceUrl, directory);
+         var files = source.GetFiles(sourceUrl, directory, branch);
 
          Assert.Greater(files.Count(), 0);
       }
 
       [Test]
       [TestCase("https://github.com/dsuryd/DotInitializr", "DotInitializr.UnitTests\\TestTemplate", "dotInitializr.json")]
-      public void GitTemplateSource_GetFile_ReturnsFile(string sourceUrl, string directory, string fileName)
+      public void GitTemplateSource_GetFile_ReturnsFile(string sourceUrl, string directory, string fileName, string branch = null)
       {
          var source = new GitTemplateSource();
-         var file = source.GetFile(fileName, sourceUrl, directory);
+         var file = source.GetFile(fileName, sourceUrl, directory, branch);
 
          Assert.IsNotNull(file);
          Assert.IsFalse(string.IsNullOrEmpty(file.Name));

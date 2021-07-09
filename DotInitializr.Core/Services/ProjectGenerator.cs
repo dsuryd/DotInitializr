@@ -89,6 +89,7 @@ namespace DotInitializr
             TemplateSourceType = template.SourceType,
             TemplateSourceUrl = template.SourceUrl,
             TemplateSourceDirectory = template.SourceDirectory,
+            TemplateSourceBranch = template.SourceBranch,
             FilesToExclude = _templateReader.GetFilesToExclude(metadata, booleanTags),
             Tags = allTags,
             TagRegexes = _templateReader.GetTagRegexes(metadata)
@@ -109,7 +110,7 @@ namespace DotInitializr
             .Split(",");
 
          var files = templateSource
-            .GetFiles(metadata.TemplateSourceUrl, metadata.TemplateSourceDirectory)
+            .GetFiles(metadata.TemplateSourceUrl, metadata.TemplateSourceDirectory, metadata.TemplateSourceBranch)
             .Where(x => filesToExclude == null || !MatchFileName(x.Name, filesToExclude))
             .ToList();
 

@@ -14,7 +14,7 @@ namespace DotInitializr.UnitTests
    {
       [Test]
       [TestCase("https://github.com/dsuryd/DotInitializr", "DotInitializr.UnitTests\\TestTemplate")]
-      public async Task GeneratorController_Get_ReturnsZippedProject(string sourceUrl, string directory)
+      public async Task GeneratorController_Get_ReturnsZippedProject(string sourceUrl, string directory, string branch = null)
       {
          var client = new WebApplicationFactory<Startup>().CreateClient();
 
@@ -24,6 +24,7 @@ namespace DotInitializr.UnitTests
             TemplateSourceType = "git",
             TemplateSourceUrl = sourceUrl,
             TemplateSourceDirectory = directory,
+            TemplateSourceBranch = branch,
             Tags = new Dictionary<string, object>
             {
                { "projectName", "StarterApp" },

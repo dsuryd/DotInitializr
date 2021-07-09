@@ -32,7 +32,7 @@ namespace DotInitializr
 
       public string SourceType => "git";
 
-      public TemplateFile GetFile(string fileName, string sourceUrl, string sourceDirectory = null)
+      public TemplateFile GetFile(string fileName, string sourceUrl, string sourceDirectory = null, string sourceBranch = null)
       {
          TemplateFile result = null;
          string tempPath = Path.Combine(Path.GetTempPath(), nameof(DotInitializr), Guid.NewGuid().ToString());
@@ -42,7 +42,7 @@ namespace DotInitializr
 
          try
          {
-            var cloneOptions = new CloneOptions { CredentialsProvider = (url, user, cred) => new DefaultCredentials() };
+            var cloneOptions = new CloneOptions { CredentialsProvider = (url, user, cred) => new DefaultCredentials(), BranchName = sourceBranch };
             if (!string.IsNullOrEmpty(Repository.Clone(sourceUrl, tempPath, cloneOptions)))
             {
                var filePath = string.IsNullOrEmpty(sourceDirectory) ? fileName : Path.Combine(sourceDirectory, fileName);
@@ -68,7 +68,7 @@ namespace DotInitializr
          return result;
       }
 
-      public IEnumerable<TemplateFile> GetFiles(string sourceUrl, string sourceDirectory = null)
+      public IEnumerable<TemplateFile> GetFiles(string sourceUrl, string sourceDirectory = null, string sourceBranch = null)
       {
          List<TemplateFile> result = new List<TemplateFile>();
          string tempPath = Path.Combine(Path.GetTempPath(), nameof(DotInitializr), Guid.NewGuid().ToString());
@@ -79,7 +79,7 @@ namespace DotInitializr
          try
          {
             string fullTempPath = Path.Combine(Path.GetFullPath(tempPath), sourceDirectory);
-            var cloneOptions = new CloneOptions { CredentialsProvider = (url, user, cred) => new DefaultCredentials() };
+            var cloneOptions = new CloneOptions { CredentialsProvider = (url, user, cred) => new DefaultCredentials(), BranchName = sourceBranch };
 
             if (!string.IsNullOrEmpty(Repository.Clone(sourceUrl, tempPath, cloneOptions)))
             {
