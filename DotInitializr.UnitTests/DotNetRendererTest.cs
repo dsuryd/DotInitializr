@@ -347,7 +347,7 @@ Two
          var files = new List<TemplateFile> {
             new TemplateFile
             {
-               Name = "file1",
+               Name = "file1.cs",
                Content = @"<ItemGroup>
    <PackageReference Include=""MongoDB.Driver"" Version=""2.8.1"" />
    <PackageReference Include=""AspNetCore.App"" Version=""2.2.0"" />
@@ -357,11 +357,13 @@ Two
 
          var tags = new Dictionary<string, object>
          {
+            { "file1", "my-file" },
             { "mongo_ver", "3.0.1" }
          };
 
          var tagPatterns = new Dictionary<string, string>
          {
+            { "file1", "file1" },
             { "mongo_ver", "<PackageReference Include=\"MongoDB.Driver\" Version=\"([0-9|.]+)+\" />" }
          };
 
@@ -372,7 +374,7 @@ Two
    <PackageReference Include=""MongoDB.Driver"" Version=""3.0.1"" />
    <PackageReference Include=""AspNetCore.App"" Version=""2.2.0"" />
 </ItemGroup>",
-            result.FirstOrDefault(x => x.Name == "file1").Content);
+            result.FirstOrDefault(x => x.Name == "my-file.cs").Content);
       }
 
       [Test]

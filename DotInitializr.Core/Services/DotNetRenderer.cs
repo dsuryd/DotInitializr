@@ -164,8 +164,11 @@ namespace DotInitializr
       {
          Regex regex = new Regex(pattern, RegexOptions.Singleline);
          var result = regex.Match(content);
-         if (result.Success && result.Groups.Count > 1)
-            return regex.Replace(content, m => m.Groups[0].Value.Replace(m.Groups[1].Value, value));
+         if (result.Success)
+            if (result.Groups.Count > 1)
+               return regex.Replace(content, m => m.Groups[0].Value.Replace(m.Groups[1].Value, value));
+            else
+               return regex.Replace(content, value);
 
          return content;
       }
