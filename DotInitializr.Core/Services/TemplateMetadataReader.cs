@@ -136,7 +136,9 @@ namespace DotInitializr
             interpreter.SetFunction("count", countFunc);
             interpreter.SetFunction("xmlEncode", xmlEncodeFunc);
             interpreter.SetFunction("lowerCase", lowerCaseFunc);
+            interpreter.SetFunction("lowerCaseInvariant", lowerCaseFunc);
             interpreter.SetFunction("upperCase", upperCaseFunc);
+            interpreter.SetFunction("upperCaseInvariant", upperCaseFunc);
             interpreter.SetFunction("titleCase", titleCaseFunc);
             interpreter.SetFunction("kebabCase", kebabCaseFunc);
 
