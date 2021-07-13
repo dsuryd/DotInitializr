@@ -14,9 +14,9 @@ namespace DotInitializr
 
             tags.Add(new Tag
             {
-                Key = dotNetMetadata.SourceName,
-                Name = "Project Name",
-                DefaultValue = dotNetMetadata.SourceName
+                Key = dotNetMetadata.SourceName ?? TemplateMetadataReader.PROJECT_NAME_KEY,
+                Name = TemplateMetadataReader.PROJECT_NAME,
+                DefaultValue = dotNetMetadata.SourceName ?? TemplateMetadataReader.DEFAULT_PROJECT_NAME
             });
 
             foreach (var symbol in dotNetMetadata.Symbols)
