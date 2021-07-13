@@ -31,6 +31,8 @@ namespace DotInitializr
                     x.Content = RenderConditional(x.Content, tags, "<!--", "-->\\s*"); // for XML/HTML.
                     x.Content = RenderConditional(x.Content, tags, @"""", @""": """",?"); // for JSON.
                     x.Content = RenderConditional(x.Content, tags);
+                    x.Content = RenderElifConditional(x.Content, tags, "<!--", "-->\\s*"); // for XML/HTML.
+                    x.Content = RenderElifConditional(x.Content, tags, @"""", @""": """",?"); // for JSON.
                     x.Content = RenderElifConditional(x.Content, tags);
 
                     foreach (var tag in tags.Where(x => x.Value is string).OrderByDescending(x => x.Key.Length))
@@ -66,7 +68,7 @@ namespace DotInitializr
             string newLine = $"{singleNewLine}?";
             string comment = @"(?://)?";
             string tagPattern = @"\(?((?:(?!\n).)*?)\)?";
-            string bodyPattern = @"((?:(?!#if|#elif).)*?)";
+            string bodyPattern = @"((?:(?!#if|#elif|#elseif).)*?)";
 
             string regexPattern = $@"{comment}{openTag}#if {tagPattern}{closeTag}{singleNewLine}{bodyPattern}(?:{comment}{openTag}#else{closeTag}{singleNewLine}{bodyPattern})?{comment}{openTag}#endif{closeTag}{newLine}";
             Regex regex = new Regex(regexPattern, RegexOptions.Singleline);
@@ -106,15 +108,15 @@ namespace DotInitializr
             return content;
         }
 
-        private string RenderElifConditional(string content, Dictionary<string, object> tags)
+        private string RenderElifConditional(string content, Dictionary<string, object> tags, string openTag = "", string closeTag = "")
         {
             string singleNewLine = @"(?:\r\n|\n)";
             string newLine = $"{singleNewLine}?";
             string comment = @"(?://)?";
             string tagPattern = @"\(?((?:(?!\n).)*?)\)?";
-            string bodyPattern = @"((?:(?!#if|#elif).)*?)";
+            string bodyPattern = @"((?:(?!#if|#elif|#elseif).)*?)";
 
-            string regexPattern = $@"{comment}#if {tagPattern}{singleNewLine}{bodyPattern}(?:{comment}#elif {tagPattern}{singleNewLine}{bodyPattern})+{comment}#endif{newLine}";
+            string regexPattern = $@"{comment}{openTag}#if {tagPattern}{closeTag}{singleNewLine}{bodyPattern}(?:{comment}{openTag}(?:#elif|#elseif) {tagPattern}{closeTag}{singleNewLine}{bodyPattern})+{comment}{openTag}#endif{closeTag}{newLine}";
             Regex regex = new Regex(regexPattern, RegexOptions.Singleline);
             bool updated = false;
             Match result;
