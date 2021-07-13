@@ -12,12 +12,16 @@ namespace DotInitializr
             var conditionalTags = new List<ConditionalTag>();
             var computedTags = new List<ComputedTag>();
 
-            tags.Add(new Tag
+            if (!string.IsNullOrWhiteSpace(dotNetMetadata.SourceName))
             {
-                Key = dotNetMetadata.SourceName ?? TemplateMetadataReader.PROJECT_NAME_KEY,
-                Name = TemplateMetadataReader.PROJECT_NAME,
-                DefaultValue = dotNetMetadata.SourceName ?? TemplateMetadataReader.DEFAULT_PROJECT_NAME
-            });
+                tags.Add(new Tag
+                {
+                    Key = TemplateMetadataReader.PROJECT_NAME_KEY,
+                    Name = TemplateMetadataReader.PROJECT_NAME,
+                    DefaultValue = dotNetMetadata.SourceName,
+                    Regex = dotNetMetadata.SourceName
+                });
+            }
 
             foreach (var symbol in dotNetMetadata.Symbols)
             {
