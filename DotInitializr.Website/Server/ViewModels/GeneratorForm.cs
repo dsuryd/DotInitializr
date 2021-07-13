@@ -33,6 +33,9 @@ namespace DotInitializr.Website.Server
 
       public bool Loading { get => Get<bool>(); set => Set(value); }
 
+      [Ignore]
+      public Dictionary<string, string> QueryStrings { get; set; }
+
       public GeneratorForm(IProjectGenerator generator, AppConfiguration config, MetadataForm metadataForm)
       {
          _generator = generator;

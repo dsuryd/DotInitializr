@@ -1,8 +1,9 @@
 ﻿@page "/"
 @inject HttpClient Http
 @inject IJSRuntime JSRuntime;
+@inject NavigationManager NavManager;
 
-<VMContext VM="GeneratorForm" TState="IGeneratorFormState" OnStateChange="UpdateState" OnException="HandleException">
+<VMContext VM="GeneratorForm" TState="IGeneratorFormState" Options="Options" OnStateChange="UpdateState" OnException="HandleException">
     @if (state != null)
     {
         <d-form>
@@ -29,50 +30,60 @@
 }
 
 @code {
-   private IGeneratorFormState state;
-   private bool loading;
-   private string error;
+    private IGeneratorFormState state;
+    private bool loading;
+    private string error;
 
-   private bool ShowSpinner => (state?.Loading == true || loading) && error == null;
+    private bool ShowSpinner => (state?.Loading == true || loading) && error == null;
 
-   private void UpdateState(IGeneratorFormState state)
-   {
-       this.state = state;
-       if (state.ProjectMetadata != null)
-       {
-           this.loading = true;
-           _ = GenerateAsync(state.ProjectMetadata);
-           this.state.ClearProjectMetadata();
-       }
+    private VMConnectOptions Options
+    {
+        get
+        {
+            var uri = NavManager.ToAbsoluteUri(NavManager.Uri);
+            var queryStrings = QueryHelpers.ParseQuery(uri.Query).ToDictionary(x => x.Key.ToLower(), x =>   x.Value.ToString());
+            return new VMConnectOptions { VMArg = new Dictionary<string, object> { { "QueryStrings", queryStrings } } };
+        }
+    }
 
-       if (state.Loading == false)
-           this.error = null;
+    private void UpdateState(IGeneratorFormState state)
+    {
+        this.state = state;
+        if (state.ProjectMetadata != null)
+        {
+            this.loading = true;
+            _ = GenerateAsync(state.ProjectMetadata);
+            this.state.ClearProjectMetadata();
+        }
 
-       StateHasChanged();
-   }
+        if (state.Loading == false)
+            this.error = null;
 
-   private async Task GenerateAsync(ProjectMetadata metadata)
-   {
-       var response = await Http.PostAsJsonAsync("api/generator", state.ProjectMetadata);
-       if (response.StatusCode == System.Net.HttpStatusCode.OK)
-       {
-           await JSRuntime.InvokeAsync<string>("saveFile", new object[]
-           {
+        StateHasChanged();
+    }
+
+    private async Task GenerateAsync(ProjectMetadata metadata)
+    {
+        var response = await Http.PostAsJsonAsync("api/generator", state.ProjectMetadata);
+        if (response.StatusCode == System.Net.HttpStatusCode.OK)
+        {
+            await JSRuntime.InvokeAsync<string>("saveFile", new object[]
+            {
               Convert.ToBase64String(await response.Content.ReadAsByteArrayAsync()),
               response.Content.Headers.ContentDisposition.FileName,
               response.Content.Headers.ContentType.ToString()
-           });
-       }
-       else
-           this.error = await response.Content.ReadAsStringAsync();
+                });
+        }
+        else
+            this.error = await response.Content.ReadAsStringAsync();
 
 
-       this.loading = false;
-       StateHasChanged();
-   }
+        this.loading = false;
+        StateHasChanged();
+    }
 
-   private void HandleException(ExceptionEventArgs e)
-   {
-       this.error = e.Message;
-   }
+    private void HandleException(ExceptionEventArgs e)
+    {
+        this.error = e.Message;
+    }
 }
