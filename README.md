@@ -4,7 +4,7 @@
 
 DotInitializr is a simple web UI to generate an initial project structure from any project template in your git repo.
 
-It lets you add input fields (textbox, dropdowns, radios, checkboxes) to customize your project metadata, using either string-find-and-replace à la dotnet template or [Mustache](https://mustache.github.io/mustache.5.html) notation, paired with a JSON configuration file in the project template.
+It lets you add input fields (textbox, dropdowns, radios, checkboxes) to customize your project metadata, using either [dotnet template](https://github.com/dotnet/templating/wiki/Reference-for-template.json) or [Mustache](https://mustache.github.io/mustache.5.html) notation, paired with a JSON configuration file in the project template.  For this configuration file, you hav a choice of using the dotnet's `template.json`, or a much simpler `dotInitializr.json`.
 
 Demo: https://apptemplate.dotnetify.net
 
@@ -28,7 +28,8 @@ Use the HTTP POST `api/metadata` endpoint to read the template metadata from a g
   "Description": "Demo project for Steeltoe",
   "SourceType": "git",
   "SourceUrl": "https://github.com/dsuryd/DotInitializr",
-  "SourceDirectory": "DotInitializr.UnitTests\\TestTemplate_Steeltoe_DotNet"
+  "SourceDirectory": "DotInitializr.UnitTests\\TestTemplate_Steeltoe_DotNet",
+  "SourceBranch": "master"
 }
 ```
 
@@ -52,6 +53,7 @@ Use the HTTP POST `api/generator` endpoint to generate a project. Specify the pr
   "templateSourceType": "git",
   "templateSourceUrl": "https://github.com/dsuryd/DotInitializr",
   "templateSourceDirectory": "DotInitializr.UnitTests\\TestTemplate",
+  "templateSourceBranch": "master",
   "tags": {
     "projectName": "Starter",
     "namespace": "Starter",
@@ -90,7 +92,8 @@ Add the template info to `appsettings.json`:
         "Description": "ASP.NET Core SPA template with Angular or React",
         "SourceType": "git",
         "SourceUrl": "https://github.com/dsuryd/DotInitializr",
-        "SourceDirectory": "DotInitializr.UnitTests\\TestTemplate"
+        "SourceDirectory": "DotInitializr.UnitTests\\TestTemplate",
+        "SourceBranch": "master"
       }
     ]
   }
@@ -98,6 +101,8 @@ Add the template info to `appsettings.json`:
 ```
 
 ## How to Configure Your Template Metadata
+
+> If you choose to use dotnet's `template.json`, refer to the [dotnet template schema](https://github.com/dotnet/templating/wiki/Reference-for-template.json).
 
 Add `dotInitializr.json` to the project root. The configuration is divided into 3 array groups:
 
