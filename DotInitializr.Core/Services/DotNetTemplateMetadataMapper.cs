@@ -30,12 +30,12 @@ namespace DotInitializr
 
                 if (generator.Type == SymbolType.Parameter)
                 {
-                    if (dataType == "bool")
+                    if (string.Compare(dataType, "bool", true) == 0)
                         conditionalTags.Add(BuildConditionalTag(symbol.Key, generator));
-                    else if (dataType == "string")
-                        tags.Add(BuildInputTag(symbol.Key, generator));
-                    else if (dataType == "choice")
+                    else if (string.Compare(dataType, "choice", true) == 0)
                         tags.Add(BuildOptionsTag(symbol.Key, generator));
+                    else
+                        tags.Add(BuildInputTag(symbol.Key, generator));
                 }
                 else if (generator.Type == SymbolType.Computed)
                 {
@@ -43,7 +43,11 @@ namespace DotInitializr
                 }
                 else if (generator.Type == SymbolType.Derived)
                 {
-                    computedTags.Add(BuildComputedTagFromDerived(symbol.Key, generator));
+                    computedTags.AddRange(BuildComputedTagFromDerived(symbol.Key, generator));
+                }
+                else if (generator.Type == SymbolType.Generated)
+                {
+                    computedTags.AddRange(BuildComputedTagFromGenerated(symbol.Key, generator));
                 }
             }
 
@@ -94,13 +98,18 @@ namespace DotInitializr
 
         private Tag BuildInputTag(string symbolKey, Generator generator)
         {
+            var dataType = generator.Datatype?.ToString();
             return new Tag
             {
                 Key = symbolKey,
                 Name = symbolKey,
                 Regex = generator.Replaces,
                 Description = generator.Description,
-                DefaultValue = generator.DefaultValue
+                DefaultValue = generator.DefaultValue,
+                DataType =
+                    string.Compare(dataType, "int", true) == 0 || string.Compare(dataType, "integer", true) == 0 ? nameof(Int32)
+                    : string.Compare(dataType, "float", true) == 0 ? nameof(Single)
+                    : null
             };
         }
 
@@ -139,13 +148,154 @@ namespace DotInitializr
             };
         }
 
-        private ComputedTag BuildComputedTagFromDerived(string symbolKey, Generator generator)
+        private ComputedTag[] BuildComputedTagFromDerived(string symbolKey, Generator generator)
         {
-            return new ComputedTag
+            var result = new ComputedTag
             {
-                Key = generator.Replaces ?? symbolKey,
+                Key = symbolKey,
                 Expression = $"{generator.ValueTransform}({generator.ValueSource})"
             };
+
+            if (!string.IsNullOrWhiteSpace(generator.Replaces))
+                return new[]
+                {
+                    result,
+                    new ComputedTag
+                    {
+                        Key = generator.Replaces,
+                        Expression = result.Expression
+                    }
+                };
+
+            return new[] { result };
+        }
+
+        private ComputedTag[] BuildComputedTagFromGenerated(string symbolKey, Generator generator)
+        {
+            ComputedTag result = null;
+
+            if (generator.GeneratorGenerator == GeneratorEnum.Constant)
+            {
+                if (generator.Parameters.HasValue)
+                {
+                    result = new ComputedTag
+                    {
+                        Key = symbolKey,
+                        Expression = generator.Parameters.Value.ParametersClass.Value
+                    };
+                }
+            }
+            else if (generator.GeneratorGenerator == GeneratorEnum.Casing)
+            {
+                if (generator.Parameters.HasValue)
+                {
+                    var valueTransform = generator.Parameters.Value.ParametersClass.ToLower == true ? "lowerCase" : "upperCase";
+                    result = new ComputedTag
+                    {
+                        Key = symbolKey,
+                        Expression = $"{valueTransform}({generator.Parameters.Value.ParametersClass.Source})"
+                    };
+                }
+            }
+            else if (generator.GeneratorGenerator == GeneratorEnum.Coalesce)
+            {
+                if (generator.Parameters.HasValue)
+                {
+                    var parameters = generator.Parameters.Value.ParametersClass;
+                    result = new ComputedTag
+                    {
+                        Key = symbolKey,
+                        Expression = $"{parameters.SourceVariableName} != null ? {parameters.SourceVariableName} : {parameters.FallbackVariableName}"
+                    };
+                }
+            }
+            else if (generator.GeneratorGenerator == GeneratorEnum.Evaluate)
+            {
+                if (generator.Parameters.HasValue)
+                {
+                    var parameters = generator.Parameters.Value.ParametersClass;
+                    result = new ComputedTag
+                    {
+                        Key = symbolKey,
+                        Expression = parameters.Action
+                    };
+                }
+            }
+            else if (generator.GeneratorGenerator == GeneratorEnum.Guid)
+            {
+                if (generator.Parameters.HasValue)
+                {
+                    var parameters = generator.Parameters.Value.ParametersClass;
+                    result = new ComputedTag
+                    {
+                        Key = symbolKey,
+                        Expression = Guid.NewGuid().ToString(parameters.Format ?? "")
+                    };
+                }
+            }
+            else if (generator.GeneratorGenerator == GeneratorEnum.Port)
+            {
+                if (generator.Parameters.HasValue)
+                {
+                    var parameters = generator.Parameters.Value.ParametersClass;
+                    result = new ComputedTag
+                    {
+                        Key = symbolKey,
+                        Expression = $"{parameters.Fallback}"
+                    };
+                }
+            }
+            else if (generator.GeneratorGenerator == GeneratorEnum.Now)
+            {
+                if (generator.Parameters.HasValue)
+                {
+                    var parameters = generator.Parameters.Value.ParametersClass;
+                    result = new ComputedTag
+                    {
+                        Key = symbolKey,
+                        Expression = parameters.Utc == true ? DateTime.UtcNow.ToString(parameters.Format) : DateTime.Now.ToString(parameters.Format)
+                    };
+                }
+            }
+            else if (generator.GeneratorGenerator == GeneratorEnum.Random)
+            {
+                if (generator.Parameters.HasValue)
+                {
+                    var parameters = generator.Parameters.Value.ParametersClass;
+                    result = new ComputedTag
+                    {
+                        Key = symbolKey,
+                        Expression = $"{new Random().Next((int)parameters.Low, (int)parameters.High)}"
+                    };
+                }
+            }
+            else if (generator.GeneratorGenerator == GeneratorEnum.Regex)
+            {
+                if (generator.Parameters.HasValue)
+                {
+                    var parameters = generator.Parameters.Value.ParametersClass;
+                    result = new ComputedTag
+                    {
+                        Key = symbolKey,
+                        Expression = parameters.Utc == true ? DateTime.UtcNow.ToString(parameters.Format) : DateTime.Now.ToString(parameters.Format)
+                    };
+                }
+            }
+            else
+                throw new NotImplementedException();
+
+            if (!string.IsNullOrWhiteSpace(generator.Replaces))
+                return new[]
+                {
+                    result,
+                    new ComputedTag
+                    {
+                        Key = generator.Replaces,
+                        Expression = result.Expression
+                    }
+                };
+
+            return new[] { result };
         }
 
         private string GetFilesToExclude(Modifier modifier)

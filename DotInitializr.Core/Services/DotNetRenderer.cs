@@ -31,9 +31,15 @@ namespace DotInitializr
                     x.Content = RenderConditional(x.Content, tags, "<!--", "-->\\s*"); // for XML/HTML.
                     x.Content = RenderConditional(x.Content, tags, @"""", @""": """",?"); // for JSON.
                     x.Content = RenderConditional(x.Content, tags);
+
                     x.Content = RenderElifConditional(x.Content, tags, "<!--", "-->\\s*"); // for XML/HTML.
                     x.Content = RenderElifConditional(x.Content, tags, @"""", @""": """",?"); // for JSON.
                     x.Content = RenderElifConditional(x.Content, tags);
+
+                    // Do another pass to resolve nested conditionals.
+                    x.Content = RenderConditional(x.Content, tags, "<!--", "-->\\s*"); // for XML/HTML.
+                    x.Content = RenderConditional(x.Content, tags, @"""", @""": """",?"); // for JSON.
+                    x.Content = RenderConditional(x.Content, tags);
 
                     foreach (var tag in tags.Where(x => x.Value is string).OrderByDescending(x => x.Key.Length))
                     {
@@ -64,7 +70,7 @@ namespace DotInitializr
 
         private string RenderConditional(string content, Dictionary<string, object> tags, string openTag = "", string closeTag = "")
         {
-            string singleNewLine = @"(?:\r\n|\n)";
+            string singleNewLine = @"(?:\t*\r\n|\t*\n)";
             string newLine = $"{singleNewLine}?";
             string comment = @"(?://)?";
             string tagPattern = @"\(?((?:(?!\n).)*?)\)?";
@@ -94,13 +100,11 @@ namespace DotInitializr
                         string body = m.Groups[2].Value.TrimStart('\r', '\n');
                         string elseBody = m.Groups.Count == 4 ? m.Groups[3].Value.TrimStart('\r', '\n') : string.Empty;
 
+                        updated = true;
                         if (tags.ContainsKey(key) && tags[key] is bool value)
-                        {
-                            updated = true;
                             return value ^ negation ? body : elseBody;
-                        }
                         else
-                            return m.Groups[0].Value;
+                            return elseBody;
                     });
                 }
             }

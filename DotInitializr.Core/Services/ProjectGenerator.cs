@@ -52,7 +52,22 @@ namespace DotInitializr
             var conditionalTags = _templateReader.GetConditionalTags(metadata);
 
             foreach (var key in formData.Keys.Where(x => tags.ContainsKey(x)))
-                tags[key] = formData[key]?.ToString();
+            {
+                string value = formData[key]?.ToString();
+                try
+                {
+                    if (tags[key] is int)
+                        tags[key] = int.Parse(value);
+                    else if (tags[key] is float)
+                        tags[key] = float.Parse(value);
+                    else
+                        tags[key] = value;
+                }
+                catch (Exception)
+                {
+                    tags[key] = value;
+                }
+            }
 
             foreach (var key in formData.Keys.Where(x => conditionalTags.ContainsKey(x)))
             {
@@ -60,7 +75,7 @@ namespace DotInitializr
                     conditionalTags[key] = value;
             }
 
-            var nonComputedTags = tags.ToDictionary(x => x.Key, x => (object)x.Value)
+            var nonComputedTags = tags.ToDictionary(x => x.Key, x => x.Value)
                .Union(conditionalTags.ToDictionary(x => x.Key, x => (object)x.Value))
                .ToDictionary(x => x.Key, x => x.Value);
 

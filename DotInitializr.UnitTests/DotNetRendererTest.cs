@@ -158,7 +158,7 @@ Two
 #if cond0
 Zero
 #endif
-#if cond1
+#if (cond1)
 One
 #elif cond2
 Two
@@ -332,18 +332,64 @@ Two
          };
 
             var tags = new Dictionary<string, object>
-         {
-            { "cond1", true },
-            { "cond2", true },
-            { "cond3", true },
-            { "cond4", false },
-         };
+            {
+                { "cond1", true },
+                { "cond2", true },
+                { "cond3", true },
+                { "cond4", false },
+            };
 
             var sut = new DotNetRenderer();
             var result = sut.Render(files, tags);
 
             Assert.AreEqual($"You chose{Environment.NewLine}One{Environment.NewLine}Two{Environment.NewLine}", result.FirstOrDefault(x => x.Name == "file1").Content);
             Assert.AreEqual($"You chose{Environment.NewLine}One{Environment.NewLine}", result.FirstOrDefault(x => x.Name == "file2").Content);
+        }
+
+        [Test]
+        public void DotNetRenderer_RenderNestedElifConditionalTag()
+        {
+            var files = new List<TemplateFile> {
+                new TemplateFile
+                {
+                   Name = "file1",
+                   Content = @"You chose
+<!--#if cond1-->
+One
+<!--#if cond2-->
+Two
+<!--#elif cond3-->
+Three
+<!--#endif-->
+<!--#endif-->"
+                },
+                new TemplateFile
+                {
+                   Name = "file2",
+                   Content = @"You chose
+<!--#if cond1-->
+One
+<!--#if cond3-->
+Three
+<!--#endif-->
+<!--#elif cond2-->
+Two
+<!--#endif-->"
+                },
+            };
+
+            var tags = new Dictionary<string, object>
+            {
+                { "cond1", true },
+                { "cond2", false },
+                { "cond3", true }
+            };
+
+            var sut = new DotNetRenderer();
+            var result = sut.Render(files, tags);
+
+            Assert.AreEqual($"You chose{Environment.NewLine}One{Environment.NewLine}Three{Environment.NewLine}", result.FirstOrDefault(x => x.Name == "file1").Content);
+            Assert.AreEqual($"You chose{Environment.NewLine}One{Environment.NewLine}Three{Environment.NewLine}", result.FirstOrDefault(x => x.Name == "file2").Content);
         }
 
         [Test]

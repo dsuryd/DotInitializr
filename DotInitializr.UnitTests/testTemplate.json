@@ -466,6 +466,15 @@
         "value": "5000"
       }
     },
+    "GitHubProjectLower": {
+      "type": "generated",
+      "generator": "casing",
+      "parameters": {
+        "source": "GitHubProject",
+        "toLower": true
+      }
+    },
+
     "HttpPortReplacer": {
       "type": "generated",
       "generator": "coalesce",
