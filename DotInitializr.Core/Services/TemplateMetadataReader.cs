@@ -175,9 +175,9 @@ namespace DotInitializr
                 foreach (var tag in metadata.Tags)
                 {
                     if (tag.DataType == nameof(Int32))
-                        result.Add(tag.Key, string.IsNullOrWhiteSpace(tag.DefaultValue) ? 0 : int.Parse(tag.DefaultValue));
+                        result.Add(tag.Key, string.IsNullOrWhiteSpace(tag.DefaultValue) ? default : int.Parse(tag.DefaultValue));
                     else if (tag.DataType == nameof(Single))
-                        result.Add(tag.Key, string.IsNullOrWhiteSpace(tag.DefaultValue) ? Single.NaN : float.Parse(tag.DefaultValue));
+                        result.Add(tag.Key, string.IsNullOrWhiteSpace(tag.DefaultValue) ? default : float.Parse(tag.DefaultValue));
                     else
                         result.Add(tag.Key, tag.DefaultValue);
                 }

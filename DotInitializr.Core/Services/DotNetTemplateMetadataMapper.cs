@@ -106,6 +106,7 @@ namespace DotInitializr
                 Regex = generator.Replaces,
                 Description = generator.Description,
                 DefaultValue = generator.DefaultValue,
+                IsRequired = generator.IsRequired ?? false,
                 DataType =
                     string.Compare(dataType, "int", true) == 0 || string.Compare(dataType, "integer", true) == 0 ? nameof(Int32)
                     : string.Compare(dataType, "float", true) == 0 ? nameof(Single)

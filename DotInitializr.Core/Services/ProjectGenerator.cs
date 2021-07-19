@@ -57,9 +57,9 @@ namespace DotInitializr
                 try
                 {
                     if (tags[key] is int)
-                        tags[key] = int.Parse(value);
+                        tags[key] = int.TryParse(value, out int intValue) ? intValue : tags[key];
                     else if (tags[key] is float)
-                        tags[key] = float.Parse(value);
+                        tags[key] = float.TryParse(value, out float floatValue) ? floatValue : tags[key];
                     else
                         tags[key] = value;
                 }

@@ -14,6 +14,7 @@ namespace DotInitializr
         public string[] Options { get; set; }
         public string[] RadioOptions { get; set; }
         public string DataType { get; set; }
+        public bool IsRequired { get; set; } = true;
     }
 
     public class ConditionalTag
