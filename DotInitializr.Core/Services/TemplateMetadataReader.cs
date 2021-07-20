@@ -179,7 +179,7 @@ namespace DotInitializr
                     else if (tag.DataType == nameof(Single))
                         result.Add(tag.Key, string.IsNullOrWhiteSpace(tag.DefaultValue) ? default : float.Parse(tag.DefaultValue));
                     else
-                        result.Add(tag.Key, tag.DefaultValue);
+                        result.Add(tag.Key, tag.DefaultValue ?? tag.Regex);
                 }
 
             return result;
