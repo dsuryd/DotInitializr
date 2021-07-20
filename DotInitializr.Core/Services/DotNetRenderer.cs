@@ -29,33 +29,34 @@ namespace DotInitializr
             if (tags != null)
             {
                x.Content = RenderConditional(x.Content, tags, "<!--", "-->\\s*"); // for XML/HTML.
-                  x.Content = RenderConditional(x.Content, tags, @"""", @""": """",?"); // for JSON.
-                  x.Content = RenderConditional(x.Content, tags);
+               x.Content = RenderConditional(x.Content, tags, @"""", @""": """",?"); // for JSON.
+               x.Content = RenderConditional(x.Content, tags);
 
                x.Content = RenderElifConditional(x.Content, tags, "<!--", "-->\\s*"); // for XML/HTML.
-                  x.Content = RenderElifConditional(x.Content, tags, @"""", @""": """",?"); // for JSON.
-                  x.Content = RenderElifConditional(x.Content, tags);
+               x.Content = RenderElifConditional(x.Content, tags, @"""", @""": """",?"); // for JSON.
+               x.Content = RenderElifConditional(x.Content, tags);
 
-                  // Do another pass to resolve nested conditionals.
-                  x.Content = RenderConditional(x.Content, tags, "<!--", "-->\\s*"); // for XML/HTML.
-                  x.Content = RenderConditional(x.Content, tags, @"""", @""": """",?"); // for JSON.
-                  x.Content = RenderConditional(x.Content, tags);
+               // Do another pass to resolve nested conditionals.
+               x.Content = RenderConditional(x.Content, tags, "<!--", "-->\\s*"); // for XML/HTML.
+               x.Content = RenderConditional(x.Content, tags, @"""", @""": """",?"); // for JSON.
+               x.Content = RenderConditional(x.Content, tags);
 
-               foreach (var tag in tags.Where(x => x.Value is string).OrderByDescending(x => x.Key.Length))
+               foreach (var tag in tags.Where(x => !(x.Value is bool) && x.Value != null).OrderByDescending(x => x.Key.Length))
                {
+                  string tagValue = $"{tag.Value}";
                   string tagPattern = tagPatterns?.ContainsKey(tag.Key) == true ? tagPatterns[tag.Key] : null;
                   if (tagPattern != null)
                   {
-                     x.Name = RenderPattern(x.Name, tagPattern, tag.Value.ToString());
-                     x.Content = RenderPattern(x.Content, tagPattern, tag.Value.ToString());
+                     x.Name = RenderPattern(x.Name, tagPattern, tagValue);
+                     x.Content = RenderPattern(x.Content, tagPattern, tagValue);
                   }
                   else
                   {
                      if (x.Name.Contains(tag.Key))
-                        x.Name = x.Name.Replace(tag.Key, tag.Value.ToString());
+                        x.Name = x.Name.Replace(tag.Key, tagValue);
 
                      if (x.Content.Contains(tag.Key))
-                        x.Content = x.Content.Replace(tag.Key, tag.Value.ToString());
+                        x.Content = x.Content.Replace(tag.Key, tagValue);
                   }
                }
             }

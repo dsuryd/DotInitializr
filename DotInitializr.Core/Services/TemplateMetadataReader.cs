@@ -157,7 +157,7 @@ namespace DotInitializr
                }
                catch (Exception ex)
                {
-                  var error = $"Cannot compute `{computedTag.Key}` expression `{computedTag.Expression}: {ex.ToString()}`";
+                  var error = $"Cannot compute `{computedTag.Key}` expression `{computedTag.Expression}: {ex}`";
                   Console.ForegroundColor = ConsoleColor.Red;
                   Console.WriteLine(error);
                   Console.ResetColor();
