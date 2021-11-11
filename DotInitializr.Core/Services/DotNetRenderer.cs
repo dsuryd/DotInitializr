@@ -26,6 +26,9 @@ namespace DotInitializr
 
          return files.Select(x =>
          {
+            if (x is TemplateFileBinary)
+               return x;
+
             if (tags != null)
             {
                x.Content = RenderConditional(x.Content, tags, "<!--", "-->\\s*"); // for XML/HTML.

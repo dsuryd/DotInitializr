@@ -153,7 +153,7 @@ namespace DotInitializr
             {
                var entry = archive.CreateEntry(file.Name, CompressionLevel.Optimal);
                using var entryStream = entry.Open();
-               using var zippedEntry = new MemoryStream(Encoding.UTF8.GetBytes(file.Content));
+               using var zippedEntry = new MemoryStream(file is TemplateFileBinary ? (file as TemplateFileBinary).ContentBytes : Encoding.UTF8.GetBytes(file.Content));
                entry.ExternalAttributes = 27262976; // RW_(Owner)/R__(Group)/___(Other)
                zippedEntry.CopyTo(entryStream);
             }

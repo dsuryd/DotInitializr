@@ -1,6 +1,4 @@
 using System.Linq;
-using System.Text.Json;
-using DotInitializr.Website.Server;
 using NUnit.Framework;
 
 namespace DotInitializr.UnitTests
@@ -14,7 +12,9 @@ namespace DotInitializr.UnitTests
          var source = new GitTemplateSource();
          var files = source.GetFiles(sourceUrl, directory, branch);
 
-         Assert.Greater(files.Count(), 0);
+         Assert.AreEqual(74, files.Count());
+
+         Assert.AreEqual(3, files.Where(x => x is TemplateFileBinary).Count());
       }
 
       [Test]

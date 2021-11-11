@@ -50,6 +50,9 @@ namespace DotInitializr
             var stubble = new StubbleBuilder().Build();
             return files.Select(x =>
             {
+               if (x is TemplateFileBinary)
+                  return x;
+
                if (conditionalTags != null)
                {
                   foreach (var tag in conditionalTags)

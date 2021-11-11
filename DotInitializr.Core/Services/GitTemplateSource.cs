@@ -86,16 +86,26 @@ namespace DotInitializr
                string filePath = string.IsNullOrEmpty(sourceDirectory) ? tempPath : Path.Combine(tempPath, sourceDirectory);
                foreach (var fileName in Directory.EnumerateFiles(filePath, "*", SearchOption.AllDirectories))
                {
-                  if (_ignoreFiles.Any(x => fileName.Contains(x)))
+                  if (_ignoreFiles.Any(x => fileName.EndsWith(x)))
                      continue;
 
-                  result.Add(new TemplateFile
+                  var templateFile = new TemplateFile
                   {
                      Name = fileName
                         .Replace(fullTempPath, string.Empty)
                         .TrimStart(Path.DirectorySeparatorChar, Path.AltDirectorySeparatorChar),
                      Content = File.ReadAllText(fileName)
-                  });
+                  };
+
+                  if (IsBinary(templateFile.Content))
+                     templateFile = new TemplateFileBinary
+                     {
+                        Name = templateFile.Name,
+                        Content = templateFile.Content,
+                        ContentBytes = File.ReadAllBytes(fileName)
+                     };
+
+                  result.Add(templateFile);
                }
             }
          }
@@ -108,6 +118,12 @@ namespace DotInitializr
 
          Utils.DeleteDirectory(tempPath);
          return result;
+      }
+
+      private static bool IsBinary(string content)
+      {
+         Func<char, bool> IsNonTextControlChar = (char c) => char.IsControl(c) && c != '\0' && c != '\r' && c != '\n' && c != '\t' && c != '\b' && c != '\v' && c != '\f' && c != 26;
+         return content.Any(c => IsNonTextControlChar(c));
       }
    }
 }
