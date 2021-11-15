@@ -50,20 +50,15 @@ namespace DotInitializr
             var stubble = new StubbleBuilder().Build();
             return files.Select(x =>
             {
-               if (x is TemplateFileBinary)
-                  return x;
-
                if (conditionalTags != null)
                {
                   foreach (var tag in conditionalTags)
                      x.Name = x.Name.Replace("{{" + tag + "}}", string.Empty);
                }
 
-               return new TemplateFile
-               {
-                  Name = stubble.Render(x.Name, tags),
-                  Content = stubble.Render(x.Content, tags)
-               };
+               return x is TemplateFileBinary
+                   ? new TemplateFileBinary { Name = stubble.Render(x.Name, tags), ContentBytes = (x as TemplateFileBinary).ContentBytes }
+                   : new TemplateFile { Name = stubble.Render(x.Name, tags), Content = stubble.Render(x.Content, tags) };
             });
          }
          catch (Exception ex)
