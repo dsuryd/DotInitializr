@@ -69,7 +69,7 @@ namespace DotInitializr
             try
             {
                if (metadataFile.Name.EndsWith(DotNetTemplateMetadata.FILE_NAME, StringComparison.InvariantCultureIgnoreCase))
-                  metadata = new DotNetTemplateMetadataMapper().Map(DotNetTemplateMetadata.FromJson(metadataFile.Content));
+                  metadata = new DotNetTemplateMetadataMapper().Map(metadataFile.Content.ToDotNetTemplateMetadata());
                else
                   metadata = JsonSerializer.Deserialize<TemplateMetadata>(metadataFile.Content);
             }

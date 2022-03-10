@@ -28,7 +28,7 @@ namespace DotInitializr
             var generator = symbol.Value;
             string dataType = generator.Datatype?.ToString();
 
-            if (generator.Type == SymbolType.Parameter)
+            if (generator.Type == FluffyType.Parameter)
             {
                if (string.Compare(dataType, "bool", true) == 0)
                   conditionalTags.Add(BuildConditionalTag(symbol.Key, generator));
@@ -37,15 +37,15 @@ namespace DotInitializr
                else
                   tags.Add(BuildInputTag(symbol.Key, generator));
             }
-            else if (generator.Type == SymbolType.Computed)
+            else if (generator.Type == FluffyType.Computed)
             {
                computedTags.Add(BuildComputedTag(symbol.Key, generator));
             }
-            else if (generator.Type == SymbolType.Derived)
+            else if (generator.Type == FluffyType.Derived)
             {
                computedTags.AddRange(BuildComputedTagFromDerived(symbol.Key, generator));
             }
-            else if (generator.Type == SymbolType.Generated)
+            else if (generator.Type == FluffyType.Generated)
             {
                computedTags.AddRange(BuildComputedTagFromGenerated(symbol.Key, generator));
             }
@@ -102,7 +102,7 @@ namespace DotInitializr
          return new Tag
          {
             Key = symbolKey,
-            Name = symbolKey,
+            Name = generator.DisplayName ?? symbolKey,
             Regex = generator.Replaces,
             Description = generator.Description,
             DefaultValue = generator.DefaultValue,
@@ -120,7 +120,7 @@ namespace DotInitializr
          return new Tag
          {
             Key = symbolKey,
-            Name = symbolKey,
+            Name = generator.DisplayName ?? symbolKey,
             Regex = generator.Replaces,
             Description = generator.Description,
             RadioOptions = options.Length == 2 ? options : null,
@@ -134,7 +134,7 @@ namespace DotInitializr
          return new ConditionalTag
          {
             Key = symbolKey,
-            Name = symbolKey,
+            Name = generator.DisplayName ?? symbolKey,
             Description = generator.Description,
             DefaultValue = generator.DefaultValue.Equals("true", StringComparison.InvariantCultureIgnoreCase)
          };

@@ -16,6 +16,7 @@ limitations under the License.
 
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Newtonsoft.Json;
 
 namespace DotInitializr
 {
@@ -39,5 +40,9 @@ namespace DotInitializr
 
          return services;
       }
+
+      public static string ToJson(this DotNetTemplateMetadata self) => JsonConvert.SerializeObject(self, DotInitializr.Converter.Settings);
+
+      public static DotNetTemplateMetadata ToDotNetTemplateMetadata(this string json) => JsonConvert.DeserializeObject<DotNetTemplateMetadata>(json, DotInitializr.Converter.Settings);
    }
 }

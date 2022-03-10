@@ -218,6 +218,7 @@
     },
     "SourceControl": {
       "type": "parameter",
+      "displayName": "Source Control",
       "datatype": "choice",
       "choices": [
         {
