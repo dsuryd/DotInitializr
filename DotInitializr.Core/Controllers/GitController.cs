@@ -14,37 +14,37 @@ See the License for the specific language governing permissions and
 limitations under the License.
  */
 
+using Microsoft.AspNetCore.Mvc;
 using System;
 using System.IO;
 using System.Net;
-using Microsoft.AspNetCore.Mvc;
 
 namespace DotInitializr
 {
-   [Route("api/[controller]")]
-   [ApiController]
-   public class GitController : ControllerBase
-   {
-      [HttpGet]
-      public ActionResult<string> Get([FromServices] ITemplateSource templateSource, [FromQuery] string source, [FromQuery] string path, [FromQuery] string branch)
-      {
-         try
-         {
-            string fileName = Path.GetFileName(path);
-            string directory = Path.GetDirectoryName(path);
-            var templateFile = templateSource.GetFile(fileName, source, directory, branch);
-            return templateFile.Content;
-         }
-         catch (TemplateException ex)
-         {
-            Response.StatusCode = (int) HttpStatusCode.InternalServerError;
-            return Content(ex.Message);
-         }
-         catch (Exception ex)
-         {
-            Response.StatusCode = (int) HttpStatusCode.BadRequest;
-            return Content(ex.Message);
-         }
-      }
-   }
+	[Route("api/[controller]")]
+	[ApiController]
+	public class GitController : ControllerBase
+	{
+		[HttpGet]
+		public ActionResult<string> Get([FromServices] IConfigurableTemplateSource templateSource, [FromQuery] string source, [FromQuery] string path, [FromQuery] string branch)
+		{
+			try
+			{
+				string fileName = Path.GetFileName(path);
+				string directory = Path.GetDirectoryName(path);
+				var templateFile = templateSource.GetFile(fileName, source, directory, branch);
+				return templateFile.Content;
+			}
+			catch (TemplateException ex)
+			{
+				Response.StatusCode = (int)HttpStatusCode.InternalServerError;
+				return Content(ex.Message);
+			}
+			catch (Exception ex)
+			{
+				Response.StatusCode = (int)HttpStatusCode.BadRequest;
+				return Content(ex.Message);
+			}
+		}
+	}
 }

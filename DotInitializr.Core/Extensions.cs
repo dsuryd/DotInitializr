@@ -20,29 +20,29 @@ using Newtonsoft.Json;
 
 namespace DotInitializr
 {
-   public static class Extensions
-   {
-      public static IServiceCollection AddDotInitializr(this IServiceCollection services) => services.AddDotInitializr(null, false);
+	public static class Extensions
+	{
+		public static IServiceCollection AddDotInitializr(this IServiceCollection services) => services.AddDotInitializr(null, false);
 
-      public static IServiceCollection AddDotInitializr(this IServiceCollection services, IConfiguration configuration, bool includeControllers = true)
-      {
-         services.AddSingleton<ITemplateSource, GitTemplateSource>();
-         services.AddSingleton<ITemplateRenderer, MustacheRenderer>();
-         services.AddSingleton<ITemplateRenderer, DotNetRenderer>();
-         services.AddSingleton<IProjectGenerator, ProjectGenerator>();
-         services.AddSingleton<ITemplateMetadataReader, TemplateMetadataReader>();
+		public static IServiceCollection AddDotInitializr(this IServiceCollection services, IConfiguration configuration, bool includeControllers = true)
+		{
+			services.AddSingleton<IConfigurableTemplateSource, GitConfigurableTemplateSource>();
+			services.AddSingleton<ITemplateRenderer, MustacheRenderer>();
+			services.AddSingleton<ITemplateRenderer, DotNetRenderer>();
+			services.AddSingleton<IProjectGenerator, ProjectGenerator>();
+			services.AddSingleton<ITemplateMetadataReader, TemplateMetadataReader>();
 
-         if (includeControllers)
-            services.AddMvcCore().AddApplicationPart(typeof(Extensions).Assembly).AddControllersAsServices();
+			if (includeControllers)
+				services.AddMvcCore().AddApplicationPart(typeof(Extensions).Assembly).AddControllersAsServices();
 
-         if (configuration != null)
-            services.AddSingleton(configuration.GetSection(AppConfiguration.SECTION).Get<AppConfiguration>() ?? new AppConfiguration());
+			if (configuration != null)
+				services.AddSingleton(configuration.GetSection(AppConfiguration.SECTION).Get<AppConfiguration>() ?? new AppConfiguration());
 
-         return services;
-      }
+			return services;
+		}
 
-      public static string ToJson(this DotNetTemplateMetadata self) => JsonConvert.SerializeObject(self, DotInitializr.Converter.Settings);
+		public static string ToJson(this DotNetTemplateMetadata self) => JsonConvert.SerializeObject(self, DotInitializr.Converter.Settings);
 
-      public static DotNetTemplateMetadata ToDotNetTemplateMetadata(this string json) => JsonConvert.DeserializeObject<DotNetTemplateMetadata>(json, DotInitializr.Converter.Settings);
-   }
+		public static DotNetTemplateMetadata ToDotNetTemplateMetadata(this string json) => JsonConvert.DeserializeObject<DotNetTemplateMetadata>(json, DotInitializr.Converter.Settings);
+	}
 }
