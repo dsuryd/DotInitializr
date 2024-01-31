@@ -34,11 +34,14 @@ namespace DotInitializr
 
          if (includeControllers)
             services.AddMvcCore().AddApplicationPart(typeof(Extensions).Assembly).AddControllersAsServices();
-
+            
          if (configuration != null)
-            services.AddSingleton(configuration.GetSection(AppConfiguration.SECTION).Get<AppConfiguration>() ?? new AppConfiguration());
+         {
+             services.AddSingleton(configuration.GetSection(AppConfiguration.SECTION).Get<AppConfiguration>() ?? new AppConfiguration());
+             services.AddSingleton(configuration.GetSection(PersonalAccessTokenAuthenticationOptions.SECTION).Get<PersonalAccessTokenAuthenticationOptions>() ?? new PersonalAccessTokenAuthenticationOptions());
+         }
 
-         return services;
+			return services;
       }
 
       public static string ToJson(this DotNetTemplateMetadata self) => JsonConvert.SerializeObject(self, DotInitializr.Converter.Settings);
