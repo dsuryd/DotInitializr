@@ -22,7 +22,7 @@ using LibGit2Sharp;
 
 namespace DotInitializr
 {
-	public class GitTemplateSource : ITemplateSource
+   public class GitTemplateSource : ITemplateSource
    {
       private static readonly List<string> _ignoreFiles = new List<string>
       {
@@ -30,21 +30,21 @@ namespace DotInitializr
          Path.AltDirectorySeparatorChar + ".git"
       };
 
-	  private readonly AppConfiguration _appConfiguration;
+      private readonly AppConfiguration _appConfiguration;
 
-	  public string SourceType => "git";
+      public string SourceType => "git";
 
-	  public GitTemplateSource(AppConfiguration appConfiguration)
-	  {
-		  _appConfiguration = appConfiguration;
-	  }
+      public GitTemplateSource(AppConfiguration appConfiguration)
+      {
+         _appConfiguration = appConfiguration;
+      }
 
-	  public GitTemplateSource()
-	  {
-          _appConfiguration = new AppConfiguration();
-	  }
+      public GitTemplateSource()
+      {
+         _appConfiguration = new AppConfiguration();
+      }
 
-	  public TemplateFile GetFile(string fileName, string sourceUrl, string sourceDirectory = null, string sourceBranch = null)
+      public TemplateFile GetFile(string fileName, string sourceUrl, string sourceDirectory = null, string sourceBranch = null)
       {
          TemplateFile result = null;
          string tempPath = Path.Combine(Path.GetTempPath(), nameof(DotInitializr), Guid.NewGuid().ToString());
@@ -138,31 +138,31 @@ namespace DotInitializr
          return content.Any(c => IsNonTextControlChar(c));
       }
 
-	  /// <summary>
-	  /// generates CloneOptions that uses PAT authentication if configured; otherwise uses default (anonymous) authentication
-	  /// </summary>
-	  /// <param name="sourceBranch"></param>
-	  /// <returns></returns>
-	  private CloneOptions GenerateCloneOptions(string sourceBranch)
-	  {
-		  CloneOptions cloneOptions;
+      /// <summary>
+      /// generates CloneOptions that uses PAT authentication if configured; otherwise uses default (anonymous) authentication
+      /// </summary>
+      /// <param name="sourceBranch"></param>
+      /// <returns></returns>
+      private CloneOptions GenerateCloneOptions(string sourceBranch)
+      {
+         CloneOptions cloneOptions;
 
-		  if (!string.IsNullOrEmpty(_appConfiguration.PersonalAccessToken))
-		  {
-			  var credentials = new UsernamePasswordCredentials()
-			  {
-				  Username = _appConfiguration.Username,
-				  Password = _appConfiguration.PersonalAccessToken
-			  };
+         if (!string.IsNullOrEmpty(_appConfiguration.GitCredentials?.PersonalAccessToken))
+         {
+            var credentials = new UsernamePasswordCredentials()
+            {
+               Username = _appConfiguration.GitCredentials.Username,
+               Password = _appConfiguration.GitCredentials.PersonalAccessToken
+            };
 
-			  cloneOptions = new CloneOptions { CredentialsProvider = (url, user, cred) => credentials, BranchName = sourceBranch };
-		  }
-		  else
-		  {
-			  cloneOptions = new CloneOptions { CredentialsProvider = (url, user, cred) => new DefaultCredentials(), BranchName = sourceBranch };
-		  }
+            cloneOptions = new CloneOptions { CredentialsProvider = (url, user, cred) => credentials, BranchName = sourceBranch };
+         }
+         else
+         {
+            cloneOptions = new CloneOptions { CredentialsProvider = (url, user, cred) => new DefaultCredentials(), BranchName = sourceBranch };
+         }
 
-		  return cloneOptions;
-	  }
-  }
+         return cloneOptions;
+      }
+   }
 }

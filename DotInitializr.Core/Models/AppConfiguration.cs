@@ -19,8 +19,13 @@ namespace DotInitializr
          public string TemplateType { get; set; } = "dotinitializr";
       }
 
+      public class PATCredentials
+      {
+         public string Username { get; set; } = null;
+         public string PersonalAccessToken { get; set; } = null;
+      }
+
       public IEnumerable<Template> Templates { get; set; }
-	  public string Username { get; set; } = null;
-	  public string PersonalAccessToken { get; set; } = null;
-	}
+      public PATCredentials GitCredentials { get; set; } = null;
+   }
 }
