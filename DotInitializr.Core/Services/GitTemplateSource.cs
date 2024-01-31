@@ -22,7 +22,7 @@ using LibGit2Sharp;
 
 namespace DotInitializr
 {
-   public class GitTemplateSource : ITemplateSource
+	public class GitTemplateSource : ITemplateSource
    {
       private static readonly List<string> _ignoreFiles = new List<string>
       {
@@ -30,9 +30,21 @@ namespace DotInitializr
          Path.AltDirectorySeparatorChar + ".git"
       };
 
-      public string SourceType => "git";
+	  private readonly AppConfiguration _appConfiguration;
 
-      public TemplateFile GetFile(string fileName, string sourceUrl, string sourceDirectory = null, string sourceBranch = null)
+	  public string SourceType => "git";
+
+	  public GitTemplateSource(AppConfiguration appConfiguration)
+	  {
+		  _appConfiguration = appConfiguration;
+	  }
+
+	  public GitTemplateSource()
+	  {
+          _appConfiguration = new AppConfiguration();
+	  }
+
+	  public TemplateFile GetFile(string fileName, string sourceUrl, string sourceDirectory = null, string sourceBranch = null)
       {
          TemplateFile result = null;
          string tempPath = Path.Combine(Path.GetTempPath(), nameof(DotInitializr), Guid.NewGuid().ToString());
@@ -42,7 +54,7 @@ namespace DotInitializr
 
          try
          {
-            var cloneOptions = new CloneOptions { CredentialsProvider = (url, user, cred) => new DefaultCredentials(), BranchName = sourceBranch };
+            var cloneOptions = GenerateCloneOptions(sourceBranch);
             if (!string.IsNullOrEmpty(Repository.Clone(sourceUrl, tempPath, cloneOptions)))
             {
                var filePath = string.IsNullOrEmpty(sourceDirectory) ? fileName : Path.Combine(sourceDirectory, fileName);
@@ -79,7 +91,7 @@ namespace DotInitializr
          try
          {
             string fullTempPath = Path.Combine(Path.GetFullPath(tempPath), sourceDirectory);
-            var cloneOptions = new CloneOptions { CredentialsProvider = (url, user, cred) => new DefaultCredentials(), BranchName = sourceBranch };
+            var cloneOptions = GenerateCloneOptions(sourceBranch);
 
             if (!string.IsNullOrEmpty(Repository.Clone(sourceUrl, tempPath, cloneOptions)))
             {
@@ -125,5 +137,32 @@ namespace DotInitializr
          Func<char, bool> IsNonTextControlChar = (char c) => char.IsControl(c) && c != '\0' && c != '\r' && c != '\n' && c != '\t' && c != '\b' && c != '\v' && c != '\f' && c != 26;
          return content.Any(c => IsNonTextControlChar(c));
       }
-   }
+
+	  /// <summary>
+	  /// generates CloneOptions that uses PAT authentication if configured; otherwise uses default (anonymous) authentication
+	  /// </summary>
+	  /// <param name="sourceBranch"></param>
+	  /// <returns></returns>
+	  private CloneOptions GenerateCloneOptions(string sourceBranch)
+	  {
+		  CloneOptions cloneOptions;
+
+		  if (!string.IsNullOrEmpty(_appConfiguration.PersonalAccessToken))
+		  {
+			  var credentials = new UsernamePasswordCredentials()
+			  {
+				  Username = _appConfiguration.Username,
+				  Password = _appConfiguration.PersonalAccessToken
+			  };
+
+			  cloneOptions = new CloneOptions { CredentialsProvider = (url, user, cred) => credentials, BranchName = sourceBranch };
+		  }
+		  else
+		  {
+			  cloneOptions = new CloneOptions { CredentialsProvider = (url, user, cred) => new DefaultCredentials(), BranchName = sourceBranch };
+		  }
+
+		  return cloneOptions;
+	  }
+  }
 }

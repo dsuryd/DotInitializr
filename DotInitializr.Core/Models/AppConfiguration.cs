@@ -20,5 +20,7 @@ namespace DotInitializr
       }
 
       public IEnumerable<Template> Templates { get; set; }
-   }
+	  public string Username { get; set; } = null;
+	  public string PersonalAccessToken { get; set; } = null;
+	}
 }
