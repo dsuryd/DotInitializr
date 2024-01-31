@@ -14,50 +14,50 @@ See the License for the specific language governing permissions and
 limitations under the License.
  */
 
-using System;
-using System.Net;
-using System.Linq;
 using Microsoft.AspNetCore.Mvc;
+using System;
+using System.Linq;
+using System.Net;
 using System.Text.Json;
 
 namespace DotInitializr
 {
-    [Route("api/[controller]")]
-    [ApiController]
-    public class GeneratorController : ControllerBase
-    {
-        [HttpPost]
-        public ActionResult Get([FromServices] IProjectGenerator generator, [FromBody] ProjectMetadata metadata)
-        {
-            if (metadata.Tags != null)
-            {
-                foreach (var kvp in metadata.Tags.Where(x => x.Value is JsonElement).ToList())
-                {
-                    var jsonElem = (JsonElement)kvp.Value;
-                    if (jsonElem.ValueKind == JsonValueKind.True)
-                        metadata.Tags[kvp.Key] = true;
-                    else if (jsonElem.ValueKind == JsonValueKind.False)
-                        metadata.Tags[kvp.Key] = false;
-                    else
-                        metadata.Tags[kvp.Key] = jsonElem.ToString();
-                }
-            }
+	[Route("api/[controller]")]
+	[ApiController]
+	public class GeneratorController : ControllerBase
+	{
+		[HttpPost]
+		public ActionResult Get([FromServices] IProjectGeneratorV2 generator, [FromBody] ProjectMetadata metadata)
+		{
+			if (metadata.Tags != null)
+			{
+				foreach (var kvp in metadata.Tags.Where(x => x.Value is JsonElement).ToList())
+				{
+					var jsonElem = (JsonElement)kvp.Value;
+					if (jsonElem.ValueKind == JsonValueKind.True)
+						metadata.Tags[kvp.Key] = true;
+					else if (jsonElem.ValueKind == JsonValueKind.False)
+						metadata.Tags[kvp.Key] = false;
+					else
+						metadata.Tags[kvp.Key] = jsonElem.ToString();
+				}
+			}
 
-            try
-            {
-                byte[] templateBytes = generator.Generate(metadata);
-                return new FileContentResult(templateBytes, "application/zip") { FileDownloadName = $"{metadata.ProjectName}.zip" };
-            }
-            catch (TemplateException ex)
-            {
-                Response.StatusCode = (int)HttpStatusCode.InternalServerError;
-                return Content(ex.Message);
-            }
-            catch (Exception ex)
-            {
-                Response.StatusCode = (int)HttpStatusCode.BadRequest;
-                return Content(ex.Message);
-            }
-        }
-    }
+			try
+			{
+				byte[] templateBytes = generator.Generate(metadata);
+				return new FileContentResult(templateBytes, "application/zip") { FileDownloadName = $"{metadata.ProjectName}.zip" };
+			}
+			catch (TemplateException ex)
+			{
+				Response.StatusCode = (int)HttpStatusCode.InternalServerError;
+				return Content(ex.Message);
+			}
+			catch (Exception ex)
+			{
+				Response.StatusCode = (int)HttpStatusCode.BadRequest;
+				return Content(ex.Message);
+			}
+		}
+	}
 }

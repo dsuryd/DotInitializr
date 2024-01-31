@@ -27,9 +27,9 @@ namespace DotInitializr
 	/// <summary>
 	/// Reads metadata from a project template.
 	/// </summary>
-	public interface ITemplateMetadataReader
+	public interface ITemplateMetadataReaderV2
 	{
-		TemplateMetadata GetMetadata(AppConfiguration.Template template);
+		TemplateMetadata GetMetadata(AppConfigurationV2.Template template);
 
 		Dictionary<string, object> GetComputedTags(TemplateMetadata metadata, Dictionary<string, object> tagValues);
 
@@ -42,24 +42,26 @@ namespace DotInitializr
 		string GetFilesToExclude(TemplateMetadata metadata, Dictionary<string, bool> conditionalTags);
 	}
 
-	public class TemplateMetadataReader : ITemplateMetadataReader
+	public class TemplateMetadataReaderV2 : ITemplateMetadataReaderV2
 	{
 		public const string PROJECT_NAME_KEY = "projectName";
 		public const string PROJECT_NAME = "Project Name";
 		public const string DEFAULT_PROJECT_NAME = "Starter";
 
 		private readonly IEnumerable<ITemplateSourceV2> _templateSources;
+		private readonly AppConfigurationV2 _appConfiguration;
 
 		private delegate int CountDelegate(params bool[] tags);
 
 		private delegate string TransformDelegate(string value);
 
-		public TemplateMetadataReader(IEnumerable<ITemplateSourceV2> templateSources)
+		public TemplateMetadataReaderV2(IEnumerable<ITemplateSourceV2> templateSources, AppConfigurationV2 appConfiguration)
 		{
 			_templateSources = templateSources;
+			_appConfiguration = appConfiguration;
 		}
 
-		public TemplateMetadata GetMetadata(AppConfiguration.Template template)
+		public TemplateMetadata GetMetadata(AppConfigurationV2.Template template)
 		{
 			TemplateMetadata metadata = null;
 
@@ -102,15 +104,15 @@ namespace DotInitializr
 			return metadata;
 		}
 
-		private TemplateFile GetMetadataFile(AppConfiguration.Template template)
+		private TemplateFile GetMetadataFile(AppConfigurationV2.Template template)
 		{
 			var templateSource = _templateSources.FirstOrDefault(x => string.Equals(x.SourceType, template?.SourceType, StringComparison.InvariantCultureIgnoreCase));
 			if (templateSource != null)
 			{
 				if (template.TemplateType?.ToLower() == "dotnet")
-					return templateSource.GetFile(DotNetTemplateMetadata.FILE_NAME, template.SourceUrl, template.SourceDirectory + DotNetTemplateMetadata.FILE_PATH, template.SourceBranch);
+					return templateSource.GetFile(DotNetTemplateMetadata.FILE_NAME, template.SourceUrl, template.SourceDirectory + DotNetTemplateMetadata.FILE_PATH, template.SourceBranch, _appConfiguration.UserName, _appConfiguration.PersonalAccessToken);
 				else
-					return templateSource.GetFile(TemplateMetadata.FILE_NAME, template.SourceUrl, template.SourceDirectory, template.SourceBranch);
+					return templateSource.GetFile(TemplateMetadata.FILE_NAME, template.SourceUrl, template.SourceDirectory, template.SourceBranch, _appConfiguration.UserName, _appConfiguration.PersonalAccessToken);
 			}
 
 			return null;

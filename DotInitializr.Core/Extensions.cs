@@ -26,17 +26,17 @@ namespace DotInitializr
 
 		public static IServiceCollection AddDotInitializr(this IServiceCollection services, IConfiguration configuration, bool includeControllers = true)
 		{
-			services.AddSingleton<IConfigurableTemplateSource, GitConfigurableTemplateSource>();
+			services.AddSingleton<ITemplateSourceV2, GitTemplateSourceV2>();
 			services.AddSingleton<ITemplateRenderer, MustacheRenderer>();
 			services.AddSingleton<ITemplateRenderer, DotNetRenderer>();
-			services.AddSingleton<IProjectGenerator, ProjectGenerator>();
-			services.AddSingleton<ITemplateMetadataReader, TemplateMetadataReader>();
+			services.AddSingleton<IProjectGeneratorV2, ProjectGeneratorV2>();
+			services.AddSingleton<ITemplateMetadataReaderV2, TemplateMetadataReaderV2>();
 
 			if (includeControllers)
 				services.AddMvcCore().AddApplicationPart(typeof(Extensions).Assembly).AddControllersAsServices();
 
 			if (configuration != null)
-				services.AddSingleton(configuration.GetSection(AppConfiguration.SECTION).Get<AppConfiguration>() ?? new AppConfiguration());
+				services.AddSingleton(configuration.GetSection(AppConfigurationV2.SECTION).Get<AppConfigurationV2>() ?? new AppConfigurationV2());
 
 			return services;
 		}

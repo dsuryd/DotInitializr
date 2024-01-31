@@ -26,27 +26,29 @@ namespace DotInitializr
 	/// <summary>
 	/// Generates a zipped project from a metadata.
 	/// </summary>
-	public interface IProjectGenerator
+	public interface IProjectGeneratorV2
 	{
-		ProjectMetadata BuildProjectMetadata(Dictionary<string, string> formData, TemplateMetadata metadata, AppConfiguration.Template template);
+		ProjectMetadata BuildProjectMetadata(Dictionary<string, string> formData, TemplateMetadata metadata, AppConfigurationV2.Template template);
 
 		byte[] Generate(ProjectMetadata metadata);
 	}
 
-	public class ProjectGenerator : IProjectGenerator
+	public class ProjectGeneratorV2 : IProjectGeneratorV2
 	{
 		private readonly IEnumerable<ITemplateSourceV2> _templateSources;
 		private readonly IEnumerable<ITemplateRenderer> _renderers;
-		private readonly ITemplateMetadataReader _templateReader;
+		private readonly ITemplateMetadataReaderV2 _templateReader;
+		private readonly AppConfigurationV2 _appConfiguration;
 
-		public ProjectGenerator(IEnumerable<ITemplateSourceV2> templateSources, IEnumerable<ITemplateRenderer> renderers, ITemplateMetadataReader templateReader)
+		public ProjectGeneratorV2(IEnumerable<ITemplateSourceV2> templateSources, IEnumerable<ITemplateRenderer> renderers, ITemplateMetadataReaderV2 templateReader, AppConfigurationV2 appConfigurationV2)
 		{
 			_templateSources = templateSources;
 			_renderers = renderers;
 			_templateReader = templateReader;
+			_appConfiguration = appConfigurationV2;
 		}
 
-		public ProjectMetadata BuildProjectMetadata(Dictionary<string, string> formData, TemplateMetadata metadata, AppConfiguration.Template template)
+		public ProjectMetadata BuildProjectMetadata(Dictionary<string, string> formData, TemplateMetadata metadata, AppConfigurationV2.Template template)
 		{
 			var tags = _templateReader.GetTags(metadata);
 			var conditionalTags = _templateReader.GetConditionalTags(metadata);
@@ -124,8 +126,10 @@ namespace DotInitializr
 			   .Trim(',')
 			   .Split(",");
 
+
+
 			var files = templateSource
-			   .GetFiles(metadata.TemplateSourceUrl, metadata.TemplateSourceDirectory, metadata.TemplateSourceBranch)
+			   .GetFiles(metadata.TemplateSourceUrl, metadata.TemplateSourceDirectory, metadata.TemplateSourceBranch, _appConfiguration.UserName, _appConfiguration.PersonalAccessToken)
 			   .Where(x => filesToExclude == null || !MatchFileName(x.Name, filesToExclude))
 			   .ToList();
 

@@ -16,11 +16,11 @@ limitations under the License.
 
 namespace DotInitializr.Website.Shared
 {
-   public interface IGeneratorFormState
-   {
-      bool Loading { get; set; }
-      ProjectMetadata ProjectMetadata { get; set; }
+	public interface IGeneratorFormState
+	{
+		bool Loading { get; set; }
+		ProjectMetadata ProjectMetadata { get; set; }
 
-      void ClearProjectMetadata();
-   }
+		void ClearProjectMetadata();
+	}
 }

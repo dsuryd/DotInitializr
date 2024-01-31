@@ -26,7 +26,7 @@ namespace DotInitializr
 	public class GitController : ControllerBase
 	{
 		[HttpGet]
-		public ActionResult<string> Get([FromServices] IConfigurableTemplateSource templateSource, [FromQuery] string source, [FromQuery] string path, [FromQuery] string branch)
+		public ActionResult<string> Get([FromServices] ITemplateSourceV2 templateSource, [FromQuery] string source, [FromQuery] string path, [FromQuery] string branch)
 		{
 			try
 			{

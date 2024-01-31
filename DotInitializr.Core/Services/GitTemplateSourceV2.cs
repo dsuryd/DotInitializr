@@ -6,7 +6,7 @@ using System.Linq;
 
 namespace DotInitializr
 {
-	public class GitConfigurableTemplateSource : IConfigurableTemplateSource
+	public class GitTemplateSourceV2 : ITemplateSourceV2
 	{
 		private static readonly List<string> _ignoreFiles = new List<string>
 	  {
@@ -16,7 +16,7 @@ namespace DotInitializr
 
 		public string SourceType => "git";
 
-		public TemplateFile GetFile(string fileName, string sourceUrl, string sourceDirectory = null, string sourceBranch = null, string personalAccessToken = null)
+		public TemplateFile GetFile(string fileName, string sourceUrl, string sourceDirectory = null, string sourceBranch = null, string userName = null, string personalAccessToken = null)
 		{
 			TemplateFile result = null;
 			string tempPath = Path.Combine(Path.GetTempPath(), nameof(DotInitializr), Guid.NewGuid().ToString());
@@ -27,7 +27,6 @@ namespace DotInitializr
 			try
 			{
 				CloneOptions cloneOptions;
-
 				if (string.IsNullOrEmpty(personalAccessToken))
 				{
 					cloneOptions = new CloneOptions { CredentialsProvider = (url, user, cred) => new DefaultCredentials(), BranchName = sourceBranch };
@@ -36,12 +35,13 @@ namespace DotInitializr
 				{
 					var creds = new UsernamePasswordCredentials
 					{
-						Username = "Stephen-Jong_enlyte",
-						Password = "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"
+						Username = userName ?? string.Empty,
+						Password = personalAccessToken
 					};
+
+					cloneOptions = new CloneOptions { CredentialsProvider = (url, user, cred) => creds, BranchName = sourceBranch };
 				}
 
-				var cloneOptions = new CloneOptions { CredentialsProvider = (url, user, cred) => creds, BranchName = sourceBranch };
 				if (!string.IsNullOrEmpty(Repository.Clone(sourceUrl, tempPath, cloneOptions)))
 				{
 					var filePath = string.IsNullOrEmpty(sourceDirectory) ? fileName : Path.Combine(sourceDirectory, fileName);
@@ -67,7 +67,7 @@ namespace DotInitializr
 			return result;
 		}
 
-		public IEnumerable<TemplateFile> GetFiles(string sourceUrl, string sourceDirectory = null, string sourceBranch = null, string personalAccessToken = null)
+		public IEnumerable<TemplateFile> GetFiles(string sourceUrl, string sourceDirectory = null, string sourceBranch = null, string userName = null, string personalAccessToken = null)
 		{
 			List<TemplateFile> result = new List<TemplateFile>();
 			string tempPath = Path.Combine(Path.GetTempPath(), nameof(DotInitializr), Guid.NewGuid().ToString());
@@ -77,13 +77,23 @@ namespace DotInitializr
 
 			try
 			{
-				string fullTempPath = Path.Combine(Path.GetFullPath(tempPath), sourceDirectory);
-				var creds = new UsernamePasswordCredentials
+				CloneOptions cloneOptions;
+				if (string.IsNullOrEmpty(personalAccessToken))
 				{
-					Username = "Stephen-Jong_enlyte",
-					Password = "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"
-				};
-				var cloneOptions = new CloneOptions { CredentialsProvider = (url, user, cred) => creds, BranchName = sourceBranch };
+					cloneOptions = new CloneOptions { CredentialsProvider = (url, user, cred) => new DefaultCredentials(), BranchName = sourceBranch };
+				}
+				else
+				{
+					var creds = new UsernamePasswordCredentials
+					{
+						Username = userName ?? string.Empty,
+						Password = personalAccessToken
+					};
+
+					cloneOptions = new CloneOptions { CredentialsProvider = (url, user, cred) => creds, BranchName = sourceBranch };
+				}
+
+				string fullTempPath = Path.Combine(Path.GetFullPath(tempPath), sourceDirectory);
 
 				if (!string.IsNullOrEmpty(Repository.Clone(sourceUrl, tempPath, cloneOptions)))
 				{

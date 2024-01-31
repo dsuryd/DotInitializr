@@ -10,7 +10,7 @@ namespace DotInitializr.UnitTests
 		[TestCase("https://github.com/dsuryd/DotInitializr", "DotInitializr.UnitTests\\TestTemplate")]
 		public void TemplateMetadataReader_GetMetadata_ReturnsMetadata(string sourceUrl, string directory)
 		{
-			var sut = new TemplateMetadataReader(new List<IConfigurableTemplateSource> { new GitConfigurableTemplateSource() });
+			var sut = new TemplateMetadataReader(new List<ITemplateSourceV2> { new GitTemplateSourceV2() });
 
 			var result = sut.GetMetadata(new AppConfiguration.Template { Name = "TestTemplate", SourceType = "git", SourceUrl = sourceUrl, SourceDirectory = directory });
 
@@ -21,7 +21,7 @@ namespace DotInitializr.UnitTests
 		[Test]
 		public void TemplateMetadataReader_GeTags_ReturnsTagsWithDefaultValues()
 		{
-			var sut = new TemplateMetadataReader(new List<IConfigurableTemplateSource> { new GitConfigurableTemplateSource() });
+			var sut = new TemplateMetadataReader(new List<ITemplateSourceV2> { new GitTemplateSourceV2() });
 
 			var metadata = new TemplateMetadata
 			{
@@ -53,7 +53,7 @@ namespace DotInitializr.UnitTests
 		[Test]
 		public void TemplateMetadataReader_GeConditionalTags_ReturnsConditionalTagsWithDefaultValues()
 		{
-			var sut = new TemplateMetadataReader(new List<IConfigurableTemplateSource> { new GitConfigurableTemplateSource() });
+			var sut = new TemplateMetadataReader(new List<ITemplateSourceV2> { new GitTemplateSourceV2() });
 
 			var metadata = new TemplateMetadata
 			{
@@ -84,7 +84,7 @@ namespace DotInitializr.UnitTests
 		[Test]
 		public void TemplateMetadataReader_GetFilesToExclude_ReturnsFilesToExcludeString()
 		{
-			var sut = new TemplateMetadataReader(new List<IConfigurableTemplateSource> { new GitConfigurableTemplateSource() });
+			var sut = new TemplateMetadataReader(new List<ITemplateSourceV2> { new GitTemplateSourceV2() });
 
 			var metadata = new TemplateMetadata
 			{
@@ -112,7 +112,7 @@ namespace DotInitializr.UnitTests
 		[Test]
 		public void TemplateMetadataReader_GetComputedTags_ReturnsValidTags()
 		{
-			var sut = new TemplateMetadataReader(new List<IConfigurableTemplateSource> { new GitConfigurableTemplateSource() });
+			var sut = new TemplateMetadataReader(new List<ITemplateSourceV2> { new GitTemplateSourceV2() });
 
 			var metadata = new TemplateMetadata
 			{
@@ -138,7 +138,7 @@ namespace DotInitializr.UnitTests
 		[Test]
 		public void TemplateMetadataReader_GetComputedTags_CountExpression_ReturnsValidTags()
 		{
-			var sut = new TemplateMetadataReader(new List<IConfigurableTemplateSource> { new GitConfigurableTemplateSource() });
+			var sut = new TemplateMetadataReader(new List<ITemplateSourceV2> { new GitTemplateSourceV2() });
 
 			var metadata = new TemplateMetadata
 			{
@@ -163,7 +163,7 @@ namespace DotInitializr.UnitTests
 		[Test]
 		public void TemplateMetadataReader_GetComputedTagsEqual_EqualExpression_ReturnsValidTag()
 		{
-			var sut = new TemplateMetadataReader(new List<IConfigurableTemplateSource> { new GitConfigurableTemplateSource() });
+			var sut = new TemplateMetadataReader(new List<ITemplateSourceV2> { new GitTemplateSourceV2() });
 
 			var metadata = new TemplateMetadata
 			{
