@@ -30,18 +30,18 @@ namespace DotInitializr
          Path.AltDirectorySeparatorChar + ".git"
       };
 
-	  private readonly PersonalAccessTokenAuthenticationOptions _authenticationOptions;
+	  private readonly AppConfiguration _appConfiguration;
 
 	  public string SourceType => "git";
 
-	  public GitTemplateSource(PersonalAccessTokenAuthenticationOptions authenticationOptions)
+	  public GitTemplateSource(AppConfiguration appConfiguration)
 	  {
-		  _authenticationOptions = authenticationOptions;
+		  _appConfiguration = appConfiguration;
 	  }
 
 	  public GitTemplateSource()
 	  {
-		  _authenticationOptions = new PersonalAccessTokenAuthenticationOptions();
+          _appConfiguration = new AppConfiguration();
 	  }
 
 	  public TemplateFile GetFile(string fileName, string sourceUrl, string sourceDirectory = null, string sourceBranch = null)
@@ -147,12 +147,12 @@ namespace DotInitializr
 	  {
 		  CloneOptions cloneOptions;
 
-		  if (!string.IsNullOrEmpty(_authenticationOptions.PersonalAccessToken))
+		  if (!string.IsNullOrEmpty(_appConfiguration.PersonalAccessToken))
 		  {
 			  var credentials = new UsernamePasswordCredentials()
 			  {
-				  Username = _authenticationOptions.Username,
-				  Password = _authenticationOptions.PersonalAccessToken
+				  Username = _appConfiguration.Username,
+				  Password = _appConfiguration.PersonalAccessToken
 			  };
 
 			  cloneOptions = new CloneOptions { CredentialsProvider = (url, user, cred) => credentials, BranchName = sourceBranch };

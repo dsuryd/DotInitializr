@@ -38,7 +38,6 @@ namespace DotInitializr
          if (configuration != null)
          {
              services.AddSingleton(configuration.GetSection(AppConfiguration.SECTION).Get<AppConfiguration>() ?? new AppConfiguration());
-             services.AddSingleton(configuration.GetSection(PersonalAccessTokenAuthenticationOptions.SECTION).Get<PersonalAccessTokenAuthenticationOptions>() ?? new PersonalAccessTokenAuthenticationOptions());
          }
 
 			return services;
