@@ -125,7 +125,7 @@ namespace DotInitializr
             .Split(",");
 
          var files = templateSource
-            .GetFiles(metadata.TemplateSourceUrl, metadata.TemplateSourceDirectory, metadata.TemplateSourceBranch)
+            .GetFiles(metadata.TemplateSourceUrl, metadata.TemplateSourceDirectory, metadata.TemplateSourceBranch, 1)
             .Where(x => filesToExclude == null || !MatchFileName(x.Name, filesToExclude))
             .ToList();
 

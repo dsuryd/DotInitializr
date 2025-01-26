@@ -10,7 +10,7 @@ namespace DotInitializr.UnitTests
       public void GitTemplateSource_GetFiles_ReturnsFiles(string sourceUrl, string directory, string branch = null)
       {
          var source = new GitTemplateSource();
-         var files = source.GetFiles(sourceUrl, directory, branch);
+         var files = source.GetFiles(sourceUrl, directory, branch, depth: 1);
 
          Assert.AreEqual(74, files.Count());
 
@@ -22,7 +22,7 @@ namespace DotInitializr.UnitTests
       public void GitTemplateSource_GetFile_ReturnsFile(string sourceUrl, string directory, string fileName, string branch = null)
       {
          var source = new GitTemplateSource();
-         var file = source.GetFile(fileName, sourceUrl, directory, branch);
+         var file = source.GetFile(fileName, sourceUrl, directory, branch, depth: 1);
 
          Assert.IsNotNull(file);
          Assert.IsFalse(string.IsNullOrEmpty(file.Name));

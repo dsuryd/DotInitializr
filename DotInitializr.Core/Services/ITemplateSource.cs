@@ -35,8 +35,9 @@ namespace DotInitializr
       /// <param name="sourceUrl">Source repository URL.</param>
       /// <param name="sourceDirectory">Directory in the source repository.</param>
       /// <param name="sourceBranch">Source repository branch.</param>
+      /// <param name="depth">Clone depth.</param>
       /// <returns>The template file.</returns>
-      TemplateFile GetFile(string fileName, string sourceUrl, string sourceDirectory = null, string sourceBranch = null);
+      TemplateFile GetFile(string fileName, string sourceUrl, string sourceDirectory = null, string sourceBranch = null, int depth = 0);
 
       /// <summary>
       /// Returns all files from a project template's source repository.
@@ -44,7 +45,8 @@ namespace DotInitializr
       /// <param name="sourceUrl">Source repository URL.</param>
       /// <param name="sourceDirectory">Directory in the source repository.</param>
       /// <param name="sourceBranch">Source repository branch.</param>
+      /// <param name="depth">Clone depth.</param>
       /// <returns>All template files.</returns>
-      IEnumerable<TemplateFile> GetFiles(string sourceUrl, string sourceDirectory = null, string sourceBranch = null);
+      IEnumerable<TemplateFile> GetFiles(string sourceUrl, string sourceDirectory = null, string sourceBranch = null, int depth = 0);
    }
 }

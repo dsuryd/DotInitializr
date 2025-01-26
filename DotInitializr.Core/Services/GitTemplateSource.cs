@@ -44,7 +44,7 @@ namespace DotInitializr
          _appConfiguration = new AppConfiguration();
       }
 
-      public TemplateFile GetFile(string fileName, string sourceUrl, string sourceDirectory = null, string sourceBranch = null)
+      public TemplateFile GetFile(string fileName, string sourceUrl, string sourceDirectory = null, string sourceBranch = null, int depth = 0)
       {
          TemplateFile result = null;
          string tempPath = Path.Combine(Path.GetTempPath(), nameof(DotInitializr), Guid.NewGuid().ToString());
@@ -54,7 +54,7 @@ namespace DotInitializr
 
          try
          {
-            var cloneOptions = GenerateCloneOptions(sourceBranch);
+            var cloneOptions = GenerateCloneOptions(sourceBranch, depth);
             if (!string.IsNullOrEmpty(Repository.Clone(sourceUrl, tempPath, cloneOptions)))
             {
                var filePath = string.IsNullOrEmpty(sourceDirectory) ? fileName : Path.Combine(sourceDirectory, fileName);
@@ -80,7 +80,7 @@ namespace DotInitializr
          return result;
       }
 
-      public IEnumerable<TemplateFile> GetFiles(string sourceUrl, string sourceDirectory = null, string sourceBranch = null)
+      public IEnumerable<TemplateFile> GetFiles(string sourceUrl, string sourceDirectory = null, string sourceBranch = null, int depth = 0)
       {
          List<TemplateFile> result = new List<TemplateFile>();
          string tempPath = Path.Combine(Path.GetTempPath(), nameof(DotInitializr), Guid.NewGuid().ToString());
@@ -91,7 +91,7 @@ namespace DotInitializr
          try
          {
             string fullTempPath = Path.Combine(Path.GetFullPath(tempPath), sourceDirectory);
-            var cloneOptions = GenerateCloneOptions(sourceBranch);
+            var cloneOptions = GenerateCloneOptions(sourceBranch, depth);
 
             if (!string.IsNullOrEmpty(Repository.Clone(sourceUrl, tempPath, cloneOptions)))
             {
@@ -143,7 +143,7 @@ namespace DotInitializr
       /// </summary>
       /// <param name="sourceBranch"></param>
       /// <returns></returns>
-      private CloneOptions GenerateCloneOptions(string sourceBranch)
+      private CloneOptions GenerateCloneOptions(string sourceBranch, int depth = 0)
       {
          CloneOptions cloneOptions;
 
@@ -155,14 +155,14 @@ namespace DotInitializr
                Password = _appConfiguration.GitCredentials.PersonalAccessToken
             };
 
-            cloneOptions = new CloneOptions(new FetchOptions { CredentialsProvider = (url, user, cred) => credentials })
+            cloneOptions = new CloneOptions(new FetchOptions { CredentialsProvider = (url, user, cred) => credentials, Depth = depth })
             {
                BranchName = sourceBranch
             };
          }
          else
          {
-            cloneOptions = new CloneOptions(new FetchOptions { CredentialsProvider = (url, user, cred) => new DefaultCredentials() })
+            cloneOptions = new CloneOptions(new FetchOptions { CredentialsProvider = (url, user, cred) => new DefaultCredentials(), Depth = depth })
             {
                BranchName = sourceBranch
             };
