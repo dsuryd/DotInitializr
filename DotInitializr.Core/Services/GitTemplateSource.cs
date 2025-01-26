@@ -155,11 +155,17 @@ namespace DotInitializr
                Password = _appConfiguration.GitCredentials.PersonalAccessToken
             };
 
-            cloneOptions = new CloneOptions { CredentialsProvider = (url, user, cred) => credentials, BranchName = sourceBranch };
+            cloneOptions = new CloneOptions(new FetchOptions { CredentialsProvider = (url, user, cred) => credentials })
+            {
+               BranchName = sourceBranch
+            };
          }
          else
          {
-            cloneOptions = new CloneOptions { CredentialsProvider = (url, user, cred) => new DefaultCredentials(), BranchName = sourceBranch };
+            cloneOptions = new CloneOptions(new FetchOptions { CredentialsProvider = (url, user, cred) => new DefaultCredentials() })
+            {
+               BranchName = sourceBranch
+            };
          }
 
          return cloneOptions;
