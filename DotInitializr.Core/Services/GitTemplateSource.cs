@@ -145,30 +145,26 @@ namespace DotInitializr
       /// <returns></returns>
       private CloneOptions GenerateCloneOptions(string sourceBranch, int depth = 0)
       {
-         CloneOptions cloneOptions;
-
-         if (!string.IsNullOrEmpty(_appConfiguration.GitCredentials?.PersonalAccessToken))
+         return new CloneOptions(new FetchOptions
          {
-            var credentials = new UsernamePasswordCredentials()
+            CredentialsProvider = (url, user, cred) =>
             {
-               Username = _appConfiguration.GitCredentials.Username,
-               Password = _appConfiguration.GitCredentials.PersonalAccessToken
-            };
-
-            cloneOptions = new CloneOptions(new FetchOptions { CredentialsProvider = (url, user, cred) => credentials, Depth = depth })
-            {
-               BranchName = sourceBranch
-            };
-         }
-         else
+               if (!string.IsNullOrEmpty(_appConfiguration.GitCredentials?.PersonalAccessToken))
+               {
+                  return new UsernamePasswordCredentials()
+                  {
+                     Username = _appConfiguration.GitCredentials.Username,
+                     Password = _appConfiguration.GitCredentials.PersonalAccessToken
+                  };
+               }
+               return new DefaultCredentials();
+            },
+            Depth = depth,
+            CertificateCheck = (cert, valid, host) => true // Disable SSL certificate check.
+         })
          {
-            cloneOptions = new CloneOptions(new FetchOptions { CredentialsProvider = (url, user, cred) => new DefaultCredentials(), Depth = depth })
-            {
-               BranchName = sourceBranch
-            };
-         }
-
-         return cloneOptions;
+            BranchName = sourceBranch
+         }; ;
       }
    }
 }
