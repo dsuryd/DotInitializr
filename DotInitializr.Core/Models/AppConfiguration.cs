@@ -25,7 +25,7 @@ namespace DotInitializr
          public string PersonalAccessToken { get; set; } = null;
       }
 
-      public IEnumerable<Template> Templates { get; set; }
+      public List<Template> Templates { get; set; }
       public PATCredentials GitCredentials { get; set; } = null;
    }
 }

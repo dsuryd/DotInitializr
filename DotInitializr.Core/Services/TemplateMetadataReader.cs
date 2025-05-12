@@ -85,18 +85,18 @@ namespace DotInitializr
             {
                foreach (var tag in metadata.Tags.Where(x => string.IsNullOrEmpty(x.Key)))
                   tag.Key = tag.Name;
-               metadata.Tags = metadata.Tags.Where(x => !string.IsNullOrEmpty(x.Key));
+               metadata.Tags = metadata.Tags.Where(x => !string.IsNullOrEmpty(x.Key)).ToList();
             }
 
             if (metadata.ConditionalTags != null)
             {
                foreach (var tag in metadata.ConditionalTags.Where(x => string.IsNullOrEmpty(x.Key)))
                   tag.Key = tag.Name;
-               metadata.ConditionalTags = metadata.ConditionalTags.Where(x => !string.IsNullOrEmpty(x.Key));
+               metadata.ConditionalTags = metadata.ConditionalTags.Where(x => !string.IsNullOrEmpty(x.Key)).ToList();
             }
 
             if (metadata.ComputedTags != null)
-               metadata.ComputedTags = metadata.ComputedTags.Where(x => !string.IsNullOrEmpty(x.Key));
+               metadata.ComputedTags = metadata.ComputedTags.Where(x => !string.IsNullOrEmpty(x.Key)).ToList();
          }
 
          return metadata;
